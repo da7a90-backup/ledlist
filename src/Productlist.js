@@ -1706,6 +1706,7 @@ const Productlist = props => {
         <TableCell align="center">
             <Tooltip 
                enterTouchDelay={0}
+               leaveTouchDelay={2500}
                TransitionComponent={Zoom}
                componentsProps={{
                    tooltip: {
@@ -1737,6 +1738,7 @@ const Productlist = props => {
         <TableCell align="center"> 
         <Tooltip 
         enterTouchDelay={0}
+        leaveTouchDelay={2500}
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1766,6 +1768,7 @@ const Productlist = props => {
         <TableCell align="center">
         <Tooltip 
         enterTouchDelay={0}
+        leaveTouchDelay={2500}
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1794,6 +1797,7 @@ const Productlist = props => {
         <TableCell align="center">
         <Tooltip 
         enterTouchDelay={0}
+        leaveTouchDelay={2500}
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1827,7 +1831,8 @@ const Productlist = props => {
                 
     <TableCell align="center">
         <Tooltip
-        enterTouchDelay={0} 
+        enterTouchDelay={0}
+        leaveTouchDelay={2500} 
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1854,6 +1859,7 @@ const Productlist = props => {
         <TableCell align="center">
         <Tooltip
         enterTouchDelay={0} 
+        leaveTouchDelay={2500}
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1883,6 +1889,7 @@ const Productlist = props => {
         <TableCell align="center">
         <Tooltip
         enterTouchDelay={0} 
+        leaveTouchDelay={2500}
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1916,6 +1923,7 @@ const Productlist = props => {
         <TableCell align="center">
         <Tooltip 
         enterTouchDelay={0}
+        leaveTouchDelay={2500}
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
