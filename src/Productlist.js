@@ -1705,6 +1705,7 @@ const Productlist = props => {
         <TableCell align="center">{productName}</TableCell>
         <TableCell align="center">
             <Tooltip 
+               enterTouchDelay={0}
                TransitionComponent={Zoom}
                componentsProps={{
                    tooltip: {
@@ -1733,7 +1734,9 @@ const Productlist = props => {
             <InfoIcon color="secondary"></InfoIcon>
             </Tooltip>
         </TableCell>
-        <TableCell align="center"> <Tooltip 
+        <TableCell align="center"> 
+        <Tooltip 
+        enterTouchDelay={0}
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1762,6 +1765,7 @@ const Productlist = props => {
         </TableCell>
         <TableCell align="center">
         <Tooltip 
+        enterTouchDelay={0}
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1789,6 +1793,7 @@ const Productlist = props => {
         </TableCell>
         <TableCell align="center">
         <Tooltip 
+        enterTouchDelay={0}
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1821,7 +1826,8 @@ const Productlist = props => {
         </TableCell>
                 
     <TableCell align="center">
-        <Tooltip 
+        <Tooltip
+        enterTouchDelay={0} 
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1846,7 +1852,8 @@ const Productlist = props => {
         </Tooltip>
         </TableCell>
         <TableCell align="center">
-        <Tooltip 
+        <Tooltip
+        enterTouchDelay={0} 
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1874,7 +1881,8 @@ const Productlist = props => {
         </Tooltip>
         </TableCell>
         <TableCell align="center">
-        <Tooltip 
+        <Tooltip
+        enterTouchDelay={0} 
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
@@ -1907,6 +1915,7 @@ const Productlist = props => {
         </TableCell>
         <TableCell align="center">
         <Tooltip 
+        enterTouchDelay={0}
         TransitionComponent={Zoom}
         componentsProps={{
             tooltip: {
