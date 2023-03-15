@@ -1751,9 +1751,9 @@ const Productlist = props => {
         title={
             <React.Fragment>
             <b>Discounted Price</b><br/><Paper align='center' elevation={2}>${cost.discountedPrice}</Paper><br/>
-            <b>Shipping USA</b><br/><Paper align='center' elevation={2}>${cost.shippingUsa}</Paper><br/>
-            <b>Shipping Australia</b><br/><Paper align='center' elevation={2}>${cost.shippingAus}</Paper><br/>
-            <b>Shipping UK</b><br/><Paper align='center' elevation={2}>${cost.shippingUk}</Paper><br/>
+            <b>Shipping USA 🇺🇸</b><br/><Paper align='center' elevation={2}>${cost.shippingUsa}</Paper><br/>
+            <b>Shipping Australia 🇦🇺</b><br/><Paper align='center' elevation={2}>${cost.shippingAus}</Paper><br/>
+            <b>Shipping UK 🇬🇧</b><br/><Paper align='center' elevation={2}>${cost.shippingUk}</Paper><br/>
             </React.Fragment>
                         }
                          >
