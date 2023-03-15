@@ -1983,15 +1983,19 @@ const Productlist = props => {
 
             if(typeof col ==='object'){
                 Object.keys(col).forEach(key => {
-                    if (col[key].toString().indexOf(searchQuery) >= 0) {
+                    if (col[key] !== undefined){
+                      if(col[key].toString().indexOf(searchQuery) >= 0) {
                         isFound = true;
                       }
+                    }
                 })
             }
 
+            if(col !== undefined){
             if (col.toString().indexOf(searchQuery) >= 0) {
                 isFound = true;
               }
+            }
           
       
         });
