@@ -10,7 +10,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "mui-datatables": "https://github.com/da7a90-backup/mui-datatables/tarball/037c3646c2300fd9ecc092971d0f1915137327dd",
+    "mui-datatables": "github:da7a90-backup/mui-datatables",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -20,8 +20,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "postinstall": "cd ./node_modules/mui-datatables && npm install --force && npm run build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
