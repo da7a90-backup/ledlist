@@ -10,7 +10,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "mui-datatables": "https://github.com/da7a90-backup/mui-datatables/tarball/315a0e3416968320354cdeac94bf47e3d602165d",
+    "mui-datatables": "https://github.com/da7a90-backup/mui-datatables/tarball/037c3646c2300fd9ecc092971d0f1915137327dd",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
