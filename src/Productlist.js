@@ -1,31 +1,22 @@
 import React from "react";
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import MUIDataTable from "mui-datatables";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Paper from "@mui/material/Paper";
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import InfoIcon from '@mui/icons-material/Info';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import ShortcutIcon from '@mui/icons-material/Shortcut';
 import Zoom from '@mui/material/Zoom';
-import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import FormLabel from "@mui/material/FormLabel";
 import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import TextField from "@mui/material/TextField";
-import Checkbox from "@mui/material/Checkbox";
 import Modal from "./Modal";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-
-
+import { Slider } from "@mui/material";
+import CustomHintButton from "./CustomHintButton";
+import { fetchData } from "./services/Data";
 
 //import makeStyles from "@mui/styles";
 
@@ -36,29 +27,81 @@ const Productlist = props => {
 
        });
     const classes = useStyles(); */
+    const [data, setData] = useState([]);
+    const [sortByCost, setSortByCost] = useState(0);
+    const [sortBySize, setSortBySize] = useState(0);
+    const [sortByFeatures, setSortByFeatures] = useState(0);
+    const [sortByWarranty, setSortByWarranty] = useState(0);
+    const [sortByLeds, setSortByLeds] = useState(0);
+    const [sortByWaveLengths, setSortByWaveLengths] = useState(0);
+    const [sortByFlickernsound, setSortByFlickernsound] = useState(0);
+
+
+    const [shownInfo, setShownInfo] = useState(false);
+    const [shownCost, setShownCost] = useState(false);
+    const [shownSize, setShownSize] = useState(false);
+    const [shownFeatures, setShownFeatures] = useState(false);
+    const [shownWarranty, setShownWarranty] = useState(false);
+    const [shownLeds, setShownLeds] = useState(false);
+    const [shownWaveLengths, setShownWaveLengths] = useState(false);
+    
+
+    useEffect(()=>{
+      fetchData().then(data=>{
+        console.log(data)
+        setData(data);
+      });
+    },[])
+
+
+    const CustomSliderFilter = ({filterList, onChange, index, column, name}) => (
+      <div>
+        <FormGroup row>
+        <FormGroup column>
+        <FormLabel>{name}</FormLabel>
+
+          <Slider
+            label='min'
+            value={filterList[index][0] || ''}
+            color='secondary'
+            max={3000}
+            onChange={event => {
+              filterList[index][0] = event.target.value;
+              onChange(filterList[index], index, column);
+            }}
+            style={{ width: '120px' }}
+          />
+          <Slider
+            label='max'
+            max={3000}
+            value={filterList[index][1] || ''}
+            color='secondary'
+            onChange={event => {
+              filterList[index][1] = event.target.value;
+              onChange(filterList[index], index, column);
+            }}
+            style={{ width: '120px' }}
+          />
+        </FormGroup>
+        </FormGroup>
+      </div>
+    )
 
   const columns = [
     {
-      label: "Product Name",
-      name: "productName",
-      options: {
-        filter: false
-      },
-    },
-    {
-      label: "Info",
+      label: "Product Info",
       name: "info",
       options: {
         filter: false,
-        sortCompare: (order) => {
-          return (obj1, obj2) => {
-            console.log(order);
-            console.log(obj1, obj2)
-            let val1 = parseInt(obj1.data.yearReleased, 10);
-            let val2 = parseInt(obj2.data.yearReleased, 10);
-            return (val1 - val2) * (order === 'asc' ? 1 : -1);
-          };
-        } 
+        sort: false
+      },
+    },
+    {
+      label: "Year",
+      name: "yearReleased",
+      options: {
+        filter: false,
+        sort:true,
       }
     },
     {
@@ -68,14 +111,22 @@ const Productlist = props => {
         filter: false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            console.log(order);
-            console.log(obj1, obj2)
-            let val1 = parseInt(obj1.data.discountedPrice, 10);
-            let val2 = parseInt(obj2.data.discountedPrice, 10);
+            let val1 = parseInt(Object.values(obj1.data)[sortByCost], 10);
+            let val2 = parseInt(Object.values(obj2.data)[sortByCost], 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
-        } 
-      }
+        },
+         hint: (col) => {  
+               return <CustomHintButton shown={shownCost} 
+               setShown={setShownCost} 
+               col={col}
+               sortBy={sortByCost}
+               setSortBy={setSortByCost}
+               >
+
+               </CustomHintButton>;
+            } 
+          }
     },
     {
       label: "Size",
@@ -86,11 +137,21 @@ const Productlist = props => {
           return (obj1, obj2) => {
             console.log(order);
             console.log(obj1, obj2)
-            let val1 = parseInt(obj1.data.weight, 10);
-            let val2 = parseInt(obj2.data.weight, 10);
+            let val1 = parseFloat(Object.values(obj1.data)[sortBySize], 10);
+            let val2 = parseFloat(Object.values(obj2.data)[sortBySize], 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
-        } 
+        },
+         hint: (col) => {  
+          return <CustomHintButton shown={shownSize} 
+          setShown={setShownSize} 
+          col={col}
+          sortBy={sortBySize}
+          setSortBy={setSortBySize}
+          >
+
+          </CustomHintButton>;
+       }  
       }
     },
     {
@@ -98,7 +159,25 @@ const Productlist = props => {
       name: "features",
       options: {
         filter: false,
-        sort: false
+        sortCompare: (order) => {
+          return (obj1, obj2) => {
+            console.log(order);
+            console.log(obj1, obj2)
+            let val1 = parseInt(Object.values(obj1.data)[sortByLeds], 10);
+            let val2 = parseInt(Object.values(obj2.data)[sortByLeds], 10);
+            return (val1 - val2) * (order === 'asc' ? 1 : -1);
+          };
+        },
+        hint: (col) => {  
+          return <CustomHintButton shown={shownFeatures} 
+          setShown={setShownFeatures} 
+          col={col}
+          sortBy={sortByFeatures}
+          setSortBy={setSortByFeatures}
+          >
+
+          </CustomHintButton>;
+       }  
       }
     },
     {
@@ -110,11 +189,21 @@ const Productlist = props => {
           return (obj1, obj2) => {
             console.log(order);
             console.log(obj1, obj2)
-            let val1 = parseInt(obj1.data.warranty, 10);
-            let val2 = parseInt(obj2.data.warranty, 10);
+            let val1 = parseInt(Object.values(obj1.data)[sortByWarranty], 10);
+            let val2 = parseInt(Object.values(obj2.data)[sortByWarranty], 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
-        } 
+        },
+         hint: (col) => {  
+          return <CustomHintButton shown={shownWarranty} 
+          setShown={setShownWarranty} 
+          col={col}
+          sortBy={sortByWarranty}
+          setSortBy={setSortByWarranty}
+          >
+
+          </CustomHintButton>;
+       }  
       }
     },
     {
@@ -126,11 +215,21 @@ const Productlist = props => {
           return (obj1, obj2) => {
             console.log(order);
             console.log(obj1, obj2)
-            let val1 = parseInt(obj1.data.leds, 10);
-            let val2 = parseInt(obj2.data.leds, 10);
+            let val1 = parseInt(Object.values(obj1.data)[sortByLeds], 10);
+            let val2 = parseInt(Object.values(obj2.data)[sortByLeds], 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
-        } 
+        },
+        hint: (col) => {  
+          return <CustomHintButton shown={shownLeds} 
+          setShown={setShownLeds} 
+          col={col}
+          sortBy={sortByLeds}
+          setSortBy={setSortByLeds}
+          >
+
+          </CustomHintButton>;
+       }  
       }
     },
     {
@@ -138,38 +237,26 @@ const Productlist = props => {
       name: "wavelengths",
       options: {
         filter: false,
-        sort: false
-      }
-    },
-    {
-      label: "Power",
-      name: "power",
-      options: {
-        filter: false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            console.log(order);
-            console.log(obj1, obj2)
-            let val1 = parseFloat(obj1.data.totalPowerOutput);
-            let val2 = parseFloat(obj2.data.totalPowerOutput);
+            console.log(sortByLeds);
+            console.log(obj1.data);
+            console.log(Object.values(obj1.data)[sortByWaveLengths]);
+            let val1 = parseInt(Object.values(obj1.data)[sortByWaveLengths], 10);
+            let val2 = parseInt(Object.values(obj2.data)[sortByWaveLengths], 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
-        } 
-      }
-    },
-    {
-      label: "Value",
-      name: "value",
-      options: {
-        filter: false,
-        sortCompare: (order) => {
-          return (obj1, obj2) => {
-            let val1 = parseFloat(obj1.data.discountedPerLed) + parseFloat(obj1.data.discountedPerOutput);
-            let val2 = parseFloat(obj2.data.discountedPerLed) + parseFloat(obj2.data.discountedPerOutput);
-            console.log(val1,val2);
-            return (val1 - val2) * (order === 'asc' ? 1 : -1);
-          };
-        } 
+        },
+        hint: (col) => {  
+          return <CustomHintButton shown={shownWaveLengths} 
+          setShown={setShownWaveLengths} 
+          col={col}
+          sortBy={sortByWaveLengths}
+          setSortBy={setSortByWaveLengths}
+          >
+
+          </CustomHintButton>;
+       }  
       }
     },
     {
@@ -191,19 +278,29 @@ const Productlist = props => {
           return (obj1, obj2) => {
             console.log(order);
             console.log(obj1, obj2)
-            let val1 = parseInt(obj1.data.soundLevels, 10);
-            let val2 = parseInt(obj2.data.soundLevels, 10);
+            let val1 = parseInt(Object.values(obj1.data)[sortByFlickernsound], 10);
+            let val2 = parseInt(Object.values(obj2.data)[sortByFlickernsound], 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
-        } 
+        },
+        hint: (col) => {  
+          return <CustomHintButton shown={true} 
+          setShown={()=>{}} 
+          col={col}
+          sortBy={sortByFlickernsound}
+          setSortBy={setSortByFlickernsound}
+          >
+
+          </CustomHintButton>;
+       }   
       }
     },    
     {
         name:"info.company",
-        label:'company',
+        label:'Company',
         options:{
            filter:true,
-           filterType: 'checkbox',
+           filterType: 'multiselect',
            sort:false,
            display:false,
            viewColumns:false
@@ -211,9 +308,10 @@ const Productlist = props => {
      },
      {
         name:"info.class",
+        label:"Class",
         options:{
            filter:true,
-           filterType: 'checkbox',
+           filterType: 'multiselect',
            sort:false,
            display:false,
            viewColumns:false
@@ -224,17 +322,18 @@ const Productlist = props => {
       label:'LED Dual Chip',
       options:{
          filter:true,
-         filterType: 'checkbox',
+         filterType: 'multiselect',
          sort:false,
          display:false,
          viewColumns:false
       }
    },
      {
-        name:"info.yearReleased",
+        name:"yearReleased",
+        label:"Year Released",
         options:{
            filter:true,
-           filterType: 'checkbox',
+           filterType: 'multiselect',
            sort:false,
            display:false,
            viewColumns:false
@@ -289,32 +388,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>Discounted Price</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'Discounted Price'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -370,32 +450,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>Shipping USA Price</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'Shipping US'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -451,32 +512,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>Shipping Australia Price</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'Shipping Australia'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -532,32 +574,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>Shipping UK Price</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'Shipping UK'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -613,32 +636,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>Height</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'Height'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -694,32 +698,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>Width</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'Width'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -775,32 +760,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>Weight</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'Weight'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -856,32 +822,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>cableLength</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'Cable Length'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -937,32 +884,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>warranty</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'Warranty'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -1018,32 +946,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>Return Policy</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'Return Policy'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -1099,32 +1008,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>LEDS</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'LEDS'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -1180,32 +1070,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => (
-               <div>
-                 <FormLabel>led Chip Power</FormLabel>
-                 <FormGroup row>
-                   <TextField
-                     label='min'
-                     value={filterList[index][0] || ''}
-                     onChange={event => {
-                       filterList[index][0] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%', marginRight: '5%' }}
-                   />
-                   <TextField
-                     label='max'
-                     value={filterList[index][1] || ''}
-                     onChange={event => {
-                       filterList[index][1] = event.target.value;
-                       onChange(filterList[index], index, column);
-                     }}
-                     style={{ width: '45%' }}
-                   />
-
-                 </FormGroup>
-               </div>
-             ),
+             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             filterList={filterList} 
+             onChange={onChange} 
+             index={index} 
+             column={column} 
+             name={'LED Chip Power'} >
+             </CustomSliderFilter>,
            },
            sort:false,
            display:false,
@@ -1213,7 +1084,7 @@ const Productlist = props => {
         }
      },
      {
-      name:"power.totalPowerOutput",
+      name:"leds.totalPowerOutput",
       label:'Total Power Output',
       options:{
          filter:true,
@@ -1262,39 +1133,21 @@ const Productlist = props => {
              }
              return false;
            },
-           display: (filterList, onChange, index, column) => (
-             <div>
-               <FormLabel>Total Power Output</FormLabel>
-               <FormGroup row>
-                 <TextField
-                   label='min'
-                   value={filterList[index][0] || ''}
-                   onChange={event => {
-                     filterList[index][0] = event.target.value;
-                     onChange(filterList[index], index, column);
-                   }}
-                   style={{ width: '45%', marginRight: '5%' }}
-                 />
-                 <TextField
-                   label='max'
-                   value={filterList[index][1] || ''}
-                   onChange={event => {
-                     filterList[index][1] = event.target.value;
-                     onChange(filterList[index], index, column);
-                   }}
-                   style={{ width: '45%' }}
-                 />
-                
-               </FormGroup>
-             </div>
-           ),
-         },         sort:false,
+           display: (filterList, onChange, index, column) => <CustomSliderFilter 
+           filterList={filterList} 
+           onChange={onChange} 
+           index={index} 
+           column={column} 
+           name={'Total Power Output'} >
+           </CustomSliderFilter>,
+         },         
+         sort:false,
          display:false,
          viewColumns:false
       }
    },
    {
-    name:"power.wattageDraw",
+    name:"leds.wattageDraw",
     label:'Wattage Draw',
     options:{
        filter:true,
@@ -1343,40 +1196,23 @@ const Productlist = props => {
            }
            return false;
          },
-         display: (filterList, onChange, index, column) => (
-           <div>
-             <FormLabel>Wattage Draw</FormLabel>
-             <FormGroup row>
-               <TextField
-                 label='min'
-                 value={filterList[index][0] || ''}
-                 onChange={event => {
-                   filterList[index][0] = event.target.value;
-                   onChange(filterList[index], index, column);
-                 }}
-                 style={{ width: '45%', marginRight: '5%' }}
-               />
-               <TextField
-                 label='max'
-                 value={filterList[index][1] || ''}
-                 onChange={event => {
-                   filterList[index][1] = event.target.value;
-                   onChange(filterList[index], index, column);
-                 }}
-                 style={{ width: '45%' }}
-               />
-              
-             </FormGroup>
-           </div>
-         ),
-       },         sort:false,
+         display: (filterList, onChange, index, column) => <CustomSliderFilter 
+         filterList={filterList} 
+         onChange={onChange} 
+         index={index} 
+         column={column} 
+         name={'Wattage Draw'} >
+         </CustomSliderFilter>
+         ,
+       },         
+       sort:false,
        display:false,
        viewColumns:false
     }
  },
  {
-  name:"value.discountedValuePerLed",
-  label:'Discounted Value Per Led',
+  name:"wavelengths.nm480",
+  label:'nm480',
   options:{
      filter:true,
      filterType: 'custom',
@@ -1388,13 +1224,13 @@ const Productlist = props => {
      customFilterListOptions: {
        render: v => {
          if (v[0] && v[1]) {
-           return [`Min discountedValuePerLed: ${v[0]}`, `Max discountedValuePerLed: ${v[1]}`];
+           return [`Min nm480: ${v[0]}`, `Max nm480: ${v[1]}`];
          } else if (v[0] && v[1] ) {
-           return `Min discountedValuePerLed: ${v[0]}, Max discountedValuePerLed: ${v[1]}`;
+           return `Min nm480: ${v[0]}, Max nm480: ${v[1]}`;
          } else if (v[0]) {
-           return `Min discountedValuePerLed: ${v[0]}`;
+           return `Min nm480: ${v[0]}`;
          } else if (v[1]) {
-           return `Max discountedValuePerLed: ${v[1]}`;
+           return `Max nm480: ${v[1]}`;
          }
          return [];
        },
@@ -1414,50 +1250,32 @@ const Productlist = props => {
      },
      filterOptions: {
        names: [],
-       logic(discountedValuePerLed, filters) {
+       logic(nm480, filters) {
          if (filters[0] && filters[1]) {
-           return discountedValuePerLed < filters[0] || discountedValuePerLed > filters[1];
+           return nm480 < filters[0] || nm480 > filters[1];
          } else if (filters[0]) {
-           return discountedValuePerLed < filters[0];
+           return nm480 < filters[0];
          } else if (filters[1]) {
-           return discountedValuePerLed > filters[1];
+           return nm480 > filters[1];
          }
          return false;
        },
-       display: (filterList, onChange, index, column) => (
-         <div>
-           <FormLabel>Discounted Value Per Led</FormLabel>
-           <FormGroup row>
-             <TextField
-               label='min'
-               value={filterList[index][0] || ''}
-               onChange={event => {
-                 filterList[index][0] = event.target.value;
-                 onChange(filterList[index], index, column);
-               }}
-               style={{ width: '45%', marginRight: '5%' }}
-             />
-             <TextField
-               label='max'
-               value={filterList[index][1] || ''}
-               onChange={event => {
-                 filterList[index][1] = event.target.value;
-                 onChange(filterList[index], index, column);
-               }}
-               style={{ width: '45%' }}
-             />
-
-           </FormGroup>
-         </div>
-       ),
-     },         sort:false,
+       display: (filterList, onChange, index, column) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'nm480'} >
+       </CustomSliderFilter>,
+     },         
+     sort:false,
      display:false,
      viewColumns:false
   }
 },
 {
-  name:"value.discountedValuePerOutput",
-  label:'Discounted Value Per Output',
+  name:"wavelengths.nm610",
+  label:'nm610',
   options:{
      filter:true,
      filterType: 'custom',
@@ -1469,13 +1287,13 @@ const Productlist = props => {
      customFilterListOptions: {
        render: v => {
          if (v[0] && v[1]) {
-           return [`Min discountedValuePerOutput: ${v[0]}`, `Max discountedValuePerOutput: ${v[1]}`];
+           return [`Min nm610: ${v[0]}`, `Max nm610: ${v[1]}`];
          } else if (v[0] && v[1] ) {
-           return `Min discountedValuePerOutput: ${v[0]}, Max discountedValuePerOutput: ${v[1]}`;
+           return `Min nm610: ${v[0]}, Max nm610: ${v[1]}`;
          } else if (v[0]) {
-           return `Min discountedValuePerOutput: ${v[0]}`;
+           return `Min nm610: ${v[0]}`;
          } else if (v[1]) {
-           return `Max discountedValuePerOutput: ${v[1]}`;
+           return `Max nm610: ${v[1]}`;
          }
          return [];
        },
@@ -1495,43 +1313,529 @@ const Productlist = props => {
      },
      filterOptions: {
        names: [],
-       logic(discountedValuePerOutput, filters) {
+       logic(nm610, filters) {
          if (filters[0] && filters[1]) {
-           return discountedValuePerOutput < filters[0] || discountedValuePerOutput > filters[1];
+           return nm610 < filters[0] || nm610 > filters[1];
          } else if (filters[0]) {
-           return discountedValuePerOutput < filters[0];
+           return nm610 < filters[0];
          } else if (filters[1]) {
-           return discountedValuePerOutput > filters[1];
+           return nm610 > filters[1];
          }
          return false;
        },
-       display: (filterList, onChange, index, column) => (
-         <div>
-           <FormLabel>Discounted Value Per Output</FormLabel>
-           <FormGroup row>
-             <TextField
-               label='min'
-               value={filterList[index][0] || ''}
-               onChange={event => {
-                 filterList[index][0] = event.target.value;
-                 onChange(filterList[index], index, column);
-               }}
-               style={{ width: '45%', marginRight: '5%' }}
-             />
-             <TextField
-               label='max'
-               value={filterList[index][1] || ''}
-               onChange={event => {
-                 filterList[index][1] = event.target.value;
-                 onChange(filterList[index], index, column);
-               }}
-               style={{ width: '45%' }}
-             />
+       display: (filterList, onChange, index, column) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'nm610'} >
+       </CustomSliderFilter>,
+     },         
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+},
+{
+  name:"wavelengths.nm630",
+  label:'nm630',
+  options:{
+     filter:true,
+     filterType: 'custom',
 
-           </FormGroup>
-         </div>
-       ),
-     },         sort:false,
+     // if the below value is set, these values will be used every time the table is rendered.
+     // it's best to let the table internally manage the filterList
+     //filterList: [25, 50],
+     
+     customFilterListOptions: {
+       render: v => {
+         if (v[0] && v[1]) {
+           return [`Min nm630: ${v[0]}`, `Max nm630: ${v[1]}`];
+         } else if (v[0] && v[1] ) {
+           return `Min nm630: ${v[0]}, Max nm630: ${v[1]}`;
+         } else if (v[0]) {
+           return `Min nm630: ${v[0]}`;
+         } else if (v[1]) {
+           return `Max nm630: ${v[1]}`;
+         }
+         return [];
+       },
+       update: (filterList, filterPos, index) => {
+         console.log('customFilterListOnDelete: ', filterList, filterPos, index);
+
+         if (filterPos === 0) {
+           filterList[index].splice(filterPos, 1, '');
+         } else if (filterPos === 1) {
+           filterList[index].splice(filterPos, 1);
+         } else if (filterPos === -1) {
+           filterList[index] = [];
+         }
+
+         return filterList;
+       },
+     },
+     filterOptions: {
+       names: [],
+       logic(nm630, filters) {
+         if (filters[0] && filters[1]) {
+           return nm630 < filters[0] || nm630 > filters[1];
+         } else if (filters[0]) {
+           return nm630 < filters[0];
+         } else if (filters[1]) {
+           return nm630 > filters[1];
+         }
+         return false;
+       },
+       display: (filterList, onChange, index, column) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'nm630'} >
+       </CustomSliderFilter>,
+     },         
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+},
+{
+  name:"wavelengths.nm660",
+  label:'nm660',
+  options:{
+     filter:true,
+     filterType: 'custom',
+
+     // if the below value is set, these values will be used every time the table is rendered.
+     // it's best to let the table internally manage the filterList
+     //filterList: [25, 50],
+     
+     customFilterListOptions: {
+       render: v => {
+         if (v[0] && v[1]) {
+           return [`Min nm660: ${v[0]}`, `Max nm660: ${v[1]}`];
+         } else if (v[0] && v[1] ) {
+           return `Min nm660: ${v[0]}, Max nm660: ${v[1]}`;
+         } else if (v[0]) {
+           return `Min nm660: ${v[0]}`;
+         } else if (v[1]) {
+           return `Max nm660: ${v[1]}`;
+         }
+         return [];
+       },
+       update: (filterList, filterPos, index) => {
+         console.log('customFilterListOnDelete: ', filterList, filterPos, index);
+
+         if (filterPos === 0) {
+           filterList[index].splice(filterPos, 1, '');
+         } else if (filterPos === 1) {
+           filterList[index].splice(filterPos, 1);
+         } else if (filterPos === -1) {
+           filterList[index] = [];
+         }
+
+         return filterList;
+       },
+     },
+     filterOptions: {
+       names: [],
+       logic(nm660, filters) {
+         if (filters[0] && filters[1]) {
+           return nm660 < filters[0] || nm660 > filters[1];
+         } else if (filters[0]) {
+           return nm660 < filters[0];
+         } else if (filters[1]) {
+           return nm660 > filters[1];
+         }
+         return false;
+       },
+       display: (filterList, onChange, index, column) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'nm660'} >
+       </CustomSliderFilter>,
+     },         
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+ },
+{
+  name:"wavelengths.nm810",
+  label:'nm810',
+  options:{
+     filter:true,
+     filterType: 'custom',
+
+     // if the below value is set, these values will be used every time the table is rendered.
+     // it's best to let the table internally manage the filterList
+     //filterList: [25, 50],
+     
+     customFilterListOptions: {
+       render: v => {
+         if (v[0] && v[1]) {
+           return [`Min nm810: ${v[0]}`, `Max nm810: ${v[1]}`];
+         } else if (v[0] && v[1] ) {
+           return `Min nm810: ${v[0]}, Max nm810: ${v[1]}`;
+         } else if (v[0]) {
+           return `Min nm810: ${v[0]}`;
+         } else if (v[1]) {
+           return `Max nm810: ${v[1]}`;
+         }
+         return [];
+       },
+       update: (filterList, filterPos, index) => {
+         console.log('customFilterListOnDelete: ', filterList, filterPos, index);
+
+         if (filterPos === 0) {
+           filterList[index].splice(filterPos, 1, '');
+         } else if (filterPos === 1) {
+           filterList[index].splice(filterPos, 1);
+         } else if (filterPos === -1) {
+           filterList[index] = [];
+         }
+
+         return filterList;
+       },
+     },
+     filterOptions: {
+       names: [],
+       logic(nm810, filters) {
+         if (filters[0] && filters[1]) {
+           return nm810 < filters[0] || nm810 > filters[1];
+         } else if (filters[0]) {
+           return nm810 < filters[0];
+         } else if (filters[1]) {
+           return nm810 > filters[1];
+         }
+         return false;
+       },
+       display: (filterList, onChange, index, column) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'nm810'} >
+       </CustomSliderFilter>,
+     },         
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+},
+{
+  name:"wavelengths.nm830",
+  label:'nm830',
+  options:{
+     filter:true,
+     filterType: 'custom',
+
+     // if the below value is set, these values will be used every time the table is rendered.
+     // it's best to let the table internally manage the filterList
+     //filterList: [25, 50],
+     
+     customFilterListOptions: {
+       render: v => {
+         if (v[0] && v[1]) {
+           return [`Min nm830: ${v[0]}`, `Max nm830: ${v[1]}`];
+         } else if (v[0] && v[1] ) {
+           return `Min nm830: ${v[0]}, Max nm830: ${v[1]}`;
+         } else if (v[0]) {
+           return `Min nm830: ${v[0]}`;
+         } else if (v[1]) {
+           return `Max nm830: ${v[1]}`;
+         }
+         return [];
+       },
+       update: (filterList, filterPos, index) => {
+         console.log('customFilterListOnDelete: ', filterList, filterPos, index);
+
+         if (filterPos === 0) {
+           filterList[index].splice(filterPos, 1, '');
+         } else if (filterPos === 1) {
+           filterList[index].splice(filterPos, 1);
+         } else if (filterPos === -1) {
+           filterList[index] = [];
+         }
+
+         return filterList;
+       },
+     },
+     filterOptions: {
+       names: [],
+       logic(nm830, filters) {
+         if (filters[0] && filters[1]) {
+           return nm830 < filters[0] || nm830 > filters[1];
+         } else if (filters[0]) {
+           return nm830 < filters[0];
+         } else if (filters[1]) {
+           return nm830 > filters[1];
+         }
+         return false;
+       },
+       display: (filterList, onChange, index, column) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'nm830'} >
+       </CustomSliderFilter>,
+     },         
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+},
+{
+  name:"wavelengths.nm850",
+  label:'nm850',
+  options:{
+     filter:true,
+     filterType: 'custom',
+
+     // if the below value is set, these values will be used every time the table is rendered.
+     // it's best to let the table internally manage the filterList
+     //filterList: [25, 50],
+     
+     customFilterListOptions: {
+       render: v => {
+         if (v[0] && v[1]) {
+           return [`Min nm850: ${v[0]}`, `Max nm850: ${v[1]}`];
+         } else if (v[0] && v[1] ) {
+           return `Min nm850: ${v[0]}, Max nm850: ${v[1]}`;
+         } else if (v[0]) {
+           return `Min nm850: ${v[0]}`;
+         } else if (v[1]) {
+           return `Max nm850: ${v[1]}`;
+         }
+         return [];
+       },
+       update: (filterList, filterPos, index) => {
+         console.log('customFilterListOnDelete: ', filterList, filterPos, index);
+
+         if (filterPos === 0) {
+           filterList[index].splice(filterPos, 1, '');
+         } else if (filterPos === 1) {
+           filterList[index].splice(filterPos, 1);
+         } else if (filterPos === -1) {
+           filterList[index] = [];
+         }
+
+         return filterList;
+       },
+     },
+     filterOptions: {
+       names: [],
+       logic(nm850, filters) {
+         if (filters[0] && filters[1]) {
+           return nm850 < filters[0] || nm850 > filters[1];
+         } else if (filters[0]) {
+           return nm850 < filters[0];
+         } else if (filters[1]) {
+           return nm850 > filters[1];
+         }
+         return false;
+       },
+       display: (filterList, onChange, index, column) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'nm850'} >
+       </CustomSliderFilter>,
+     },         
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+},
+{
+  name:"wavelengths.nm930",
+  label:'nm930',
+  options:{
+     filter:true,
+     filterType: 'custom',
+
+     // if the below value is set, these values will be used every time the table is rendered.
+     // it's best to let the table internally manage the filterList
+     //filterList: [25, 50],
+     
+     customFilterListOptions: {
+       render: v => {
+         if (v[0] && v[1]) {
+           return [`Min nm930: ${v[0]}`, `Max nm930: ${v[1]}`];
+         } else if (v[0] && v[1] ) {
+           return `Min nm930: ${v[0]}, Max nm930: ${v[1]}`;
+         } else if (v[0]) {
+           return `Min nm930: ${v[0]}`;
+         } else if (v[1]) {
+           return `Max nm930: ${v[1]}`;
+         }
+         return [];
+       },
+       update: (filterList, filterPos, index) => {
+         console.log('customFilterListOnDelete: ', filterList, filterPos, index);
+
+         if (filterPos === 0) {
+           filterList[index].splice(filterPos, 1, '');
+         } else if (filterPos === 1) {
+           filterList[index].splice(filterPos, 1);
+         } else if (filterPos === -1) {
+           filterList[index] = [];
+         }
+
+         return filterList;
+       },
+     },
+     filterOptions: {
+       names: [],
+       logic(nm930, filters) {
+         if (filters[0] && filters[1]) {
+           return nm930 < filters[0] || nm930 > filters[1];
+         } else if (filters[0]) {
+           return nm930 < filters[0];
+         } else if (filters[1]) {
+           return nm930 > filters[1];
+         }
+         return false;
+       },
+       display: (filterList, onChange, index, column) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'nm930'} >
+       </CustomSliderFilter>,
+     },         
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+},
+{
+  name:"wavelengths.nm950",
+  label:'nm950',
+  options:{
+     filter:true,
+     filterType: 'custom',
+
+     // if the below value is set, these values will be used every time the table is rendered.
+     // it's best to let the table internally manage the filterList
+     //filterList: [25, 50],
+     
+     customFilterListOptions: {
+       render: v => {
+         if (v[0] && v[1]) {
+           return [`Min nm950: ${v[0]}`, `Max nm950: ${v[1]}`];
+         } else if (v[0] && v[1] ) {
+           return `Min nm950: ${v[0]}, Max nm950: ${v[1]}`;
+         } else if (v[0]) {
+           return `Min nm950: ${v[0]}`;
+         } else if (v[1]) {
+           return `Max nm950: ${v[1]}`;
+         }
+         return [];
+       },
+       update: (filterList, filterPos, index) => {
+         console.log('customFilterListOnDelete: ', filterList, filterPos, index);
+
+         if (filterPos === 0) {
+           filterList[index].splice(filterPos, 1, '');
+         } else if (filterPos === 1) {
+           filterList[index].splice(filterPos, 1);
+         } else if (filterPos === -1) {
+           filterList[index] = [];
+         }
+
+         return filterList;
+       },
+     },
+     filterOptions: {
+       names: [],
+       logic(nm950, filters) {
+         if (filters[0] && filters[1]) {
+           return nm950 < filters[0] || nm950 > filters[1];
+         } else if (filters[0]) {
+           return nm950 < filters[0];
+         } else if (filters[1]) {
+           return nm950 > filters[1];
+         }
+         return false;
+       },
+       display: (filterList, onChange, index, column) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'nm950'} >
+       </CustomSliderFilter>,
+     },         
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+},
+{
+  name:"flickernsound.flicker",
+  label:'Flicker',
+  options:{
+     filter:true,
+     filterType: 'custom',
+
+     // if the below value is set, these values will be used every time the table is rendered.
+     // it's best to let the table internally manage the filterList
+     //filterList: [25, 50],
+     
+     customFilterListOptions: {
+       render: v => {
+         if (v[0] && v[1]) {
+           return [`Min flicker: ${v[0]}`, `Max flicker: ${v[1]}`];
+         } else if (v[0] && v[1] ) {
+           return `Min flicker: ${v[0]}, Max flicker: ${v[1]}`;
+         } else if (v[0]) {
+           return `Min flicker: ${v[0]}`;
+         } else if (v[1]) {
+           return `Max flicker: ${v[1]}`;
+         }
+         return [];
+       },
+       update: (filterList, filterPos, index) => {
+         console.log('customFilterListOnDelete: ', filterList, filterPos, index);
+
+         if (filterPos === 0) {
+           filterList[index].splice(filterPos, 1, '');
+         } else if (filterPos === 1) {
+           filterList[index].splice(filterPos, 1);
+         } else if (filterPos === -1) {
+           filterList[index] = [];
+         }
+
+         return filterList;
+       },
+     },
+     filterOptions: {
+       names: [],
+       logic(flicker, filters) {
+         if (filters[0] && filters[1]) {
+           return flicker < filters[0] || flicker > filters[1];
+         } else if (filters[0]) {
+           return flicker < filters[0];
+         } else if (filters[1]) {
+           return flicker > filters[1];
+         }
+         return false;
+       },
+       display: (filterList, onChange, index, column) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'Flicker'} >
+       </CustomSliderFilter>,
+     },         
+     sort:false,
      display:false,
      viewColumns:false
   }
@@ -1586,125 +1890,43 @@ const Productlist = props => {
          }
          return false;
        },
-       display: (filterList, onChange, index, column) => (
-         <div>
-           <FormLabel>Sound Levels</FormLabel>
-           <FormGroup row>
-             <TextField
-               label='min'
-               value={filterList[index][0] || ''}
-               onChange={event => {
-                 filterList[index][0] = event.target.value;
-                 onChange(filterList[index], index, column);
-               }}
-               style={{ width: '45%', marginRight: '5%' }}
-             />
-             <TextField
-               label='max'
-               value={filterList[index][1] || ''}
-               onChange={event => {
-                 filterList[index][1] = event.target.value;
-                 onChange(filterList[index], index, column);
-               }}
-               style={{ width: '45%' }}
-             />
-
-           </FormGroup>
-         </div>
-       ),
-     },         sort:false,
+       display: (filterList, onChange, index, column) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'Sound Levels'} >
+       </CustomSliderFilter>,
+     },         
+     sort:false,
      display:false,
      viewColumns:false
   }
 },
   ];
-  const data = [
-    {
-    productName: "MitoPro 1500",
-    info: {company:"Mitored", class:"Body Panel", yearReleased:"2022", discountCode:"ALEX - 5%", productLink:"https://mitoredlight.com/products/mitopro-series?afmc=em", youtubeReview: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"},
-    cost: {discountedPrice: 1092, shippingUsa:0, shippingAus:125, shippingUk: 117},
-    size: {height:42,width:10,weight:25,cableLength:6},
-    features: {pulsing:"No", modularSupport: "Y" ,stands: "N" ,inbuiltTimer:"Y"},
-    warranty: {warranty:3, returnPolicy:60},
-    leds: {leds:300, ledDualChip:"Single", ledChipPower: 5},
-    wavelengths: {480: "N", 610: "N", 630: "Y - 75", 660: "Y - 75", 810: "N", 830: "Y - 75", 850: "Y - 75", 930: "N", 950: "N",
-                 peakWavelengthsTested: "645, 665, 830, 850 NB: Mitored have said the 645 vs 630 discrepency will not be an issue for panels purchased after Q3 2021"},
-    power: {totalPowerOutput:136.1, avCombinedPower: 76.4, peakPower: 88.2, wattageDraw: 806},
-    value: {discountedPerLed:3.6, discountedPerOutput:8},
-    nnemf: {emf3i:"green", emf6i:"green", mag3i:"orange - 0.12", mag6i:"orange", mico3i:"green", mico6i:"green"},
-    flickernsound:{flicker: "0% @ 0hz", soundLevels: 51.7}
-    },
-    {
-    productName: "LightPath Large Pulsed Multiwave",
-    info: {company:"LightPath LED", class:"Body Panel", yearReleased:"2022", discountCode:"ALEX - 5%", productLink:"https://lightpathled.com/?afmc=alex", youtubeReview: "https://www.youtube.com/watch?v=2LgDROvdpNQ"},
-    cost: {discountedPrice: 1115, shippingUsa:0, shippingAus:100, shippingUk: 25},
-    size: {height:38,width:12,weight:26,cableLength:4.75},
-    features: {pulsing:"Yes - 1-9999hz", modularSupport: "Y" ,stands: "N" ,inbuiltTimer:"Y"},
-    warranty: {warranty:3, returnPolicy:60},
-    leds: {leds:255, ledDualChip:"Dual", ledChipPower: 5},
-    wavelengths: {480: "N", 610: "N", 630: "Y - 51", 660: "Y - 51", 810: "Y - 64", 830: "N", 850: "Y - 64", 930: "Y - 25", 950: "N",
-    peakWavelengthsTested: "635, 660, 810, 850, 940"},
-    power: {totalPowerOutput:136.1, avCombinedPower: 76.4, peakPower: 88.2, wattageDraw: 806},
-    value: {discountedPerLed:4.4, discountedPerOutput:9.3},
-    nnemf: {emf3i:"green", emf6i:"green", mag3i:"orange - 0.12", mag6i:"orange", mico3i:"green", mico6i:"green"},
-    flickernsound:{flicker: "0% @ 0hz", soundLevels: 51.9}
-    },
-    {
-      productName: "BioMax 600 (gen2 2021)",
-      info: {company:"Platinum LED", class:"Body Panel", yearReleased:"2021", discountCode:"ALEX - 5%", productLink:"https://platinumtherapylights.com/products/biomax-rlt?variant=15666983895106", youtubeReview: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"},
-      cost: {discountedPrice: 854, shippingUsa:0, shippingAus:80, shippingUk: 80},
-      size: {height:36,width:9,weight:22,cableLength:6.5},
-      features: {pulsing:"No", modularSupport: "Y" ,stands: "N" ,inbuiltTimer:"Y"},
-      warranty: {warranty:3, returnPolicy:60},
-      leds: {leds:200, ledDualChip:"Single", ledChipPower: 3},
-      wavelengths: {480: "N", 610: "N", 630: "Y - 51", 660: "Y - 51", 810: "Y - 64", 830: "N", 850: "Y - 64", 930: "Y - 25", 950: "N",
-      peakWavelengthsTested: "635, 660, 810, 850, 940"},
-      power: {totalPowerOutput:101.2, avCombinedPower: 71.7, peakPower: 92.9, wattageDraw: 627},
-      value: {discountedPerLed:4.3, discountedPerOutput:8.5},
-      nnemf: {emf3i:"green", emf6i:"green", mag3i:"orange - 0.12", mag6i:"orange", mico3i:"green", mico6i:"green"},
-      flickernsound:{flicker: "0% @ 0hz", soundLevels: 52}
-      },
-        {
-          productName: "Red Rush 720 Classic",
-          info: {company:"Red Therapy Co", class:"Body Panel", yearReleased:"2020", discountCode:"ALEX - 25%", productLink:"https://redtherapy.co/?rfsn=1246699.6149a", youtubeReview: "https://www.youtube.com/watch?v=_f8ytSdOOC0"},
-          cost: {discountedPrice: 754, shippingUsa:0, shippingAus:121, shippingUk: 121},
-          size: {height:35,width:10.6,weight:20,cableLength:6},
-          features: {pulsing:"No", modularSupport: "N" ,stands: "N" ,inbuiltTimer:"N"},
-          warranty: {warranty:2, returnPolicy:60},
-          leds: {leds:240, ledDualChip:"Single", ledChipPower: 3},
-          wavelengths: {480: "N", 610: "N", 630: "Y - 51", 660: "Y - 51", 810: "Y - 64", 830: "N", 850: "Y - 64", 930: "Y - 25", 950: "N",
-          peakWavelengthsTested: "635, 660, 810, 850, 940"},
-          power: {totalPowerOutput:70, avCombinedPower: 46.3, peakPower: 60, wattageDraw: 349},
-          value: {discountedPerLed:3.1, discountedPerOutput:10.8},
-          nnemf: {emf3i:"green", emf6i:"green", mag3i:"orange - 0.12", mag6i:"orange", mico3i:"green", mico6i:"green"},
-          flickernsound:{flicker: "74% @ 100hz", soundLevels: 54.5}
-          }
-  ];
+
 
   const MyCustomRowComponent = (props) => {
-    const {productName, info, cost, size, features, warranty, leds, wavelengths, power, value, nnemf, flickernsound} = props;
+    const {info, yearReleased, cost, size, features, warranty, leds, wavelengths, nnemf, flickernsound} = props;
   
     return (
       <TableRow>
         <TableCell>
             <Modal 
-                productName={productName}
                 info= {info}
+                yearReleased={yearReleased}
                 cost= {cost}
                 size= {size}
                 features= {features}
                 warranty= {warranty}
                 leds= {leds}
                 wavelengths= {wavelengths}
-                power= {power}
-                value= {value}
                 nnemf= {nnemf}
                 flickernsound= {flickernsound}
         
         ></Modal></TableCell>
-        <TableCell align="center">{productName}</TableCell>
-        <TableCell align="center">
-            <Tooltip 
+        <TableCell align="center">{info.productName}             
+        <Tooltip 
                enterTouchDelay={0}
                leaveTouchDelay={2500}
                TransitionComponent={Zoom}
@@ -1725,16 +1947,20 @@ const Productlist = props => {
                 <React.Fragment>
                 <b>Company</b><br/><Paper align='center' elevation={2}>{info.company}</Paper><br/>
                 <b>Class</b><br/><Paper align='center' elevation={2}>{info.class}</Paper><br/>
-                <b>Year Released</b><br/><Paper align='center' elevation={2}>{info.yearReleased}</Paper><br/>
                 <b>Discount Code</b><br/><Paper align='center' elevation={2}>{info.discountCode}</Paper><br/>
                 <b>Product Link</b><br/><Paper align='center' elevation={2}><Link color="secondary" href={`${info.productLink}`}><ShortcutIcon></ShortcutIcon></Link></Paper><br/>
                 <b>Youtube Review</b><br/><Paper align='center' elevation={2}><Link href={`${info.youtubeReview}`}><YouTubeIcon sx={{color:'red'}}></YouTubeIcon></Link></Paper><br/>
                 </React.Fragment>
                     }
             >
-            <InfoIcon color="secondary"></InfoIcon>
+            <InfoIcon style={{ float: 'right' }} color="secondary"></InfoIcon>
             </Tooltip>
-        </TableCell>
+            
+            </TableCell>
+            <TableCell align="center">
+              {yearReleased}
+            </TableCell>
+
         <TableCell align="center"> 
         <Tooltip 
         enterTouchDelay={0}
@@ -1754,15 +1980,25 @@ const Productlist = props => {
             }
           }}
         title={
+          shownCost ? null :
             <React.Fragment>
             <b>Discounted Price</b><br/><Paper align='center' elevation={2}>${cost.discountedPrice}</Paper><br/>
             <b>Shipping USA 🇺🇸</b><br/><Paper align='center' elevation={2}>${cost.shippingUsa}</Paper><br/>
             <b>Shipping Australia 🇦🇺</b><br/><Paper align='center' elevation={2}>${cost.shippingAus}</Paper><br/>
             <b>Shipping UK 🇬🇧</b><br/><Paper align='center' elevation={2}>${cost.shippingUk}</Paper><br/>
+            <b>Discounted Value per LED</b><br/><Paper align='center' elevation={2}>${cost.discountedPerLed}</Paper><br/>
+            <b>Discounted Value per Output</b><br/><Paper align='center' elevation={2}>${cost.discountedPerOutput}</Paper><br/>
             </React.Fragment>
                         }
                          >
-        <b>{`$${cost.discountedPrice}`}</b>
+        <b>{shownCost ?  <React.Fragment>
+            <b>Discounted Price</b><br/><Paper align='center' elevation={2}>${cost.discountedPrice}</Paper><br/>
+            <b>Shipping USA 🇺🇸</b><br/><Paper align='center' elevation={2}>${cost.shippingUsa}</Paper><br/>
+            <b>Shipping Australia 🇦🇺</b><br/><Paper align='center' elevation={2}>${cost.shippingAus}</Paper><br/>
+            <b>Shipping UK 🇬🇧</b><br/><Paper align='center' elevation={2}>${cost.shippingUk}</Paper><br/>
+            <b>Discounted Value per LED</b><br/><Paper align='center' elevation={2}>${cost.discountedPerLed}</Paper><br/>
+            <b>Discounted Value per Output</b><br/><Paper align='center' elevation={2}>${cost.discountedPerOutput}</Paper><br/>
+            </React.Fragment> : `$${cost.discountedPrice}` }</b>
         </Tooltip>
         </TableCell>
         <TableCell align="center">
@@ -1784,14 +2020,20 @@ const Productlist = props => {
             }
           }}
         title={
+          shownSize ? null :
             <React.Fragment> 
             <b>Height</b><br/><Paper align='center' elevation={2}>{size.height}"</Paper><br/>
             <b>Width</b><br/><Paper align='center' elevation={2}>{size.width}"</Paper><br/>
             <b>Weight</b><br/><Paper align='center' elevation={2}>{size.weight}lb</Paper><br/>
             <b>Cable Length</b><br/><Paper align='center' elevation={2}>{size.cableLength}'</Paper><br/>
-            </React.Fragment>
+            </React.Fragment> 
         }>
-            <span>{size.height}" X {size.width}"</span>
+            <span>{shownSize ?            <React.Fragment> 
+            <b>Height</b><br/><Paper align='center' elevation={2}>{size.height}"</Paper><br/>
+            <b>Width</b><br/><Paper align='center' elevation={2}>{size.width}"</Paper><br/>
+            <b>Weight</b><br/><Paper align='center' elevation={2}>{size.weight}lb</Paper><br/>
+            <b>Cable Length</b><br/><Paper align='center' elevation={2}>{size.cableLength}'</Paper><br/>
+            </React.Fragment> : `${size.height}" X ${size.width}"` }</span>
         </Tooltip>
         </TableCell>
         <TableCell align="center">
@@ -1813,19 +2055,25 @@ const Productlist = props => {
             }
           }}
         title={
-            <React.Fragment> 
-            <b>Pulsing</b><br/><Paper align='center' elevation={2}>{features.pulsing}</Paper><br/>
-            <b>Modular Support</b><br/><Paper align='center' elevation={2}>{features.modularSupport}</Paper><br/>
-            <b>Stands</b><br/><Paper align='center' elevation={2}>{features.stands}</Paper><br/>
-            <b>Inbuit Timer</b><br/><Paper align='center' elevation={2}>{features.inbuiltTimer}</Paper><br/>
+          shownFeatures ? null : <React.Fragment> 
+            <b>Pulsing</b><br/><Paper align='center' elevation={2}>{features.pulsing ? "Yes" : "No"}</Paper><br/>
+            <b>Modular Support</b><br/><Paper align='center' elevation={2}>{features.modularSupport ? " Yes" : "No"}</Paper><br/>
+            <b>Stands</b><br/><Paper align='center' elevation={2}>{features.stands ? "Yes" : "No"}</Paper><br/>
+            <b>Inbuit Timer</b><br/><Paper align='center' elevation={2}>{features.inbuiltTimer ? "Yes" : "No"}</Paper><br/>
             </React.Fragment>
         }>
+          {shownFeatures ? <React.Fragment> 
+            <b>Pulsing</b><br/><Paper align='center' elevation={2}>{features.pulsing ? "Yes" : "No"}</Paper><br/>
+            <b>Modular Support</b><br/><Paper align='center' elevation={2}>{features.modularSupport ? " Yes" : "No"}</Paper><br/>
+            <b>Stands</b><br/><Paper align='center' elevation={2}>{features.stands ? "Yes" : "No"}</Paper><br/>
+            <b>Inbuit Timer</b><br/><Paper align='center' elevation={2}>{features.inbuiltTimer ? "Yes" : "No"}</Paper><br/>
+            </React.Fragment> :
           <span>
-             {features.pulsing !== "No" ? "Pulsing," : ""}
-             {features.modularSupport !== "N" ? " Modular Support," : ""}
-             {features.stands !== "N" ? " Stands," : ""}
-             {features.inbuiltTimer !== "N" ? " Inbuilt Timer" : ""}
-           </span>
+             {features.pulsing ? "Pulsing," : ""}
+             {features.modularSupport ? " Modular Support," : ""}
+             {features.stands ? " Stands," : ""}
+             {features.inbuiltTimer ? " Inbuilt Timer" : ""}
+           </span>}
         </Tooltip>
         </TableCell>
                 
@@ -1848,12 +2096,15 @@ const Productlist = props => {
             }
           }}
         title={
-            <React.Fragment> 
+          shownWarranty ? null : <React.Fragment> 
             <b>Warranty</b><br/><Paper align='center' elevation={2}>{warranty.warranty} years</Paper><br/>
             <b>Return policy</b><br/><Paper align='center' elevation={2}>{warranty.returnPolicy} days</Paper><br/>
             </React.Fragment>
         }>
-        <span>{warranty.warranty} years</span>
+        <span>{shownWarranty ? <React.Fragment> 
+            <b>Warranty</b><br/><Paper align='center' elevation={2}>{warranty.warranty} years</Paper><br/>
+            <b>Return policy</b><br/><Paper align='center' elevation={2}>{warranty.returnPolicy} days</Paper><br/>
+            </React.Fragment> : `${warranty.warranty} years`}</span>
         </Tooltip>
         </TableCell>
         <TableCell align="center">
@@ -1875,15 +2126,27 @@ const Productlist = props => {
             }
           }}
         title={
-            <React.Fragment> 
+          shownLeds ? null : <React.Fragment> 
             <b>Leds</b><br/><Paper align='center' elevation={2}>{leds.leds}</Paper><br/>
-            <b>Led Dual Chip</b><br/><Paper align='center' elevation={2}>{leds.ledDualChip}</Paper><br/>
+            <b>Led Dual Chip</b><br/><Paper align='center' elevation={2}>{leds.ledDualChip ? `Yes` : `Single`}</Paper><br/>
             <b>Led Chip Power</b><br/><Paper align='center' elevation={2}>{leds.ledChipPower}W</Paper><br/>
+            <b>Total Power Output</b><br/><Paper align='center' elevation={2}>{leds.totalPowerOutput} mW</Paper><br/>
+            <b>AV combined power 9 spots</b><br/><Paper align='center' elevation={2}>{leds.avCombinedPower} W</Paper><br/>
+            <b>Peak Power</b><br/><Paper align='center' elevation={2}>{leds.peakPower} mW/cm²</Paper><br/>
+            <b>Wattage Draw</b><br/><Paper align='center' elevation={2}>{leds.wattageDraw}</Paper><br/>
             </React.Fragment>
         }>
-            <span>
-             {leds.ledDualChip !== "Single" ? `${leds.leds} Dual ${leds.ledChipPower}` : `${leds.leds} Single ${leds.ledChipPower}W`}
-             </span>
+         { shownLeds ? <React.Fragment> 
+            <b>Leds</b><br/><Paper align='center' elevation={2}>{leds.leds}</Paper><br/>
+            <b>Led Dual Chip</b><br/><Paper align='center' elevation={2}>{leds.ledDualChip ? `Yes` : `Single`}</Paper><br/>
+            <b>Led Chip Power</b><br/><Paper align='center' elevation={2}>{leds.ledChipPower}W</Paper><br/>
+            <b>Total Power Output</b><br/><Paper align='center' elevation={2}>{leds.totalPowerOutput} mW</Paper><br/>
+            <b>AV combined power 9 spots</b><br/><Paper align='center' elevation={2}>{leds.avCombinedPower} W</Paper><br/>
+            <b>Peak Power</b><br/><Paper align='center' elevation={2}>{leds.peakPower} mW/cm²</Paper><br/>
+            <b>Wattage Draw</b><br/><Paper align='center' elevation={2}>{leds.wattageDraw}</Paper><br/>
+            </React.Fragment> : <span>
+             {leds.ledDualChip ? `${leds.leds} Dual ${leds.ledChipPower}W` : `${leds.leds} Single ${leds.ledChipPower}W`}
+             </span>}
         </Tooltip>
         </TableCell>
         <TableCell align="center">
@@ -1904,68 +2167,36 @@ const Productlist = props => {
                   }
             }
           }}
-        title={
-            <React.Fragment> 
-            <b>480</b><br/><Paper align='center' elevation={2}>{wavelengths['480']}</Paper><br/>
-            <b>610</b><br/><Paper align='center' elevation={2}>{wavelengths['610']}</Paper><br/>
-            <b>630</b><br/><Paper align='center' elevation={2}>{wavelengths['630']}</Paper><br/>
-            <b>660</b><br/><Paper align='center' elevation={2}>{wavelengths['660']}</Paper><br/>
-            <b>810</b><br/><Paper align='center' elevation={2}>{wavelengths['810']}</Paper><br/>
-            <b>830</b><br/><Paper align='center' elevation={2}>{wavelengths['830']}</Paper><br/>
-            <b>850</b><br/><Paper align='center' elevation={2}>{wavelengths['850']}</Paper><br/>
-            <b>930</b><br/><Paper align='center' elevation={2}>{wavelengths['930']}</Paper><br/>
-            <b>950</b><br/><Paper align='center' elevation={2}>{wavelengths['950']}</Paper><br/>
+        title={shownWaveLengths ? null : <React.Fragment> 
+            <b>480</b><br/><Paper align='center' elevation={2}>{wavelengths['nm480'] ? wavelengths['nm480'] : 'No' }</Paper><br/>
+            <b>610</b><br/><Paper align='center' elevation={2}>{wavelengths['nm610'] ? wavelengths['nm610'] : 'No'}</Paper><br/>
+            <b>630</b><br/><Paper align='center' elevation={2}>{wavelengths['nm630'] ? wavelengths['nm630'] : 'No'}</Paper><br/>
+            <b>660</b><br/><Paper align='center' elevation={2}>{wavelengths['nm660'] ? wavelengths['nm660'] : 'No'}</Paper><br/>
+            <b>810</b><br/><Paper align='center' elevation={2}>{wavelengths['nm810'] ? wavelengths['nm810'] : 'No'}</Paper><br/>
+            <b>830</b><br/><Paper align='center' elevation={2}>{wavelengths['nm830'] ? wavelengths['nm830'] : 'No'}</Paper><br/>
+            <b>850</b><br/><Paper align='center' elevation={2}>{wavelengths['nm850'] ? wavelengths['nm850'] : 'No'}</Paper><br/>
+            <b>930</b><br/><Paper align='center' elevation={2}>{wavelengths['nm930'] ? wavelengths['nm930'] : 'No'}</Paper><br/>
+            <b>950</b><br/><Paper align='center' elevation={2}>{wavelengths['nm950'] ? wavelengths['nm950'] : 'No'}</Paper><br/>
             </React.Fragment>
         }>
-        <span>{wavelengths.peakWavelengthsTested}</span>
+        <span>{shownWaveLengths ? <React.Fragment> 
+            <b>480</b><br/><Paper align='center' elevation={2}>{wavelengths['nm480'] ? wavelengths['nm480'] : 'No' }</Paper><br/>
+            <b>610</b><br/><Paper align='center' elevation={2}>{wavelengths['nm610'] ? wavelengths['nm610'] : 'No'}</Paper><br/>
+            <b>630</b><br/><Paper align='center' elevation={2}>{wavelengths['nm630'] ? wavelengths['nm630'] : 'No'}</Paper><br/>
+            <b>660</b><br/><Paper align='center' elevation={2}>{wavelengths['nm660'] ? wavelengths['nm660'] : 'No'}</Paper><br/>
+            <b>810</b><br/><Paper align='center' elevation={2}>{wavelengths['nm810'] ? wavelengths['nm810'] : 'No'}</Paper><br/>
+            <b>830</b><br/><Paper align='center' elevation={2}>{wavelengths['nm830'] ? wavelengths['nm830'] : 'No'}</Paper><br/>
+            <b>850</b><br/><Paper align='center' elevation={2}>{wavelengths['nm850'] ? wavelengths['nm850'] : 'No'}</Paper><br/>
+            <b>930</b><br/><Paper align='center' elevation={2}>{wavelengths['nm930'] ? wavelengths['nm930'] : 'No'}</Paper><br/>
+            <b>950</b><br/><Paper align='center' elevation={2}>{wavelengths['nm950'] ? wavelengths['nm950'] : 'No'}</Paper><br/>
+            </React.Fragment> : info.peakWavelengthsTested}</span>
         </Tooltip>
         </TableCell>
-        <TableCell align="center">
-        <Tooltip 
-        enterTouchDelay={0}
-        leaveTouchDelay={2500}
-        TransitionComponent={Zoom}
-        componentsProps={{
-            tooltip: {
-                sx: {
-                    background: '#ffff',
-                    color: '#000',
-                    fontSize: "1em",
-                    width: "200px",
-                    border: '1px solid purple',
-                    borderRadius: "10px 10px",
-                    boxShadow: "5px 5px 5px 5px rgb(0 0 0 / 20%), 0px 5px 6px 0px rgb(0 0 0 / 14%), 0px 4px 10px 0px rgb(0 0 0 / 12%)"
-                  }
-            }
-          }}
-        title={
-            <React.Fragment> 
-            <b>Total Power Output</b><br/><Paper align='center' elevation={2}>{power.totalPowerOutput} mW</Paper><br/>
-            <b>AV combined power 9 spots</b><br/><Paper align='center' elevation={2}>{power.avCombinedPower} W</Paper><br/>
-            <b>Peak Power</b><br/><Paper align='center' elevation={2}>{power.peakPower} mW/cm²</Paper><br/>
-            <b>Wattage Draw</b><br/><Paper align='center' elevation={2}>{power.wattageDraw}</Paper><br/>
-            </React.Fragment>
-        }>
-            <span>{power.totalPowerOutput} (estimated) mW - (9 pts, AV x LED area) </span>
-            </Tooltip>
-            </TableCell>
-        <TableCell align="center">${value.discountedPerLed} Per LED - ${value.discountedPerOutput} Per Watt Output</TableCell>   
-        <TableCell align="center">{flickernsound.flicker} Flicker - {flickernsound.soundLevels} Sound Level</TableCell>   
+        <TableCell align="center">{flickernsound.flicker>0 ? `${flickernsound.flicker}% @ 100hz` : `${flickernsound.flicker}% @ 0hz` } Flicker - {flickernsound.soundLevels} Sound Level</TableCell>   
       </TableRow>
     );
   }
 
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-
-  const rows = [
-    createData("Frozen yoghurt", 159, 6.0, 24),
-    createData("Ice cream sandwich", 237, 9.0, 37),
-    createData("Eclair", 262, 16.0, 24),
-    createData("Cupcake", 305, 3.7, 67),
-    createData("Gingerbread", 356, 16.0, 49)
-  ];
 
   const options = {
     filter: true,
@@ -2003,20 +2234,18 @@ const Productlist = props => {
       },
     responsive: "simple",
     customRowRender: data => {
-        const [productName, info, cost, size, features, warranty, leds, wavelengths, power, value, nnemf, flickernsound] = data;
+        const [info, yearReleased, cost, size, features, warranty, leds, wavelengths, nnemf, flickernsound] = data;
 
         return (
           <MyCustomRowComponent
-          productName={productName}
           info={info}
+          yearReleased={yearReleased}
           cost={cost}
           size={size}
           features={features}
           warranty={warranty}
           leds={leds}
           wavelengths={wavelengths}
-          power={power}
-          value={value}
           nnemf={nnemf}
           flickernsound={flickernsound}
           />
@@ -2024,43 +2253,8 @@ const Productlist = props => {
       },
     rowsPerPage: 10,
     expandableRows: false,
-/*     renderExpandableRow: (rowData, rowMeta) => {
-      console.log(rowData, rowMeta);
-      return (
-        <React.Fragment>
-          <tr>
-            <td colSpan={6}>
-              <TableContainer component={Paper}>
-                <Table style={{ minWidth: "650" }} aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Dessert (100g serving)</TableCell>
-                      <TableCell align="right">Calories</TableCell>
-                      <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                      <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map(row => (
-                      <TableRow key={row.name}>
-                        <TableCell component="th" scope="row">
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                        <TableCell align="right">{row.carbs}</TableCell>
-                        <TableCell align="right">{row.protein}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </td>
-          </tr>
-        </React.Fragment>
-      );
-    }, */
   };
+
 
   return (
     <ThemeProvider
@@ -2079,6 +2273,13 @@ components: {
         }
         }
       },
+      MUIDataTableFilter: {
+        styleOverrides: { root: {
+                height: '290px',
+                overflowY: 'scroll'
+        }
+      }
+      }
 },
 })}
 >
@@ -2087,7 +2288,6 @@ components: {
       data={data}
       columns={columns}
       options={options}
-      //className={classes.table}
     />
     </ThemeProvider>
   );

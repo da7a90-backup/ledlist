@@ -74,10 +74,10 @@ export default function Modal(props) {
         <FormControl>
         <FormLabel>General Info</FormLabel>
         <FormGroup row>
-        <TextField defaultValue={props.productName} disabled={edit}></TextField>
+        <TextField defaultValue={props.info.productName} disabled={edit}></TextField>
         <TextField defaultValue={props.info.company} disabled={edit}></TextField>
         <TextField defaultValue={props.info.class} disabled={edit}></TextField>
-        <TextField defaultValue={props.info.yearReleased} disabled={edit}></TextField>
+        <TextField defaultValue={props.yearReleased} disabled={edit}></TextField>
         <TextField defaultValue={props.info.discountCode} disabled={edit}></TextField>
         <TextField defaultValue={props.info.productLink} disabled={edit}></TextField>
         <TextField defaultValue={props.info.youtubeReview} disabled={edit}></TextField>
@@ -89,6 +89,8 @@ export default function Modal(props) {
         <TextField defaultValue={props.cost.shippingUsa} disabled={edit}></TextField>
         <TextField defaultValue={props.cost.shippingAus} disabled={edit}></TextField>
         <TextField defaultValue={props.cost.shippingUk} disabled={edit}></TextField>
+        <TextField defaultValue={props.cost.discountedPerLed} disabled={edit}></TextField>
+        <TextField defaultValue={props.cost.discountedPerOutput} disabled={edit}></TextField>
         <TextField defaultValue={props.size.height} disabled={edit}></TextField>
         <TextField defaultValue={props.size.width} disabled={edit}></TextField>
         <TextField defaultValue={props.size.weight} disabled={edit}></TextField>
@@ -103,11 +105,15 @@ export default function Modal(props) {
         <TextField defaultValue={props.warranty.warranty} disabled={edit}></TextField>
         <TextField defaultValue={props.warranty.returnPolicy} disabled={edit}></TextField>
         </FormGroup>
-        <FormLabel>LEDS and Wavelengths</FormLabel>
+        <FormLabel>LEDS, Power and Wavelengths</FormLabel>
         <FormGroup row>
         <TextField defaultValue={props.leds.leds} disabled={edit}></TextField>
         <TextField defaultValue={props.leds.ledDualChip} disabled={edit}></TextField>
         <TextField defaultValue={props.leds.ledChipPower} disabled={edit}></TextField>
+        <TextField defaultValue={props.leds.totalPowerOutput} disabled={edit}></TextField>
+        <TextField defaultValue={props.leds.avCombinedPower} disabled={edit}></TextField>
+        <TextField defaultValue={props.leds.peakPower} disabled={edit}></TextField>
+        <TextField defaultValue={props.leds.wattageDraw} disabled={edit}></TextField>
         <TextField defaultValue={props.wavelengths['480']} disabled={edit}></TextField>
         <TextField defaultValue={props.wavelengths['610']} disabled={edit}></TextField>
         <TextField defaultValue={props.wavelengths['630']} disabled={edit}></TextField>
@@ -117,16 +123,7 @@ export default function Modal(props) {
         <TextField defaultValue={props.wavelengths['850']} disabled={edit}></TextField>
         <TextField defaultValue={props.wavelengths['930']} disabled={edit}></TextField>
         <TextField defaultValue={props.wavelengths['950']} disabled={edit}></TextField>
-        <TextField defaultValue={props.wavelengths.peakWavelengthsTested} disabled={edit}></TextField>
-        </FormGroup>
-        <FormLabel>Power and defaultValue</FormLabel>
-        <FormGroup row>
-        <TextField defaultValue={props.power.totalPowerOutput} disabled={edit}></TextField>
-        <TextField defaultValue={props.power.avCombinedPower} disabled={edit}></TextField>
-        <TextField defaultValue={props.power.peakPower} disabled={edit}></TextField>
-        <TextField defaultValue={props.power.wattageDraw} disabled={edit}></TextField>
-        <TextField defaultValue={props.value.discountedPerLed} disabled={edit}></TextField>
-        <TextField defaultValue={props.value.discountedPerOutput} disabled={edit}></TextField>
+        <TextField defaultValue={props.info.peakWavelengthsTested} disabled={edit}></TextField>
         </FormGroup>
         <FormLabel>nnEMF</FormLabel>
         <FormGroup row>
