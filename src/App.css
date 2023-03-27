@@ -21,7 +21,13 @@
   .css-zcmli0-MuiGrid-root {
     flex-direction: column !important;
     margin-left: -82px !important;
+    flex-flow: column;
   }
+  .css-7uql24 {
+    margin-left: -82px !important;
+    flex-flow: column !important; 
+  }
+
 }
 
 @media (prefers-reduced-motion: no-preference) {
