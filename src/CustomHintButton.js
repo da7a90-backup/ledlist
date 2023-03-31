@@ -7,9 +7,8 @@ import { Popover } from "@mui/material";
 import { ArrowBackIos, Check, HelpOutline } from "@mui/icons-material";
 import { FormControl } from "@mui/material";
 import { IconButton } from "@mui/material";
-import { Button } from "@mui/material";
 
-const CustomHintButton = ({shown, setShown, col, sortBy, setSortBy})=>{
+const CustomHintButton = ({col, sortBy, setSortBy})=>{
 
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -37,9 +36,7 @@ const CustomHintButton = ({shown, setShown, col, sortBy, setSortBy})=>{
     sortBy === columProperties.length-1 ? setSortBy(0) : setSortBy(sortBy + 1)
   }
 
-  const onClickSetShown = (e) => {
-    setShown(!shown)
-  }
+
   return <>
   <IconButton onClick={handleClick}><HelpOutline></HelpOutline></IconButton>
   <Popover 
@@ -52,13 +49,13 @@ const CustomHintButton = ({shown, setShown, col, sortBy, setSortBy})=>{
       horizontal: 'left',
     }}
     componentsProps={{
-        tooltip: {
+        popover: {
             sx: {
                 background: '#ffff',
                 color: '#000',
                 fontSize: "1em",
                 //width: "200px",
-                border: '1px solid purple',
+                border: '1px solid #2c6fbb',
                 borderRadius: "10px 10px",
                 boxShadow: "5px 5px 5px 5px rgb(0 0 0 / 20%), 0px 5px 6px 0px rgb(0 0 0 / 14%), 0px 4px 10px 0px rgb(0 0 0 / 12%)"
               }
@@ -67,16 +64,6 @@ const CustomHintButton = ({shown, setShown, col, sortBy, setSortBy})=>{
     > 
     <React.Fragment> 
 
-<FormGroup>
-<FormControl>
-<FormLabel>Show Details</FormLabel>
-<Button
-color='secondary'
-label='show details'
-onClick={onClickSetShown}
->Show Details {shown && (<Check/>)}</Button>
-</FormControl>
-</FormGroup>
 <FormGroup>
 <FormControl>   
 <FormLabel>Sort By</FormLabel>

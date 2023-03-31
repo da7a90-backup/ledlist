@@ -10,8 +10,8 @@ export default function Header() {
   };
 
   const femmecubatorLogo = (
-    <Typography sx={{color:'#9c27b0'}} variant="h6" component="h1">
-     Red light Therapy LED Panel Comaparative List by <b> <a href="https://www.alexfergus.com/">Alex Fergus</a></b>
+    <Typography sx={{color:'#2c6fbb'}} variant="h6" component="h1">
+     Red light Therapy LED Panel Comaparative List by <b> <a style={{textDecoration:'none', color:'#2c6fbb'}} href="https://www.alexfergus.com/">Alex Fergus</a></b>
     </Typography>
   );
 
