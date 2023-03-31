@@ -28,6 +28,16 @@
     flex-flow: column !important; 
   }
 
+  .css-pry94a-MuiGrid-root{
+    flex-flow: column !important;
+    flex-direction: column !important;
+  }
+
+  .css-a26nzk {
+    flex-flow: column !important;
+    flex-direction: column !important;
+  }
+
 }
 
 @media (prefers-reduced-motion: no-preference) {
