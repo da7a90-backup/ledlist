@@ -394,26 +394,7 @@ const Productlist = props => {
       options: {
         display: false,
         viewColumns:false,
-        filter: false,
-        sortCompare: (order) => {
-          return (obj1, obj2) => {
-            console.log(sortByLeds);
-            console.log(obj1.data);
-            console.log(Object.values(obj1.data)[sortByWaveLengths]);
-            let val1 = parseInt(Object.values(obj1.data)[sortByWaveLengths], 10);
-            let val2 = parseInt(Object.values(obj2.data)[sortByWaveLengths], 10);
-            return (val1 - val2) * (order === 'asc' ? 1 : -1);
-          };
-        },
-        hint: (col) => {  
-          return <CustomHintButton
-          col={col}
-          sortBy={sortByWaveLengths}
-          setSortBy={setSortByWaveLengths}
-          >
-
-          </CustomHintButton>;
-       }  
+        filter: false
       }
     },
      {
