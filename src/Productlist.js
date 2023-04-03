@@ -1110,7 +1110,7 @@ components: {
             padding: '10px',
             borderBottom:'0',
             borderCollapse: 'separate',
-            borderRadius: '15px 15px 15px 15px',
+            borderRadius: '5px 5px 15px 0px',
             boxShadow: '0 1px 2px #2c6fbb'
         }}
       },
