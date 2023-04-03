@@ -1108,8 +1108,10 @@ components: {
         styleOverrides:{ root: {
             //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);',
             padding: '10px',
+            borderBottom:'0',
             borderCollapse: 'separate',
-            borderRadius: '10px 10px 15px 0px'
+            borderRadius: '15px 15px 15px 15px',
+            boxShadow: '0 1px 2px #2c6fbb'
         }}
       },
       MuiSvgIcon: {
