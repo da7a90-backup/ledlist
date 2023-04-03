@@ -12,7 +12,6 @@ import Zoom from '@mui/material/Zoom';
 import Link from '@mui/material/Link';
 import FormLabel from "@mui/material/FormLabel";
 import FormGroup from "@mui/material/FormGroup";
-import Modal from "./Modal";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Checkbox, FormControlLabel, Slider } from "@mui/material";
 import CustomHintButton from "./CustomHintButton";
@@ -51,7 +50,7 @@ const Productlist = props => {
     },[])
 
 
-    const CustomSliderFilter = ({filterList, onChange, index, column, name}) => (
+    const CustomSliderFilter = ({filterList, onChange, index, column, name, filterData}) => (
       <div>
         <FormGroup row>
         <FormGroup column="true">
@@ -61,10 +60,11 @@ const Productlist = props => {
             label='range'
             value={(!filterList[index][0] && !filterList[index][1]) ? [0,3000] : [filterList[index][0], filterList[index][1]]}
             color='primary'
-            max={3000}
+            max={Math.max(...filterData[index])}
             valueLabelDisplay="auto"
             disableSwap
             onChange={event => {
+              console.log(Math.max(...filterData[index]));
               filterList[index][0] = event.target.value[0];
               filterList[index][1] = event.target.value[1];
               onChange(filterList[index], index, column);
@@ -158,7 +158,6 @@ const Productlist = props => {
           },
         },
         filterOptions: {
-          names: [],
           logic(leds, filters) {
             if (filters[0] && filters[1]) {
               return leds < filters[0] || leds > filters[1];
@@ -169,12 +168,13 @@ const Productlist = props => {
             }
             return false;
           },
-          display: (filterList, onChange, index, column) => <CustomSliderFilter 
+          display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
           filterList={filterList} 
           onChange={onChange} 
           index={index} 
           column={column} 
-          name={'LEDS'} >
+          name={'LEDS'}
+          filterData={filterData} >
           </CustomSliderFilter>,
         },
         viewColumns:false,
@@ -228,7 +228,6 @@ const Productlist = props => {
           },
         },
         filterOptions: {
-          names: [],
           logic(totalPowerOutput, filters) {
             if (filters[0] && filters[1]) {
               return totalPowerOutput < filters[0] || totalPowerOutput > filters[1];
@@ -239,12 +238,13 @@ const Productlist = props => {
             }
             return false;
           },
-          display: (filterList, onChange, index, column) => <CustomSliderFilter 
+          display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
           filterList={filterList} 
           onChange={onChange} 
           index={index} 
           column={column} 
-          name={'Total Power'} >
+          name={'Total Power'}
+          filterData={filterData}  >
           </CustomSliderFilter>,
         },   
         viewColumns:false,
@@ -435,7 +435,6 @@ const Productlist = props => {
              },
            },
            filterOptions: {
-             names: [],
              logic(discountedPrice, filters) {
                if (filters[0] && filters[1]) {
                  return discountedPrice < filters[0] || discountedPrice > filters[1];
@@ -446,12 +445,13 @@ const Productlist = props => {
                }
                return false;
              },
-             display: (filterList, onChange, index, column) => <CustomSliderFilter 
+             display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
              filterList={filterList} 
              onChange={onChange} 
              index={index} 
              column={column} 
-             name={'Price'} >
+             name={'Price'}
+             filterData={filterData}  >
              </CustomSliderFilter>,
            },
            sort:false,
@@ -497,7 +497,6 @@ const Productlist = props => {
          },
        },
        filterOptions: {
-         names: [],
          logic(height, filters) {
            if (filters[0] && filters[1]) {
              return height < filters[0] || height > filters[1];
@@ -508,12 +507,13 @@ const Productlist = props => {
            }
            return false;
          },
-         display: (filterList, onChange, index, column) => <CustomSliderFilter 
+         display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
          filterList={filterList} 
          onChange={onChange} 
          index={index} 
          column={column} 
-         name={'Height'} >
+         name={'Height'} 
+         filterData={filterData} >
          </CustomSliderFilter>,
        },
        sort:false,
@@ -559,7 +559,6 @@ const Productlist = props => {
          },
        },
        filterOptions: {
-         names: [],
          logic(warranty, filters) {
            if (filters[0] && filters[1]) {
              return warranty < filters[0] || warranty > filters[1];
@@ -570,12 +569,13 @@ const Productlist = props => {
            }
            return false;
          },
-         display: (filterList, onChange, index, column) => <CustomSliderFilter 
+         display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
          filterList={filterList} 
          onChange={onChange} 
          index={index} 
          column={column} 
-         name={'Warranty'} >
+         name={'Warranty'} 
+         filterData={filterData} >
          </CustomSliderFilter>,
        },
        sort:false,
@@ -664,13 +664,13 @@ const Productlist = props => {
 },
 {
   name: "leds.ledDualChip",
-  label: "Led Dual Chip",
+  label: "Dual Chip LED",
   options: {
     sort:false,
     display:false,
     viewColumns:false,
     filter: true,
-    customFilterListOptions: { render: v => `Led Dual Chip` },
+    customFilterListOptions: { render: v => `Dual Chip LED` },
     filterType: "checkbox",
     filterOptions: {
       names: [true], // only 1 checkbox with value === true
@@ -721,22 +721,65 @@ const Productlist = props => {
 },
 {
   name: "wavelengths",
-  label: "Wavelengths",
+  label: "Blue",
   options: {
     sort:false,
     display:false,
     viewColumns:false,
     filter: true,
     customFilterListOptions: { render: v => `${v}` },
-    filterType: "checkbox",
+    filterType: "checkbox+",
     filterOptions: {
-      names:['nm480','nm610','nm630','nm660','nm810', 'nm830', 'nm850', 'nm930', 'nm950'],
+      names:['480'],
+      logic(wavelengths, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        console.log(wavelengths);
+        console.log(filterVal)
+          return !(wavelengths[`nm${filterVal}`] > 0)
+        
+      }
+    },
+  }
+},
+{
+  name: "wavelengths",
+  label: "Red",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    customFilterListOptions: { render: v => `${v}` },
+    filterType: "checkbox+",
+    filterOptions: {
+      names:['610','630','660'],
       logic(wavelengths, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
         console.log(wavelengths);
         for(let key in filterVal){
-          console.log(wavelengths[filterVal[key]] > 0)
-          return !(wavelengths[filterVal[key]] > 0)
+          return !(wavelengths[`nm${filterVal[key]}`] > 0)
+        }
+      }
+    },
+  }
+},
+{
+  name: "wavelengths",
+  label: "NIR",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    customFilterListOptions: { render: v => `${v}` },
+    filterType: "checkbox+",
+    filterOptions: {
+      names:['810', '830', '850', '930', '950'],
+      logic(wavelengths, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        console.log(wavelengths);
+        for(let key in filterVal){
+          return !(wavelengths[`nm${filterVal[key]}`] > 0)
         }
       }
     },
@@ -750,18 +793,7 @@ const Productlist = props => {
     return (
       <TableRow>
         <TableCell>
-            <Modal 
-                info= {info}
-                cost= {cost}
-                size= {size}
-                features= {features}
-                warranty= {warranty}
-                leds= {leds}
-                wavelengths= {wavelengths}
-                nnemf= {nnemf}
-                flickernsound= {flickernsound}
-        
-        ></Modal></TableCell>
+         </TableCell>
         <TableCell align="center">{info.productName}             
         <Tooltip 
                enterTouchDelay={0}
@@ -844,7 +876,7 @@ const Productlist = props => {
           }}
         title={ <React.Fragment> 
             <b>Leds</b><br/><Paper align='center' elevation={2}>{leds.leds}</Paper><br/>
-            <b>Led Dual Chip</b><br/><Paper align='center' elevation={2}>{leds.ledDualChip ? `Yes` : `Single`}</Paper><br/>
+            <b>Dual Chip LED</b><br/><Paper align='center' elevation={2}>{leds.ledDualChip ? `Yes` : `Single`}</Paper><br/>
             <b>Led Chip Power</b><br/><Paper align='center' elevation={2}>{leds.ledChipPower}W</Paper><br/>
             </React.Fragment>
         }>
@@ -978,7 +1010,7 @@ const Productlist = props => {
   const options = {
     filter: true,
     onFilterChange: (changedColumn, filterList) => {
-      console.log(changedColumn, filterList);
+      //console.log(changedColumn, filterList);
     },
     selectableRows: "single",
     viewColumns: true,
