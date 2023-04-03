@@ -1107,7 +1107,9 @@ components: {
     MuiTableCell: {
         styleOverrides:{ root: {
             //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);',
-            padding: '10px'
+            padding: '10px',
+            borderCollapse: 'separate',
+            borderRadius: '10px 10px 15px 0px'
         }}
       },
       MuiSvgIcon: {
