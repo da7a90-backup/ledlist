@@ -18,7 +18,19 @@
 
         return {body, status};
     }
+    const updateRecord = async (product, _id) => {
+        const result = await fetch('https://ledlist.sidbarrack.workers.dev/updateRecord?recordId='+_id, {
+            method: 'PUT',
+            body: JSON.stringify(product)
+        })
+
+        const body = await result.json();
+        const status = result.status
+
+        return {body, status};
+    }
+    
 
 
 
-        export {fetchData, insertProduct}
+        export {fetchData, insertProduct, updateRecord}

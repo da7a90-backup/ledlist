@@ -17,7 +17,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Fab from '@mui/material/Fab';
 import { FormControl, FormGroup, FormLabel, TextField } from '@mui/material';
 import { PlusOneOutlined } from '@mui/icons-material';
-import { insertProduct } from './services/Data';
+import { insertProduct, editProduct } from './services/Data';
 
 
 
@@ -27,7 +27,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function Modal({data,index}) {
 
-  const { info, cost, yearReleased, leds, features, size, warranty, flickernsound, wavelengths, nnemf} = data;
+  const { _id, info, cost, yearReleased, leds, features, size, warranty, flickernsound, wavelengths, nnemf} = data;
 
 
   const [open, setOpen] = React.useState(false);
@@ -138,6 +138,74 @@ export default function Modal({data,index}) {
     }
   }
 
+  const handleEditRecord = async () => {
+    const product = {
+      info:{productName,
+      company,
+      class: class_,
+      companyHq,
+      yearReleased1,
+      discountCode,
+      productLink,
+      youtubeReview,
+      peakWavelengthsTested},
+      cost:{
+      discountedPrice,
+      shippingUsa,
+      shippingIntl,
+      discountedPerLed,
+      discountedPerOutput,
+      },
+      size:
+      { 
+      height,
+      width,
+      weight
+      },
+      features:{
+      pulsing,
+      modularSupport,
+      inbuiltTimer,
+      stands
+      },
+      warranty: 
+      {
+        warranty: warranty1
+      },
+      leds:
+      {
+      leds: leds1,
+      ledDualChip,
+      totalPowerOutput,
+      avCombinedPower,
+      peakPower
+      },
+      wavelengths:
+      {
+      wavelengths1 
+      },
+      nnemf:{
+      emfe,
+      mag
+      },
+      flickernsound:
+      {
+      flicker,
+      soundLevels}
+    }
+
+    console.log(product)
+
+    const insert = await editProduct(_id, product);
+
+    if(insert.status === 200) {
+      alert("product edited successfully!");
+      setOpen(false)
+    } else{
+      alert("there was an error editing the record in the database.")
+    }
+  }
+
   const handleClickOpen = () => {
     const passphrase = prompt("Please enter the password here");
     if(passphrase===null){
@@ -179,7 +247,7 @@ export default function Modal({data,index}) {
               Product Details
             </Typography>
            <IconButton> 
-            <SaveIcon autoFocus color="inherit" onClick={handleClose}>
+            <SaveIcon autoFocus color="inherit" onClick={handleEditRecord}>
             </SaveIcon>
             </IconButton>
             
