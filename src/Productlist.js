@@ -36,6 +36,8 @@ const Productlist = props => {
     const [showFlickernsound, setShowFlickernsound] = useState(false);
     const [showWarranty, setShowWarranty] = useState(false);
     const [showEmf, setShowEmf] = useState(false);
+    const [showWavelengths, setShowWavelengths] = useState(false);
+    const [shownWavelength, setShownWavelength] = useState({blue:[],red:[],nir:[]});
 
     
 
@@ -87,7 +89,6 @@ const Productlist = props => {
             valueLabelDisplay="auto"
             disableSwap
             onChange={event => {
-              console.log(Math.max(...filterData[index]));
               filterList[index][0] = event.target.value[0];
               filterList[index][1] = event.target.value[1];
               onChange(filterList[index], index, column);
@@ -167,8 +168,6 @@ const Productlist = props => {
             return [];
           },
           update: (filterList, filterPos, index) => {
-            console.log('customFilterListOnDelete: ', filterList, filterPos, index);
-
             if (filterPos === 0) {
               filterList[index].splice(filterPos, 1, '');
             } else if (filterPos === 1) {
@@ -203,8 +202,6 @@ const Productlist = props => {
         viewColumns:false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            console.log(order);
-            console.log(obj1, obj2)
             let val1 = parseInt(obj1.data, 10);
             let val2 = parseInt(obj2.data, 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
@@ -237,8 +234,6 @@ const Productlist = props => {
             return [];
           },
           update: (filterList, filterPos, index) => {
-            console.log('customFilterListOnDelete: ', filterList, filterPos, index);
-
             if (filterPos === 0) {
               filterList[index].splice(filterPos, 1, '');
             } else if (filterPos === 1) {
@@ -273,8 +268,6 @@ const Productlist = props => {
         viewColumns:false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            console.log(order);
-            console.log(obj1, obj2)
             let val1 = parseInt(obj1.data, 10);
             let val2 = parseInt(obj2.data, 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
@@ -290,8 +283,6 @@ const Productlist = props => {
         viewColumns:false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            console.log(order);
-            console.log(obj1, obj2)
             let val1 = parseInt(obj1.data, 10);
             let val2 = parseInt(obj2.data, 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
@@ -307,8 +298,6 @@ const Productlist = props => {
         viewColumns:false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            console.log(order);
-            console.log(obj1, obj2)
             let val1 = parseInt(obj1.data, 10);
             let val2 = parseInt(obj2.data, 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
@@ -333,8 +322,6 @@ const Productlist = props => {
         filter: false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            console.log(order);
-            console.log(obj1, obj2)
             let val1 = parseFloat((obj1.data)[sortBySize], 10);
             let val2 = parseFloat((obj2.data)[sortBySize], 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
@@ -359,8 +346,6 @@ const Productlist = props => {
         filter: false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            console.log(order);
-            console.log(obj1, obj2)
             let val1 = parseInt(obj1.data.warranty, 10);
             let val2 = parseInt(obj2.data.warranty, 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
@@ -376,8 +361,6 @@ const Productlist = props => {
         filter: false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            console.log(order);
-            console.log(obj1, obj2)
             let val1 = parseInt(obj1.data.soundLevels, 10);
             let val2 = parseInt(obj2.data.soundLevels, 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
@@ -389,7 +372,7 @@ const Productlist = props => {
       label: "Wavelengths",
       name: "wavelengths",
       options: {
-        display: false,
+        display: showWavelengths,
         viewColumns:false,
         filter: false
       }
@@ -417,9 +400,7 @@ const Productlist = props => {
                }
                return [];
              },
-             update: (filterList, filterPos, index) => {
-               console.log('customFilterListOnDelete: ', filterList, filterPos, index);
- 
+             update: (filterList, filterPos, index) => { 
                if (filterPos === 0) {
                  filterList[index].splice(filterPos, 1, '');
                } else if (filterPos === 1) {
@@ -480,8 +461,6 @@ const Productlist = props => {
            return [];
          },
          update: (filterList, filterPos, index) => {
-           console.log('customFilterListOnDelete: ', filterList, filterPos, index);
-
            if (filterPos === 0) {
              filterList[index].splice(filterPos, 1, '');
            } else if (filterPos === 1) {
@@ -542,8 +521,6 @@ const Productlist = props => {
            return [];
          },
          update: (filterList, filterPos, index) => {
-           console.log('customFilterListOnDelete: ', filterList, filterPos, index);
-
            if (filterPos === 0) {
              filterList[index].splice(filterPos, 1, '');
            } else if (filterPos === 1) {
@@ -678,14 +655,10 @@ const Productlist = props => {
       logic(nnemf, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
         let unsafe = false;
-        const keys = Object.keys(nnemf)
-        keys.forEach((key)=>{
-          console.log(key)
-          if(nnemf[key]!=='green')
-          unsafe = true
-        })
-        console.log(unsafe);
-        return unsafe;
+        if(nnemf.emfe === 'Green' && nnemf.mag === 'Green')
+        unsafe = true
+
+        return !unsafe;
       }
     },
   }
@@ -799,8 +772,6 @@ const Productlist = props => {
       names:['480'],
       logic(wavelengths, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
-        console.log(wavelengths);
-        console.log(filterVal)
           return !(wavelengths[`nm${filterVal}`] > 0)
         
       }
@@ -821,7 +792,6 @@ const Productlist = props => {
       names:['610','630','660'],
       logic(wavelengths, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
-        console.log(wavelengths);
         for(let key in filterVal){
           return !(wavelengths[`nm${filterVal[key]}`] > 0)
         }
@@ -843,7 +813,6 @@ const Productlist = props => {
       names:['810', '830', '850', '930', '950'],
       logic(wavelengths, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
-        console.log(wavelengths);
         for(let key in filterVal){
           return !(wavelengths[`nm${filterVal[key]}`] > 0)
         }
@@ -855,14 +824,13 @@ const Productlist = props => {
 
 
   const MyCustomRowComponent = (props) => {
-    const { rowIndex, info, cost, yearReleased, leds, ledcount, totalPowerOutput, avCombinedPower, discountedPerOutput, nnemf, size, warranty, flickernsound, wavelengths} = props;
-    console.log(nnemf)
+    const { dataIndex, rowIndex, info, cost, yearReleased, leds, ledcount, totalPowerOutput, avCombinedPower, discountedPerOutput, nnemf, size, warranty, flickernsound, wavelengths} = props;
     const bgColor = rowIndex % 2 === 0 ? '#fff' : 'aliceblue'
     return (
       <TableRow style={{backgroundColor : bgColor, height: '130px'}}>
         <TableCell align="center">
           <Modal
-          data = {data[rowIndex]}
+          data = {data[dataIndex]}
           index={rowIndex+1}
           > 
           </Modal>
@@ -1017,6 +985,36 @@ const Productlist = props => {
              </TableCell>   
 
           )}
+          {showWavelengths && (
+            <TableCell align="center">
+              <div>
+                {shownWavelength.blue.length > 0 && shownWavelength.blue.map(
+                (wavelength)=>
+                <div>
+                  <span style={{color: '#2c6fbb'}}>
+                    {wavelength} : {wavelengths[`nm${wavelength}`]}
+                    </span>
+                    <br/>
+                    </div>)}
+                {shownWavelength.red.length > 0 && shownWavelength.red.map(
+                (wavelength)=>
+                <div>
+                  <span style={{color: 'red'}}>
+                    {wavelength} : {wavelengths[`nm${wavelength}`]}
+                    </span>
+                    <br/>
+                    </div>)}
+                {shownWavelength.nir.length > 0 && shownWavelength.nir.map(
+                (wavelength)=>
+                <div>
+                  <span style={{color: '#F47174'}}>
+                    {wavelength} : {wavelengths[`nm${wavelength}`]}
+                    </span>
+                    <br/>
+                    </div>)}
+                    </div>
+            </TableCell>
+          )}
       </TableRow>
     );
   }
@@ -1025,13 +1023,28 @@ const Productlist = props => {
   const options = {
     filter: true,
     onFilterChange: (changedColumn, filterList) => {
-      //console.log(changedColumn, filterList);
+      if(changedColumn === 'wavelengths'){
+        const blue = filterList[27]
+        const red = filterList[28]
+        const nir = filterList[29]
+
+        if(blue.length === 0 && red.length === 0 && nir.length === 0){
+          setShowWavelengths(false)
+        }
+        else{
+          setShowWavelengths(true)
+
+          const waveobject = {blue,red,nir}
+
+          setShownWavelength(waveobject);
+  
+          console.log(waveobject)
+        }
+      }
     },
     selectableRows: "single",
     viewColumns: true,
     onViewColumnsChange:(columnChanged, action) => {
-      console.log(columnChanged);
-      console.log(action);
       if(action === 'add'){
         switch(columnChanged){
           case 'size': setShowSize(true);
@@ -1088,10 +1101,10 @@ const Productlist = props => {
         const [info, cost, leds, ledcount, totalPowerOutput, avCombinedPower, discountedPerOutput, features, size, warranty, flickernsound, wavelengths] = data;
         const yearReleased = data[18]
         const nnemf = data[7]
-        console.log(data)
 
         return (
           <MyCustomRowComponent
+          dataIndex={dataIndex}
           rowIndex={rowIndex}
           info={info}
           yearReleased={yearReleased}
