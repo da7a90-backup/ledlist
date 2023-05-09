@@ -1096,7 +1096,7 @@ const Productlist = props => {
         });
         return isFound;
       },
-    responsive: "scroll",
+    responsive: "responsive",
     customRowRender: (data, dataIndex, rowIndex) => {
         const [info, cost, leds, ledcount, totalPowerOutput, avCombinedPower, discountedPerOutput, features, size, warranty, flickernsound, wavelengths] = data;
         const yearReleased = data[18]
