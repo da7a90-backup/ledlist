@@ -1269,6 +1269,11 @@ components: {
         }
       },
     MuiTableCell: {
+        styleOverrides:{ root: {
+          padding: '0px'
+        }}
+    },
+    MuiTableCell: {
         styleOverrides:{ head: {
           outline: '#2c6fbb auto',
           borderCollapse: 'separate',
