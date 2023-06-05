@@ -28,10 +28,18 @@ const Productlist = props => {
        });
     const classes = useStyles(); */
     const [data, setData] = useState([]);
-    const [sortByCost, setSortByCost] = useState('discountedPrice');
+    const [sortByShipping, setSortByShipping] = useState('shippingUsa');
+    const [sortByValue, setSortByValue] = useState('discountedPerLed');
     const [sortBySize, setSortBySize] = useState('height');
     const [sortByWaveLengths, setSortByWaveLengths] = useState(0);
 
+
+    const [showPrice, setShowPrice] = useState(true);
+    const [showLeds, setShowLeds] = useState(true);
+    const [showShipping, setShowShipping] = useState(true);
+    const [showAvPower, setShowAvPower] = useState(true);
+    const [showTotalPower, setShowTotalPower] = useState(true);
+    const [showValue, setShowValue] = useState(true);
     const [showSize, setShowSize] = useState(false);
     const [showFlickernsound, setShowFlickernsound] = useState(false);
     const [showWarranty, setShowWarranty] = useState(false);
@@ -49,14 +57,14 @@ const Productlist = props => {
 
     const mapColumnSwitch = (col) => {
       switch(col){
-        case 'discountedPrice':
-          return 'Price 💵'
         case 'shippingUsa':
           return 'Shipping U.S 🇺🇸'
         case 'shippingIntl':
-          return 'International Shipping 🌎'
+          return 'Intl Shipping 🌎'
         case 'discountedPerLed':
           return '💲 per Led'
+        case 'discountedPerOutput':
+          return '💲 per Watt'
         case 'height':
           return 'Height 📏'
         case 'width':
@@ -68,11 +76,11 @@ const Productlist = props => {
 
     const showSizeInBody = (size) => {
       if(sortBySize === 'height')
-       {return `${size[sortBySize]}"`}
+       {return `Height ${size[sortBySize]}"`}
         else if (sortBySize === 'width')
-        {return `${size[sortBySize]}"`} 
+        {return `Width ${size[sortBySize]}"`} 
           else if(sortBySize === 'weight') 
-          {return `${size[sortBySize]}lb`} 
+          {return `Weight ${size[sortBySize]}lb`} 
     }
 
     const CustomSliderFilter = ({filterList, onChange, index, column, name, filterData}) => (
@@ -111,23 +119,36 @@ const Productlist = props => {
         },
     },
     {
-      label: mapColumnSwitch(sortByCost),
+      label: "Price 🏷️",
       name: "cost",
       options: {
         filter: false,
-        viewColumns:false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            let val1 = parseInt(obj1.data[sortByCost], 10);
-            let val2 = parseInt(obj2.data[sortByCost], 10);
+            let val1 = parseInt(obj1.data, 10);
+            let val2 = parseInt(obj2.data, 10);
+            return (val1 - val2) * (order === 'asc' ? 1 : -1);
+          };
+        }
+          }
+    },
+    {
+      label: 'Shipping 📦',
+      name: "shipping",
+      options: {
+        filter: false,
+        sortCompare: (order) => {
+          return (obj1, obj2) => {
+            let val1 = parseInt(obj1.data[sortByShipping], 10);
+            let val2 = parseInt(obj2.data[sortByShipping], 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
         },
          hint: (col) => {  
                return <CustomHintButton
                col={col}
-               sortBy={sortByCost}
-               setSortBy={setSortByCost}
+               sortBy={sortByShipping}
+               setSortBy={setSortByShipping}
                >
 
                </CustomHintButton>;
@@ -199,7 +220,6 @@ const Productlist = props => {
           filterData={filterData} >
           </CustomSliderFilter>,
         },
-        viewColumns:false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
             let val1 = parseInt(obj1.data, 10);
@@ -264,8 +284,7 @@ const Productlist = props => {
           name={'Total Power'}
           filterData={filterData}  >
           </CustomSliderFilter>,
-        },   
-        viewColumns:false,
+        },
         sortCompare: (order) => {
           return (obj1, obj2) => {
             let val1 = parseInt(obj1.data, 10);
@@ -280,7 +299,6 @@ const Productlist = props => {
       name: "leds.avCombinedPower",
       options:{
         filter: false,
-        viewColumns:false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
             let val1 = parseInt(obj1.data, 10);
@@ -291,18 +309,26 @@ const Productlist = props => {
       }
     },
     {
-      label: "💲 Per Watt",
-      name: "cost.discountedPerOutput",
+      label: "Value 💲",
+      name: "value",
       options:{
         filter: false,
-        viewColumns:false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            let val1 = parseInt(obj1.data, 10);
-            let val2 = parseInt(obj2.data, 10);
+            let val1 = parseInt(obj1.data[sortByValue], 10);
+            let val2 = parseInt(obj2.data[sortByValue], 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
-        }
+        },
+        hint: (col) => {  
+          return <CustomHintButton
+          col={col}
+          sortBy={sortByValue}
+          setSortBy={setSortByValue}
+          >
+
+          </CustomHintButton>;
+       } 
       }
     },
     {
@@ -315,7 +341,7 @@ const Productlist = props => {
       }
     },
     {
-      label: mapColumnSwitch(sortBySize),
+      label: 'Dimensions',
       name: "size",
       options: {
         display: showSize,
@@ -373,12 +399,11 @@ const Productlist = props => {
       name: "wavelengths",
       options: {
         display: showWavelengths,
-        viewColumns:false,
         filter: false
       }
     },
      {
-        name:"cost.discountedPrice",
+        name:"cost",
         options:{
            filter:true,
            filterType: 'custom',
@@ -390,13 +415,13 @@ const Productlist = props => {
            customFilterListOptions: {
              render: v => {
                if (v[0] && v[1]) {
-                 return [`Min discountedPrice: $${v[0]}`, `Max discountedPrice: $${v[1]}`];
+                 return [`Min cost: $${v[0]}`, `Max cost: $${v[1]}`];
                } else if (v[0] && v[1] ) {
-                 return `Min discountedPrice: $${v[0]}, Max discountedPrice: $${v[1]}`;
+                 return `Min cost: $${v[0]}, Max cost: $${v[1]}`;
                } else if (v[0]) {
-                 return `Min discountedPrice: $${v[0]}`;
+                 return `Min cost: $${v[0]}`;
                } else if (v[1]) {
-                 return `Max discountedPrice: $${v[1]}`;
+                 return `Max cost: $${v[1]}`;
                }
                return [];
              },
@@ -413,13 +438,13 @@ const Productlist = props => {
              },
            },
            filterOptions: {
-             logic(discountedPrice, filters) {
+             logic(cost, filters) {
                if (filters[0] && filters[1]) {
-                 return discountedPrice < filters[0] || discountedPrice > filters[1];
+                 return cost < filters[0] || cost > filters[1];
                } else if (filters[0]) {
-                 return discountedPrice < filters[0];
+                 return cost < filters[0];
                } else if (filters[1]) {
-                 return discountedPrice > filters[1];
+                 return cost > filters[1];
                }
                return false;
              },
@@ -665,13 +690,13 @@ const Productlist = props => {
 },
 {
   name: "leds.ledDualChip",
-  label: "Dual Chip LED",
+  label: "Multi Chip LED",
   options: {
     sort:false,
     display:false,
     viewColumns:false,
     filter: true,
-    customFilterListOptions: { render: v => `Dual Chip LED` },
+    customFilterListOptions: { render: v => `Multi Chip LED` },
     filterType: "checkbox",
     filterOptions: {
       names: [true], // only 1 checkbox with value === true
@@ -792,9 +817,18 @@ const Productlist = props => {
       names:['610','630','660'],
       logic(wavelengths, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
+        let filter = false;
         for(let key in filterVal){
-          return !(wavelengths[`nm${filterVal[key]}`] > 0)
+          let init = !(wavelengths[`nm${filterVal[key]}`] > 0)
+
+            for(let innerKey in filterVal){
+              if(init && !(wavelengths[`nm${filterVal[innerKey]}`] > 0)){
+                filter = true
+              }
+            }
         }
+        return filter;
+        
       }
     },
   }
@@ -813,9 +847,17 @@ const Productlist = props => {
       names:['810', '830', '850', '930', '950'],
       logic(wavelengths, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
+        let filter = false;
         for(let key in filterVal){
-          return !(wavelengths[`nm${filterVal[key]}`] > 0)
+          let init = !(wavelengths[`nm${filterVal[key]}`] > 0)
+
+            for(let innerKey in filterVal){
+              if(init && !(wavelengths[`nm${filterVal[innerKey]}`] > 0)){
+                filter = true
+              }
+            }
         }
+        return filter;
       }
     },
   }
@@ -824,10 +866,10 @@ const Productlist = props => {
 
 
   const MyCustomRowComponent = (props) => {
-    const { dataIndex, rowIndex, info, cost, yearReleased, leds, ledcount, totalPowerOutput, avCombinedPower, discountedPerOutput, nnemf, size, warranty, flickernsound, wavelengths} = props;
+    const { dataIndex, rowIndex, info, cost, shipping, yearReleased, leds, ledcount, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths} = props;
     const bgColor = rowIndex % 2 === 0 ? '#fff' : 'aliceblue'
     return (
-      <TableRow style={{backgroundColor : bgColor, height: '130px'}}>
+      <TableRow style={{backgroundColor : bgColor, padding: 0}}>
         <TableCell align="center">
           <Modal
           data = {data[dataIndex]}
@@ -835,7 +877,7 @@ const Productlist = props => {
           > 
           </Modal>
          </TableCell>
-        <TableCell align="center">{info.productName}             
+        <TableCell style={{width: '15vw'}} align="center">{info.productName}             
         <Tooltip 
                enterTouchDelay={0}
                leaveTouchDelay={2500}
@@ -867,7 +909,12 @@ const Productlist = props => {
             </Tooltip>
             
             </TableCell>
-
+          {showPrice && (
+            <TableCell align="center"> 
+            <b>{`$${cost}` }</b>
+            </TableCell>
+          )}
+        {showShipping && (
         <TableCell align="center"> 
         <Tooltip 
         enterTouchDelay={0}
@@ -887,16 +934,16 @@ const Productlist = props => {
             }
           }}
         title={<React.Fragment>
-            <b>Discounted Price</b><br/><Paper align='center' elevation={2}>${cost.discountedPrice}</Paper><br/>
-            <b>Shipping USA 🇺🇸</b><br/><Paper align='center' elevation={2}>${cost.shippingUsa}</Paper><br/>
-            <b>Shipping Intl 🌎</b><br/><Paper align='center' elevation={2}>${cost.shippingIntl === 0 ? `${cost.shippingIntl}` : `${cost.shippingIntl}+` }</Paper><br/>
-            <b>$ per LED</b><br/><Paper align='center' elevation={2}>${cost.discountedPerLed}</Paper><br/>
+            <b>Shipping USA 🇺🇸</b><br/><Paper align='center' elevation={2}>${shipping.shippingUsa}</Paper><br/>
+            <b>Shipping Intl 🌎</b><br/><Paper align='center' elevation={2}>${shipping.shippingIntl === 0 ? `${shipping.shippingIntl}` : `${shipping.shippingIntl}+` }</Paper><br/>
             </React.Fragment>
                         }>
-        <b>{sortByCost === 'shippingIntl' ? `$${cost[sortByCost]}➕` : `$${cost[sortByCost]}` }</b>
+        <b>{sortByShipping === 'shippingIntl' ? `$${shipping[sortByShipping]}➕ 🌎` : `$${shipping[sortByShipping]} 🇺🇸` }</b>
         </Tooltip>
         </TableCell>
-                
+        )}
+
+        {showLeds && (
         <TableCell align="center">
         <Tooltip
         enterTouchDelay={0} 
@@ -917,28 +964,45 @@ const Productlist = props => {
           }}
         title={ <React.Fragment> 
             <b>Leds</b><br/><Paper align='center' elevation={2}>{leds.leds}</Paper><br/>
-            <b>Dual Chip LED</b><br/><Paper align='center' elevation={2}>{leds.ledDualChip ? `Yes` : `Single`}</Paper><br/>
+            <b>Multi Chip LED</b><br/><Paper align='center' elevation={2}>{leds.ledDualChip ? `Yes` : `Single`}</Paper><br/>
             </React.Fragment>
         }>
          <b>{leds.leds}</b>
         </Tooltip>
         </TableCell>
+        )}
 
-        <TableCell align="center">
+          {showTotalPower && (
+          <TableCell align="center">
           {leds.totalPowerOutput}
-          </TableCell>   
+          </TableCell>  
+          )}
 
+          {showAvPower && (
           <TableCell align="center">
           {leds.avCombinedPower}
-          </TableCell>   
+          </TableCell> 
+          )}
 
+          {showValue && (
           <TableCell align="center">
-          <b>${cost.discountedPerOutput}</b>
+          <b>${sortByValue === 'discountedPerLed' ? `${value[sortByValue]} / LED` : `${value[sortByValue]} / Watt` }</b>
           </TableCell>   
+          )}
+
           {showEmf && (
             <TableCell align="center">
-              <span>{nnemf.emfe} </span> <br/>
-              <span>{nnemf.mag} </span>
+              <span>⚡ {(nnemf.emfe.toLowerCase().includes('green') && (<span>🟢</span>))}
+              {(nnemf.emfe.toLowerCase().includes('orange') && (<span>🟠</span>))}
+              {(nnemf.emfe.toLowerCase().includes('yellow') && (<span>🟡</span>))}
+              {(nnemf.emfe.toLowerCase().includes('red') && (<span>🔴</span>))}
+              {((nnemf.emfe.toLowerCase().includes('tbc') || nnemf.emfe === '') && (<span>?</span>))}
+               </span> <br/>
+              <span>🧲 {(nnemf.mag.toLowerCase().includes('green') && (<span>🟢</span>))}
+              {(nnemf.mag.toLowerCase().includes('orange') && (<span>🟠</span>))}
+              {(nnemf.mag.toLowerCase().includes('yellow') && (<span>🟡</span>))}
+              {(nnemf.mag.toLowerCase().includes('red') && (<span>🔴</span>))}
+              {((nnemf.mag.toLowerCase().includes('tbc') || nnemf.mag === '') && (<span>?</span>))} </span>
             </TableCell>
           )
 
@@ -986,33 +1050,51 @@ const Productlist = props => {
 
           )}
           {showWavelengths && (
-            <TableCell align="center">
+            <TableCell align="left">
+                                  <Tooltip 
+                    enterTouchDelay={0}
+                    leaveTouchDelay={2500}
+                    TransitionComponent={Zoom}
+                    componentsProps={{
+                        tooltip: {
+                            sx: {
+                                background: '#ffff',
+                                color: '#000',
+                                fontSize: "1em",
+                                width: "200px",
+                                border: '1px solid purple',
+                                borderRadius: "10px 10px",
+                                boxShadow: "5px 5px 5px 5px rgb(0 0 0 / 20%), 0px 5px 6px 0px rgb(0 0 0 / 14%), 0px 4px 10px 0px rgb(0 0 0 / 12%)"
+                              }
+                        }
+                      }}
+                    title={
+                        <React.Fragment> 
+                        {wavelengths.nm480 > 0 && (<div><b>Blue 🔵</b><br/>
+                        <b>480</b><br/><Paper align='center' elevation={2}>{wavelengths.nm480} LEDS</Paper><br/></div>
+                        )}
+                        {(wavelengths.nm610 > 0 || wavelengths.nm630 > 0 || wavelengths.nm660 > 0) && (<div> <b>Red 🔴</b><br/>
+                        {wavelengths.nm610 > 0 && (<div><b>610</b><br/><Paper align='center' elevation={2}>{wavelengths.nm610} LEDS</Paper></div>)}
+                        {wavelengths.nm630 > 0 && (<div><b>630</b><br/><Paper align='center' elevation={2}>{wavelengths.nm630} LEDS</Paper></div>)}
+                        {wavelengths.nm660 > 0 && (<div><b>660</b><br/><Paper align='center' elevation={2}>{wavelengths.nm660} LEDS</Paper><br/></div>)}
+                        </div>
+                        )
+                        }
+                        {(wavelengths.nm810 > 0 || wavelengths.nm830 > 0 || wavelengths.nm850 > 0 || wavelengths.nm830 > 0 ||
+                          wavelengths.nm850 > 0 || wavelengths.nm930 > 0 || wavelengths.nm950 > 0 ) && (<div><b>Near Infrared ⬇🔴</b><br/>
+                        {wavelengths.nm810 > 0 && (<div><b>810</b><br/><Paper align='center' elevation={2}>{wavelengths.nm810} LEDS</Paper></div>)}
+                        {wavelengths.nm830 > 0 && (<div><b>830</b><br/><Paper align='center' elevation={2}>{wavelengths.nm830} LEDS</Paper></div>)}
+                        {wavelengths.nm850 > 0 && (<div><b>850</b><br/><Paper align='center' elevation={2}>{wavelengths.nm850} LEDS</Paper></div>)}
+                        {wavelengths.nm930 > 0 && (<div><b>930</b><br/><Paper align='center' elevation={2}>{wavelengths.nm930} LEDS</Paper></div>)}
+                        {wavelengths.nm950 > 0 && (<div><b>950</b><br/><Paper align='center' elevation={2}>{wavelengths.nm950} LEDS</Paper></div>)}                        
+                        </div>)}
+
+                        </React.Fragment> 
+                    }>
               <div>
-                {shownWavelength.blue.length > 0 && shownWavelength.blue.map(
-                (wavelength)=>
-                <div>
-                  <span style={{color: '#2c6fbb'}}>
-                    {wavelength} : {wavelengths[`nm${wavelength}`]}
-                    </span>
-                    <br/>
-                    </div>)}
-                {shownWavelength.red.length > 0 && shownWavelength.red.map(
-                (wavelength)=>
-                <div>
-                  <span style={{color: 'red'}}>
-                    {wavelength} : {wavelengths[`nm${wavelength}`]}
-                    </span>
-                    <br/>
-                    </div>)}
-                {shownWavelength.nir.length > 0 && shownWavelength.nir.map(
-                (wavelength)=>
-                <div>
-                  <span style={{color: '#F47174'}}>
-                    {wavelength} : {wavelengths[`nm${wavelength}`]}
-                    </span>
-                    <br/>
-                    </div>)}
-                    </div>
+              🔵 {wavelengths['nm480']}  🔴 {wavelengths['nm610']+wavelengths['nm630']+wavelengths['nm660']} ⬇🔴 {wavelengths['nm810']+wavelengths['nm830']+wavelengths['nm850']+wavelengths['nm930']+wavelengths['nm950']}  
+              </div>
+                    </Tooltip>
             </TableCell>
           )}
       </TableRow>
@@ -1024,9 +1106,9 @@ const Productlist = props => {
     filter: true,
     onFilterChange: (changedColumn, filterList) => {
       if(changedColumn === 'wavelengths'){
-        const blue = filterList[27]
-        const red = filterList[28]
-        const nir = filterList[29]
+        const blue = filterList[28]
+        const red = filterList[29]
+        const nir = filterList[30]
 
         if(blue.length === 0 && red.length === 0 && nir.length === 0){
           setShowWavelengths(false)
@@ -1054,6 +1136,21 @@ const Productlist = props => {
           case 'flickernsound': setShowFlickernsound(true);
           break;
           case 'nnemf': setShowEmf(true);
+          break;
+          case 'cost': setShowPrice(true);
+          break;
+          case 'shipping': setShowShipping(true);
+          break;
+          case 'leds.leds': setShowLeds(true);
+          break;
+          case 'leds.totalPowerOutput': setShowTotalPower(true);
+          break;
+          case 'leds.avCombinedPower': setShowAvPower(true);
+          break;
+          case 'value': setShowValue(true);
+          break;
+          case 'wavelengths': setShowWavelengths(true);
+          break;
         }
       }
 
@@ -1066,6 +1163,21 @@ const Productlist = props => {
           case 'flickernsound': setShowFlickernsound(false);
           break;
           case 'nnemf': setShowEmf(false);
+          break;
+          case 'cost': setShowPrice(false);
+          break;
+          case 'shipping': setShowShipping(false);
+          break;
+          case 'leds.leds': setShowLeds(false);
+          break;
+          case 'leds.totalPowerOutput': setShowTotalPower(false);
+          break;
+          case 'leds.avCombinedPower': setShowAvPower(false);
+          break;
+          case 'value': setShowValue(false);
+          break;
+          case 'wavelengths': setShowWavelengths(false);
+          break;
         }
       }
       
@@ -1098,22 +1210,22 @@ const Productlist = props => {
       },
     responsive: "responsive",
     customRowRender: (data, dataIndex, rowIndex) => {
-        const [info, cost, leds, ledcount, totalPowerOutput, avCombinedPower, discountedPerOutput, features, size, warranty, flickernsound, wavelengths] = data;
+        const [info, cost, shipping, leds, ledcount, totalPowerOutput, avCombinedPower, value, features, size, warranty, flickernsound, wavelengths] = data;
         const yearReleased = data[18]
-        const nnemf = data[7]
-
+        const nnemf = data[8]
         return (
           <MyCustomRowComponent
           dataIndex={dataIndex}
           rowIndex={rowIndex}
           info={info}
-          yearReleased={yearReleased}
           cost={cost}
+          shipping={shipping}
+          yearReleased={yearReleased}
           leds={leds}
           ledcount={ledcount}
           totalPowerOutput={totalPowerOutput}
           avCombinedPower={avCombinedPower}
-          discountedPerOutput={discountedPerOutput}
+          value={value}
           features={features}
           size={size}
           warranty={warranty}
@@ -1124,6 +1236,7 @@ const Productlist = props => {
         );
       },
     rowsPerPage: 50,
+    searchAlwaysOpen: true,
     expandableRows: false,
     resizableColumns: false,
     fixedHeader: true
@@ -1138,14 +1251,7 @@ components: {
       styleOverrides:{ root:{
         borderCollapse:'separate',
         borderSpacing: '5px'
-      }}
-    },
-    MuiTableBody:{
-      styleOverrides:{
-        root:{
-          paddingTop:'90px'
-        }
-      }
+        }}
     },
     MuiTableCell: {
         styleOverrides:{ body: {
@@ -1167,12 +1273,22 @@ components: {
           outline: '#2c6fbb auto',
           borderCollapse: 'separate',
           borderRadius: '15px 15px 15px 15px',
-          borderBottom: '0'
+          borderBottom: '0',
+          textAlign: 'center',
+          padding: '10px',
+          fontVariantEmoji:'emoji',
+          fontWeight:'bold',
+          alignContent: 'center'
+        }}
+    },
+    MUIDataTableHeadCell:{
+        styleOverrides:{ data:{
+          fontWeight:'bold'
         }}
     },
     MUIDataTableViewCol: {
       styleOverrides:{ root:{
-          right: '20vw'
+          right: '5vw'
       }}
     },
       MuiSvgIcon: {
@@ -1188,12 +1304,31 @@ components: {
                 overflowY: 'scroll'
         }
       }
+      },
+      MuiChip: {
+        styleOverrides: { root: {
+          display : 'none'
+        }}
+      },
+      MuiFormControlLabel: {
+        styleOverrides: {root: {
+                marginLeft: '0'
+        }}
+      },
+      MUIDataTableToolbar:{
+        styleOverrides: {left: {
+                marginTop: '100px'
+        }}
+      },
+      MuiTypography: {
+        styleOverrides: {root: {
+                fontWeight: '900'
+        }}
       }
 },
 })}
 >
     <MUIDataTable
-      title={"Products"}
       data={data}
       columns={columns}
       options={options}

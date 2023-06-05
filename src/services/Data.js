@@ -4,7 +4,17 @@
 
         const body = await result.json();
 
-        return body.data;
+        const alteredData = body.data.map((object)=>{
+            return {...object, cost: object.cost.discountedPrice, 
+                    shipping: {
+                        shippingUsa: object.cost.shippingUsa, shippingIntl: object.cost.shippingIntl
+                    },
+                    value: {discountedPerLed: object.cost.discountedPerLed, discountedPerOutput: object.cost.discountedPerOutput}
+                }
+        })
+        console.log(alteredData)
+
+        return alteredData;
 
         }
     const insertProduct = async (product) => {
