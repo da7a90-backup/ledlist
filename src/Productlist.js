@@ -942,6 +942,7 @@ const Productlist = props => {
   const MyCustomRowComponent = (props) => {
     const { dataIndex, rowIndex, info, cost, shipping, yearReleased, leds, ledcount, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths} = props;
     const bgColor = rowIndex % 2 === 0 ? '#fff' : 'aliceblue'
+    console.log(data[dataIndex]);
     return (
       <TableRow style={{backgroundColor : bgColor, padding: 0}}>
         <TableCell align="center">

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import ListItemText from '@mui/material/ListItemText';
@@ -21,19 +21,15 @@ import { insertProduct, updateRecord, deleteRecord } from './services/Data';
 
 
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-export default function Modal({data,index}) {
+ const Modal = ({data,index}) => {
 
   const { _id, info, cost, shipping, value, yearReleased, leds, features, size, warranty, flickernsound, wavelengths, nnemf} = data;
 
-
   const [open, setOpen] = React.useState(false);
   const [edit, setEdit] = React.useState(true);
-  const [add, setAdd] = React.useState('');
+  console.log(info.productName);
   const [productName, setProductName] = React.useState(info.productName) 
+  console.log(productName);
   const [company, setCompany] = React.useState(info.company) 
   const [class_, setProductClass] = React.useState(info.class)
   const [companyHq, setCompanyHq] = React.useState(info.companyHq)
@@ -66,7 +62,7 @@ export default function Modal({data,index}) {
   const [mag, setMag] = React.useState(nnemf.mag)
   const [flicker, setFlicker] = React.useState(flickernsound.flicker)
   const [soundLevels, setSoundLevels] = React.useState(flickernsound.soundLevels)
-
+  
   const handleEdit = () => {
     setEdit(!edit);
   };
@@ -153,7 +149,8 @@ export default function Modal({data,index}) {
   }
 
   const handleEditRecord = async () => {
-    const product = {
+
+    console.log({
       info:{productName,
       company,
       class: class_,
@@ -207,12 +204,10 @@ export default function Modal({data,index}) {
       {
       flicker,
       soundLevels}
-    }
-
-    console.log(product)
+    }, _id)
 
 
-    const insert = await updateRecord(product, _id);
+    const insert = {status: 200}//await updateRecord(product, _id);
 
     if(insert.status === 200) {
       alert("product edited successfully!");
@@ -247,7 +242,6 @@ export default function Modal({data,index}) {
         fullScreen
         open={open}
         onClose={handleClose}
-        TransitionComponent={Transition}
       >
         <AppBar sx={{ position: 'relative', background: 'white', color: '#2c6fbb' }}>
           <Toolbar>
@@ -263,19 +257,19 @@ export default function Modal({data,index}) {
               Product Details
             </Typography>
             <IconButton>
-              <Delete onClick={handleDeleteRecord} autoFocus color='inherit'></Delete>
+              <Delete onClick={handleDeleteRecord} color='inherit'></Delete>
             </IconButton>
             <IconButton sx={{marginRight: '35px'}}> 
-            <EditIcon onClick={handleEdit} autoFocus color="inherit">  
+            <EditIcon onClick={handleEdit} color="inherit">  
             </EditIcon>
             </IconButton>
            <IconButton> 
-            <SaveIcon autoFocus color="inherit" onClick={handleEditRecord}>
+            <SaveIcon color="inherit" onClick={handleEditRecord}>
             </SaveIcon>
             </IconButton>
 
             <IconButton> 
-            <PlusOneOutlined onClick={handleAdd} autoFocus color="inherit">  
+            <PlusOneOutlined onClick={handleAdd} color="inherit">  
             </PlusOneOutlined>
             </IconButton>
             
@@ -300,7 +294,7 @@ export default function Modal({data,index}) {
           </FormGroup>
           <FormGroup column='column'>
               <h5>Company Warehouse (if multiple separate by carriage return)</h5>
-        <TextField defaultValue={info.warehouse.join('\n')} onChange={(e)=>{setWarehouse(e.target.value)}} disabled={edit}></TextField>
+        <TextField multiline={true} defaultValue={info.warehouse.join('\n')} onChange={(e)=>{setWarehouse(e.target.value)}} disabled={edit}></TextField>
           </FormGroup>
           <FormGroup column='column'>
           <h5>Product Class</h5>
@@ -479,3 +473,8 @@ export default function Modal({data,index}) {
     </div>
   );
 }
+
+const customComparator = (prevProps, nextProps) => {
+  return nextProps.data._id === prevProps.data._id;
+};
+export default React.memo(Modal, customComparator);
