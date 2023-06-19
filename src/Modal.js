@@ -27,7 +27,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function Modal({data,index}) {
 
-  const { _id, info, cost, yearReleased, leds, features, size, warranty, flickernsound, wavelengths, nnemf} = data;
+  const { _id, info, cost, shipping, value, yearReleased, leds, features, size, warranty, flickernsound, wavelengths, nnemf} = data;
 
 
   const [open, setOpen] = React.useState(false);
@@ -37,16 +37,16 @@ export default function Modal({data,index}) {
   const [company, setCompany] = React.useState(info.company) 
   const [class_, setProductClass] = React.useState(info.class)
   const [companyHq, setCompanyHq] = React.useState(info.companyHq)
-  const [warehouse, setWarehouse] = React.useState(info.warehouse)
+  const [warehouse, setWarehouse] = React.useState(info.warehouse.join('\n'))
   const [yearReleased1, setYearReleased] = React.useState(yearReleased)
   const [discountCode, setDiscountCode] = React.useState(info.discountCode)
   const [productLink, setProductLink] = React.useState(info.productLink)
   const [youtubeReview, setYoutubeReview] = React.useState(info.youtubeReview)
-  const [discountedPrice, setDiscountedPrice] = React.useState(cost.discountedPrice)
-  const [shippingUsa, setShippingUsa] = React.useState(cost.shippingUsa)
-  const [shippingIntl, setShippingIntl] = React.useState(cost.shippingIntl)
-  const [discountedPerLed, setDiscountedPerLed] = React.useState(cost.discountedPerLed)
-  const [discountedPerOutput, setDiscountedPerOutput] = React.useState(cost.discountedPerOutput)
+  const [discountedPrice, setDiscountedPrice] = React.useState(cost)
+  const [shippingUsa, setShippingUsa] = React.useState(shipping.shippingUsa)
+  const [shippingIntl, setShippingIntl] = React.useState(shipping.shippingIntl)
+  const [discountedPerLed, setDiscountedPerLed] = React.useState(value.discountedPerLed)
+  const [discountedPerOutput, setDiscountedPerOutput] = React.useState(value.discountedPerOutput)
   const [height, setHeight] = React.useState(size.height)
   const [width, setWidth] = React.useState(size.width)
   const [weight, setWeight] = React.useState(size.weight)
@@ -77,6 +77,7 @@ export default function Modal({data,index}) {
       company,
       class: class_,
       companyHq,
+      warehouse,
       discountCode,
       productLink,
       youtubeReview,
@@ -157,6 +158,7 @@ export default function Modal({data,index}) {
       company,
       class: class_,
       companyHq,
+      warehouse,
       discountCode,
       productLink,
       youtubeReview,
@@ -298,7 +300,7 @@ export default function Modal({data,index}) {
           </FormGroup>
           <FormGroup column='column'>
               <h5>Company Warehouse (if multiple separate by carriage return)</h5>
-        <TextField defaultValue={info.warehouse} onChange={(e)=>{setCompanyHq(e.target.value)}} disabled={edit}></TextField>
+        <TextField defaultValue={info.warehouse.join('\n')} onChange={(e)=>{setWarehouse(e.target.value)}} disabled={edit}></TextField>
           </FormGroup>
           <FormGroup column='column'>
           <h5>Product Class</h5>
@@ -329,23 +331,23 @@ export default function Modal({data,index}) {
         <FormGroup row>
         <FormGroup column='column'>
           <h5>Disounted Price</h5>
-        <TextField defaultValue={cost.discountedPrice} onChange={(e)=>{setDiscountedPrice(e.target.value)}} disabled={edit}></TextField>
+        <TextField defaultValue={cost} onChange={(e)=>{setDiscountedPrice(e.target.value)}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
           <h5>Shipping U.S</h5>
-          <TextField defaultValue={cost.shippingUsa} onChange={(e)=>{setShippingUsa(e.target.value)}} disabled={edit}></TextField>
+          <TextField defaultValue={shipping.shippingUsa} onChange={(e)=>{setShippingUsa(e.target.value)}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
           <h5>Shipping Intl</h5>
-          <TextField defaultValue={cost.shippingIntl} onChange={(e)=>{setShippingIntl(e.target.value)}} disabled={edit}></TextField>
+          <TextField defaultValue={shipping.shippingIntl} onChange={(e)=>{setShippingIntl(e.target.value)}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
           <h5> Discounted Per Led</h5>
-        <TextField defaultValue={cost.discountedPerLed} onChange={(e)=>{setDiscountedPerLed(e.target.value)}} disabled={edit}></TextField>
+        <TextField defaultValue={value.discountedPerLed} onChange={(e)=>{setDiscountedPerLed(e.target.value)}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
           <h5>Discounted Per Output</h5>
-        <TextField defaultValue={cost.discountedPerOutput} onChange={(e)=>{setDiscountedPerOutput(e.target.value)}} disabled={edit}></TextField>
+        <TextField defaultValue={value.discountedPerOutput} onChange={(e)=>{setDiscountedPerOutput(e.target.value)}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
           <h5>Height</h5>
