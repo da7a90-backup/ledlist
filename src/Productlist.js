@@ -17,6 +17,7 @@ import { Checkbox, FormControlLabel, Slider } from "@mui/material";
 import CustomHintButton from "./CustomHintButton";
 import { fetchData } from "./services/Data";
 import Modal from "./Modal";
+import { PriorityHigh } from "@mui/icons-material";
 
 //import makeStyles from "@mui/styles";
 
@@ -29,7 +30,7 @@ const Productlist = props => {
     const classes = useStyles(); */
     const [data, setData] = useState([]);
     const [sortByShipping, setSortByShipping] = useState('shippingUsa');
-    const [sortByValue, setSortByValue] = useState('discountedPerLed');
+    const [sortByValue, setSortByValue] = useState('discountedPerOutput');
     const [sortBySize, setSortBySize] = useState('height');
     const [sortByWaveLengths, setSortByWaveLengths] = useState(0);
 
@@ -165,7 +166,7 @@ const Productlist = props => {
       }
     },
     {
-      label: `LEDs 🔆`,
+      label: `LEDs 💡`,
       name: "leds.leds",
       options: {
         filter:true,
@@ -295,7 +296,7 @@ const Productlist = props => {
       }
     },
     {
-      label: "Average Power 🔌",
+      label: "Average Irradiance 🔌",
       name: "leds.avCombinedPower",
       options:{
         filter: false,
@@ -399,7 +400,8 @@ const Productlist = props => {
       name: "wavelengths",
       options: {
         display: showWavelengths,
-        filter: false
+        filter: false,
+        sort: false
       }
     },
      {
@@ -523,6 +525,66 @@ const Productlist = props => {
     }
  },
  {
+  name:"size.width",
+  options:{
+     filter:true,
+     filterType: 'custom',
+
+     // if the below value is set, these values will be used every time the table is rendered.
+     // it's best to let the table internally manage the filterList
+     //filterList: [25, 50],
+     
+     customFilterListOptions: {
+       render: v => {
+         if (v[0] && v[1]) {
+           return [`Min width: ${v[0]}"`, `Max width: ${v[1]}"`];
+         } else if (v[0] && v[1] ) {
+           return `Min width: ${v[0]}", Max width: ${v[1]}"`;
+         } else if (v[0]) {
+           return `Min width: ${v[0]}"`;
+         } else if (v[1]) {
+           return `Max width: ${v[1]}"`;
+         }
+         return [];
+       },
+       update: (filterList, filterPos, index) => {
+         if (filterPos === 0) {
+           filterList[index].splice(filterPos, 1, '');
+         } else if (filterPos === 1) {
+           filterList[index].splice(filterPos, 1);
+         } else if (filterPos === -1) {
+           filterList[index] = [];
+         }
+
+         return filterList;
+       },
+     },
+     filterOptions: {
+       logic(width, filters) {
+         if (filters[0] && filters[1]) {
+           return width < filters[0] || width > filters[1];
+         } else if (filters[0]) {
+           return width < filters[0];
+         } else if (filters[1]) {
+           return width > filters[1];
+         }
+         return false;
+       },
+       display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'Width'} 
+       filterData={filterData} >
+       </CustomSliderFilter>,
+     },
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+},
+ {
     name:"warranty.warranty",
     options:{
        filter:true,
@@ -606,6 +668,18 @@ const Productlist = props => {
 
 },
 {
+  name: "info.warehouse",
+  label: "Company Warehouse",
+  options:{
+    filter:true,
+    filterType: 'multiselect',
+    sort:false,
+    display:false,
+    viewColumns:false
+  }
+
+},
+{
   name:"info.class",
   label:"Class",
   options:{
@@ -648,7 +722,7 @@ const Productlist = props => {
 },
 {
   name: "info.alexTested",
-  label: "Alex Tested",
+  label: "Alex Data Only",
   options: {
     sort: false,
     display: false,
@@ -899,6 +973,7 @@ const Productlist = props => {
                 <React.Fragment>
                 <b>Company</b><br/><Paper align='center' elevation={2}>{info.company}</Paper><br/>
                 <b>Company Location</b><br/><Paper align='center' elevation={2}>{info.companyHq}</Paper>
+                <b>Company Warehouse</b><br/><Paper align='center' elevation={2}>{info.warehouse.join(", ")}</Paper>
                 <b>Class</b><br/><Paper align='center' elevation={2}>{info.class}</Paper><br/>
                 <b>Discount Code</b><br/><Paper align='center' elevation={2}>{info.discountCode}</Paper><br/>
                 <b>Product Link</b><br/><Paper align='center' elevation={2}><Link color="primary" href={`${info.productLink}`}><ShortcutIcon></ShortcutIcon></Link></Paper><br/>
@@ -974,13 +1049,13 @@ const Productlist = props => {
 
           {showTotalPower && (
           <TableCell align="center">
-          {leds.totalPowerOutput}
+          {leds.totalPowerOutput} W
           </TableCell>  
           )}
 
           {showAvPower && (
           <TableCell align="center">
-          {leds.avCombinedPower}
+          {leds.avCombinedPower} mw/cm2
           </TableCell> 
           )}
 
@@ -992,16 +1067,16 @@ const Productlist = props => {
 
           {showEmf && (
             <TableCell align="center">
-              <span>⚡ {(nnemf.emfe.toLowerCase().includes('green') && (<span>🟢</span>))}
-              {(nnemf.emfe.toLowerCase().includes('orange') && (<span>🟠</span>))}
-              {(nnemf.emfe.toLowerCase().includes('yellow') && (<span>🟡</span>))}
-              {(nnemf.emfe.toLowerCase().includes('red') && (<span>🔴</span>))}
+              <span>⚡ {(nnemf.emfe.toLowerCase().includes('green') && (<span> <Tooltip title={nnemf.emfe.toLowerCase().replace('green','')}><span>🟢</span></Tooltip> </span>))}
+              {(nnemf.emfe.toLowerCase().includes('orange') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('orange','')}><span>🟠</span></Tooltip> </span>))}
+              {(nnemf.emfe.toLowerCase().includes('yellow') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('yellow','')}><span>🟡</span></Tooltip> </span>))}
+              {(nnemf.emfe.toLowerCase().includes('red') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('red','')}><span>🔴</span></Tooltip> </span>))}
               {((nnemf.emfe.toLowerCase().includes('tbc') || nnemf.emfe === '') && (<span>?</span>))}
                </span> <br/>
-              <span>🧲 {(nnemf.mag.toLowerCase().includes('green') && (<span>🟢</span>))}
-              {(nnemf.mag.toLowerCase().includes('orange') && (<span>🟠</span>))}
-              {(nnemf.mag.toLowerCase().includes('yellow') && (<span>🟡</span>))}
-              {(nnemf.mag.toLowerCase().includes('red') && (<span>🔴</span>))}
+              <span>🧲 {(nnemf.mag.toLowerCase().includes('green') && (<span><Tooltip title={nnemf.mag.toLowerCase().replace('green','')}><span>🟢</span></Tooltip> </span>))}
+              {(nnemf.mag.toLowerCase().includes('orange') && (<span><Tooltip title={nnemf.mag.toLowerCase().replace('orange','')}><span>🟠</span></Tooltip> </span>))}
+              {(nnemf.mag.toLowerCase().includes('yellow') && (<span><Tooltip title={nnemf.mag.toLowerCase().replace('yellow','')}><span>🟡</span></Tooltip> </span>))}
+              {(nnemf.mag.toLowerCase().includes('red') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('red','')}><span>🔴</span></Tooltip> </span>))}
               {((nnemf.mag.toLowerCase().includes('tbc') || nnemf.mag === '') && (<span>?</span>))} </span>
             </TableCell>
           )
@@ -1051,50 +1126,35 @@ const Productlist = props => {
           )}
           {showWavelengths && (
             <TableCell align="left">
-                                  <Tooltip 
-                    enterTouchDelay={0}
-                    leaveTouchDelay={2500}
-                    TransitionComponent={Zoom}
-                    componentsProps={{
-                        tooltip: {
-                            sx: {
-                                background: '#ffff',
-                                color: '#000',
-                                fontSize: "1em",
-                                width: "200px",
-                                border: '1px solid purple',
-                                borderRadius: "10px 10px",
-                                boxShadow: "5px 5px 5px 5px rgb(0 0 0 / 20%), 0px 5px 6px 0px rgb(0 0 0 / 14%), 0px 4px 10px 0px rgb(0 0 0 / 12%)"
-                              }
-                        }
-                      }}
-                    title={
-                        <React.Fragment> 
-                        {wavelengths.nm480 > 0 && (<div><b>Blue 🔵</b><br/>
-                        <b>480</b><br/><Paper align='center' elevation={2}>{wavelengths.nm480} LEDS</Paper><br/></div>
-                        )}
-                        {(wavelengths.nm610 > 0 || wavelengths.nm630 > 0 || wavelengths.nm660 > 0) && (<div> <b>Red 🔴</b><br/>
-                        {wavelengths.nm610 > 0 && (<div><b>610</b><br/><Paper align='center' elevation={2}>{wavelengths.nm610} LEDS</Paper></div>)}
-                        {wavelengths.nm630 > 0 && (<div><b>630</b><br/><Paper align='center' elevation={2}>{wavelengths.nm630} LEDS</Paper></div>)}
-                        {wavelengths.nm660 > 0 && (<div><b>660</b><br/><Paper align='center' elevation={2}>{wavelengths.nm660} LEDS</Paper><br/></div>)}
-                        </div>
-                        )
-                        }
-                        {(wavelengths.nm810 > 0 || wavelengths.nm830 > 0 || wavelengths.nm850 > 0 || wavelengths.nm830 > 0 ||
-                          wavelengths.nm850 > 0 || wavelengths.nm930 > 0 || wavelengths.nm950 > 0 ) && (<div><b>Near Infrared ⬇🔴</b><br/>
-                        {wavelengths.nm810 > 0 && (<div><b>810</b><br/><Paper align='center' elevation={2}>{wavelengths.nm810} LEDS</Paper></div>)}
-                        {wavelengths.nm830 > 0 && (<div><b>830</b><br/><Paper align='center' elevation={2}>{wavelengths.nm830} LEDS</Paper></div>)}
-                        {wavelengths.nm850 > 0 && (<div><b>850</b><br/><Paper align='center' elevation={2}>{wavelengths.nm850} LEDS</Paper></div>)}
-                        {wavelengths.nm930 > 0 && (<div><b>930</b><br/><Paper align='center' elevation={2}>{wavelengths.nm930} LEDS</Paper></div>)}
-                        {wavelengths.nm950 > 0 && (<div><b>950</b><br/><Paper align='center' elevation={2}>{wavelengths.nm950} LEDS</Paper></div>)}                        
-                        </div>)}
-
-                        </React.Fragment> 
-                    }>
               <div>
-              🔵 {wavelengths['nm480']}  🔴 {wavelengths['nm610']+wavelengths['nm630']+wavelengths['nm660']} ⬇🔴 {wavelengths['nm810']+wavelengths['nm830']+wavelengths['nm850']+wavelengths['nm930']+wavelengths['nm950']}  
+                        {wavelengths.nm480 > 0 && (<b style={{color:'blue'}}>480x{wavelengths.nm480} {wavelengths.nm480real && (
+                          <Tooltip title={`480 real reading: ${wavelengths.nm480real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )} </b>)}
+                        {wavelengths.nm610 > 0 && (<b style={{color:'red'}}>610x{wavelengths.nm610} {wavelengths.nm610real && (
+                          <Tooltip title={`610 real reading: ${wavelengths.nm610real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )}  </b>)}
+                        {wavelengths.nm630 > 0 && (<b style={{color:'red'}}>630x{wavelengths.nm630} {wavelengths.nm630real && (
+                          <Tooltip title={`630 real reading: ${wavelengths.nm630real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )}  </b> )}
+                        {wavelengths.nm660 > 0 && (<b style={{color:'red'}}>660x{wavelengths.nm660} {wavelengths.nm660real && (
+                          <Tooltip title={`660 real reading: ${wavelengths.nm660real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )} </b> )}
+                        {wavelengths.nm810 > 0 && (<b style={{color:'gray'}}>810x{wavelengths.nm810} {wavelengths.nm810real && (
+                          <Tooltip title={`810 real reading: ${wavelengths.nm810real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )} </b> )}
+                        {wavelengths.nm830 > 0 && (<b style={{color:'gray'}}>830x{wavelengths.nm830} {wavelengths.nm830real && (
+                          <Tooltip title={`830 real reading: ${wavelengths.nm830real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )} </b> )}
+                        {wavelengths.nm850 > 0 && (<b style={{color:'gray'}}>850x{wavelengths.nm850} {wavelengths.nm850real && (
+                          <Tooltip title={`850 real reading: ${wavelengths.nm850real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )} </b> )}
+                        {wavelengths.nm930 > 0 && (<b style={{color:'gray'}}>930x{wavelengths.nm930} {wavelengths.nm930real && (
+                          <Tooltip title={`930 real reading: ${wavelengths.nm930real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )} </b> )}
+                        {wavelengths.nm950 > 0 && (<b style={{color:'gray'}}>950x{wavelengths.nm950} {wavelengths.nm950real && (
+                          <Tooltip title={`950 real reading: ${wavelengths.nm950real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )} </b> )}                        
               </div>
-                    </Tooltip>
             </TableCell>
           )}
       </TableRow>
@@ -1106,21 +1166,16 @@ const Productlist = props => {
     filter: true,
     onFilterChange: (changedColumn, filterList) => {
       if(changedColumn === 'wavelengths'){
-        const blue = filterList[28]
-        const red = filterList[29]
-        const nir = filterList[30]
+        const blue = filterList[30]
+        const red = filterList[31]
+        const nir = filterList[32]
 
+        console.log(filterList)
         if(blue.length === 0 && red.length === 0 && nir.length === 0){
           setShowWavelengths(false)
         }
         else{
           setShowWavelengths(true)
-
-          const waveobject = {blue,red,nir}
-
-          setShownWavelength(waveobject);
-  
-          console.log(waveobject)
         }
       }
     },
@@ -1192,14 +1247,14 @@ const Productlist = props => {
 
             if(typeof col ==='object' && col !== null){
                 Object.keys(col).map(key => {
-                      if(col[key] !== null && col[key]?.toString().indexOf(searchQuery) >= 0) {
+                      if(col[key] !== null && col[key]?.toString().toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0) {
                         isFound = true;
                       }
                 })
             }
 
             if(col !== undefined && col !== null){
-            if (col.toString().indexOf(searchQuery) >= 0) {
+            if (col.toString().toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0) {
                 isFound = true;
               }
             }
@@ -1305,7 +1360,7 @@ components: {
       },
       MUIDataTableFilter: {
         styleOverrides: { root: {
-                height: '330px',
+                height: '380px',
                 overflowY: 'scroll'
         }
       }
@@ -1322,12 +1377,24 @@ components: {
       },
       MUIDataTableToolbar:{
         styleOverrides: {left: {
-                marginTop: '100px'
+                marginTop: '180px'
         }}
       },
       MuiTypography: {
         styleOverrides: {root: {
                 fontWeight: '900'
+        }}
+      },
+      MuiCheckbox:{
+        styleOverrides: {root: {
+                paddingLeft: '26px',
+                paddingRight: '12px'
+        }}
+      },
+      MUIDataTableViewCol:{
+        styleOverrides:{title: {
+                textAlign: 'center',
+                paddingRight: '15vw'
         }}
       }
 },

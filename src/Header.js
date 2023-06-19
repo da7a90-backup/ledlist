@@ -16,7 +16,7 @@ export default function Header() {
   );
 
   return (
-    <header>
+    <header style={{marginTop:'6vh'}}>
       <AppBar sx={{background: '#ffff'}}>{displayDesktop()}</AppBar>
     </header>
   );

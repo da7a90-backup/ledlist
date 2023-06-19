@@ -34,10 +34,14 @@
 }
 
 .css-1e6y48t-MuiButtonBase-root-MuiButton-root {
-  margin-left: 85vw !important;
+  margin-left: 40vw !important;
+  font-weight: bolder !important;
+  border: 2px solid #61aefb !important;
 }
 .css-1ujsas3 {
-  margin-left: 85vw !important;
+  margin-left: 40vw !important;
+  font-weight: bolder !important;
+  border: 2px solid #61aefb !important;
 }
 
 @media only screen and (max-width: 768px) {

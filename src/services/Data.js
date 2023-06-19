@@ -5,11 +5,13 @@
         const body = await result.json();
 
         const alteredData = body.data.map((object)=>{
+            console.log(object)
             return {...object, cost: object.cost.discountedPrice, 
                     shipping: {
                         shippingUsa: object.cost.shippingUsa, shippingIntl: object.cost.shippingIntl
                     },
-                    value: {discountedPerLed: object.cost.discountedPerLed, discountedPerOutput: object.cost.discountedPerOutput}
+                    value: {discountedPerLed: object.cost.discountedPerLed, discountedPerOutput: object.cost.discountedPerOutput},
+                    info: {...object.info, warehouse: object.info.warehouse !== "" && object.info.warehouse !== undefined ? object.info.warehouse.split("\n") : []}
                 }
         })
         console.log(alteredData)

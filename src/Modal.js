@@ -37,6 +37,7 @@ export default function Modal({data,index}) {
   const [company, setCompany] = React.useState(info.company) 
   const [class_, setProductClass] = React.useState(info.class)
   const [companyHq, setCompanyHq] = React.useState(info.companyHq)
+  const [warehouse, setWarehouse] = React.useState(info.warehouse)
   const [yearReleased1, setYearReleased] = React.useState(yearReleased)
   const [discountCode, setDiscountCode] = React.useState(info.discountCode)
   const [productLink, setProductLink] = React.useState(info.productLink)
@@ -293,6 +294,10 @@ export default function Modal({data,index}) {
 
           <FormGroup column='column'>
               <h5>Company Location</h5>
+        <TextField defaultValue={info.companyHq} onChange={(e)=>{setCompanyHq(e.target.value)}} disabled={edit}></TextField>
+          </FormGroup>
+          <FormGroup column='column'>
+              <h5>Company Warehouse (if multiple separate by carriage return)</h5>
         <TextField defaultValue={info.companyHq} onChange={(e)=>{setCompanyHq(e.target.value)}} disabled={edit}></TextField>
           </FormGroup>
           <FormGroup column='column'>
