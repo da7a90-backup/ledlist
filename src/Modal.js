@@ -298,7 +298,7 @@ export default function Modal({data,index}) {
           </FormGroup>
           <FormGroup column='column'>
               <h5>Company Warehouse (if multiple separate by carriage return)</h5>
-        <TextField defaultValue={info.companyHq} onChange={(e)=>{setCompanyHq(e.target.value)}} disabled={edit}></TextField>
+        <TextField defaultValue={info.warehouse} onChange={(e)=>{setCompanyHq(e.target.value)}} disabled={edit}></TextField>
           </FormGroup>
           <FormGroup column='column'>
           <h5>Product Class</h5>
