@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {useState, useEffect} from "react"
 import MUIDataTable from "mui-datatables";
 import TableCell from "@mui/material/TableCell";
@@ -18,6 +18,8 @@ import CustomHintButton from "./CustomHintButton";
 import { fetchData } from "./services/Data";
 import Modal from "./Modal";
 import { PriorityHigh } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { IconButton } from "@mui/material";
 
 //import makeStyles from "@mui/styles";
 
@@ -28,6 +30,10 @@ const Productlist = props => {
 
        });
     const classes = useStyles(); */
+
+    const navigate = useNavigate();
+
+
     const [data, setData] = useState([]);
     const [sortByShipping, setSortByShipping] = useState('shippingUsa');
     const [sortByValue, setSortByValue] = useState('discountedPerOutput');
@@ -47,8 +53,6 @@ const Productlist = props => {
     const [showEmf, setShowEmf] = useState(false);
     const [showWavelengths, setShowWavelengths] = useState(false);
     const [shownWavelength, setShownWavelength] = useState({blue:[],red:[],nir:[]});
-
-    
 
     useEffect(()=>{
       fetchData().then(data=>{
@@ -110,6 +114,15 @@ const Productlist = props => {
     )
 
   const columns = [
+    {
+      name: "_id",
+      options:{
+        display:false,
+        filter:false,
+        sort: false,
+        viewColumns:false
+      }
+    },
     {
       label: "Name",
       name: "info",
@@ -940,17 +953,25 @@ const Productlist = props => {
 
 
   const MyCustomRowComponent = (props) => {
-    const { dataIndex, rowIndex, info, cost, shipping, yearReleased, leds, ledcount, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths} = props;
+    const { dataIndex, rowIndex, info, cost, shipping, yearReleased, leds, ledcount, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths, dataObject} = props;
     const bgColor = rowIndex % 2 === 0 ? '#fff' : 'aliceblue'
-    console.log(data[dataIndex]);
+    console.log(dataObject);
     return (
       <TableRow style={{backgroundColor : bgColor, padding: 0}}>
         <TableCell align="center">
-          <Modal
-          data = {data[dataIndex]}
-          index={rowIndex+1}
-          > 
-          </Modal>
+          <IconButton onClick={()=>{
+              const passphrase = prompt("Please enter the password here");
+              if(passphrase===null){
+                return
+              }
+              if(passphrase!=="1xelA@fEr"){
+                alert("you don't have access to this!")
+                return
+              }
+          navigate('/details', {state: dataObject})
+          }}>
+          {rowIndex+1}
+          </IconButton>
          </TableCell>
         <TableCell style={{width: '15vw'}} align="center">{info.productName}             
         <Tooltip 
@@ -1266,9 +1287,11 @@ const Productlist = props => {
       },
     responsive: "responsive",
     customRowRender: (data, dataIndex, rowIndex) => {
-        const [info, cost, shipping, leds, ledcount, totalPowerOutput, avCombinedPower, value, features, size, warranty, flickernsound, wavelengths] = data;
+        const [_id, info, cost, shipping, leds, ledcount, totalPowerOutput, avCombinedPower, value, features, size, warranty, flickernsound, wavelengths] = data;
         const yearReleased = data[18]
         const nnemf = data[8]
+        const dataObject = {_id, info, cost, shipping, leds, features, flickernsound, nnemf, warranty, value, wavelengths, yearReleased, cost, size}
+        console.log(dataObject)
         return (
           <MyCustomRowComponent
           dataIndex={dataIndex}
@@ -1288,6 +1311,7 @@ const Productlist = props => {
           flickernsound={flickernsound}
           wavelengths={wavelengths}
           nnemf={nnemf}
+          dataObject={dataObject}
           />
         );
       },
@@ -1410,4 +1434,4 @@ components: {
   );
 };
 
-export default Productlist;
+export default memo(Productlist,()=>false);
