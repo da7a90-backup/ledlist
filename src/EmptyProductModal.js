@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
-import { FormControl, FormGroup, FormLabel, TextField } from '@mui/material';
+import { FormControl, FormGroup, FormLabel, TextField, Tooltip } from '@mui/material';
 import { insertProduct} from './services/Data';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Autocomplete } from '@mui/material';
@@ -160,10 +160,10 @@ import { Autocomplete } from '@mui/material';
               Product Details
             </Typography>
     
-           <IconButton> 
+          <Tooltip title="Save record"> <IconButton> 
             <SaveIcon color="primary" onClick={handleAdd}>
             </SaveIcon>
-            </IconButton>
+            </IconButton></Tooltip>
             
           </Toolbar>
         </AppBar>

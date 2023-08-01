@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
-import { FormControl, FormGroup, FormLabel, TextField } from '@mui/material';
+import { FormControl, FormGroup, FormLabel, TextField, Tooltip } from '@mui/material';
 import { PlusOneOutlined, Delete } from '@mui/icons-material';
 import { insertProduct, updateRecord, deleteRecord } from './services/Data';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -181,22 +181,22 @@ import { Autocomplete } from '@mui/material';
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Product Details
             </Typography>
-            <IconButton>
+            <Tooltip title="Delete record"> <IconButton>
               <Delete onClick={handleDeleteRecord} color='primary'></Delete>
-            </IconButton>
-            <IconButton sx={{marginRight: '35px'}}> 
+            </IconButton></Tooltip>
+            <Tooltip title="Edit fields"> <IconButton sx={{marginRight: '35px'}}> 
             <EditIcon onClick={handleEdit} color="primary">  
             </EditIcon>
-            </IconButton>
-           <IconButton> 
+            </IconButton></Tooltip>
+           <Tooltip title="Save edits"> <IconButton> 
             <SaveIcon color="primary" onClick={handleEditRecord}>
             </SaveIcon>
-            </IconButton>
+            </IconButton></Tooltip>
 
-            <IconButton> 
+           <Tooltip title="New record"> <IconButton> 
             <PlusOneOutlined onClick={()=>navigate('/new',{state: {dark: dark, classes: classes, companies: companies, locations: locations}})} color="primary">  
             </PlusOneOutlined>
-            </IconButton>
+            </IconButton></Tooltip>
             
           </Toolbar>
         </AppBar>
