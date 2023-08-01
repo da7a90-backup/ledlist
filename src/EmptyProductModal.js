@@ -161,8 +161,8 @@ import { Autocomplete } from '@mui/material';
             </Typography>
     
            <IconButton> 
-           <Tooltip title="Save record">  <SaveIcon color="primary" onClick={handleAdd}>
-            </SaveIcon></Tooltip>
+           <Tooltip title="Save record"><div>  <SaveIcon color="primary" onClick={handleAdd}>
+            </SaveIcon></div></Tooltip>
             </IconButton>
             
           </Toolbar>

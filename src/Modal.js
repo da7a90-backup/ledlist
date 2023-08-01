@@ -182,20 +182,20 @@ import { Autocomplete } from '@mui/material';
               Product Details
             </Typography>
             <IconButton>
-            <Tooltip title="Delete record"> <Delete onClick={handleDeleteRecord} color='primary'></Delete></Tooltip>
+            <Tooltip title="Delete record"><div> <Delete onClick={handleDeleteRecord} color='primary'></Delete></div></Tooltip>
             </IconButton>
              <IconButton sx={{marginRight: '35px'}}> 
-             <Tooltip title="Edit fields"><EditIcon onClick={handleEdit} color="primary">  
-            </EditIcon></Tooltip>
+              <Tooltip title="Edit fields"><div><EditIcon onClick={handleEdit} color="primary">  
+            </EditIcon></div></Tooltip>
             </IconButton>
             <IconButton> 
-            <Tooltip title="Save edits"> <SaveIcon color="primary" onClick={handleEditRecord}>
-            </SaveIcon></Tooltip>
+            <Tooltip title="Save edits"><div> <SaveIcon color="primary" onClick={handleEditRecord}>
+            </SaveIcon></div></Tooltip>
             </IconButton>
 
             <IconButton> 
-            <Tooltip title="New record"> <PlusOneOutlined onClick={()=>navigate('/new',{state: {dark: dark, classes: classes, companies: companies, locations: locations}})} color="primary">  
-            </PlusOneOutlined></Tooltip>
+            <Tooltip title="New record"><div> <PlusOneOutlined onClick={()=>navigate('/new',{state: {dark: dark, classes: classes, companies: companies, locations: locations}})} color="primary">  
+            </PlusOneOutlined></div></Tooltip>
             </IconButton>
             
           </Toolbar>
