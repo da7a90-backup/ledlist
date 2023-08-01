@@ -160,10 +160,10 @@ import { Autocomplete } from '@mui/material';
               Product Details
             </Typography>
     
-          <Tooltip title="Save record"> <IconButton> 
-            <SaveIcon color="primary" onClick={handleAdd}>
-            </SaveIcon>
-            </IconButton></Tooltip>
+           <IconButton> 
+           <Tooltip title="Save record">  <SaveIcon color="primary" onClick={handleAdd}>
+            </SaveIcon></Tooltip>
+            </IconButton>
             
           </Toolbar>
         </AppBar>

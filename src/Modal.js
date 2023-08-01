@@ -181,22 +181,22 @@ import { Autocomplete } from '@mui/material';
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Product Details
             </Typography>
-            <Tooltip title="Delete record"> <IconButton>
-              <Delete onClick={handleDeleteRecord} color='primary'></Delete>
-            </IconButton></Tooltip>
-            <Tooltip title="Edit fields"> <IconButton sx={{marginRight: '35px'}}> 
-            <EditIcon onClick={handleEdit} color="primary">  
-            </EditIcon>
-            </IconButton></Tooltip>
-           <Tooltip title="Save edits"> <IconButton> 
-            <SaveIcon color="primary" onClick={handleEditRecord}>
-            </SaveIcon>
-            </IconButton></Tooltip>
+            <IconButton>
+            <Tooltip title="Delete record"> <Delete onClick={handleDeleteRecord} color='primary'></Delete></Tooltip>
+            </IconButton>
+             <IconButton sx={{marginRight: '35px'}}> 
+             <Tooltip title="Edit fields"><EditIcon onClick={handleEdit} color="primary">  
+            </EditIcon></Tooltip>
+            </IconButton>
+            <IconButton> 
+            <Tooltip title="Save edits"> <SaveIcon color="primary" onClick={handleEditRecord}>
+            </SaveIcon></Tooltip>
+            </IconButton>
 
-           <Tooltip title="New record"> <IconButton> 
-            <PlusOneOutlined onClick={()=>navigate('/new',{state: {dark: dark, classes: classes, companies: companies, locations: locations}})} color="primary">  
-            </PlusOneOutlined>
-            </IconButton></Tooltip>
+            <IconButton> 
+            <Tooltip title="New record"> <PlusOneOutlined onClick={()=>navigate('/new',{state: {dark: dark, classes: classes, companies: companies, locations: locations}})} color="primary">  
+            </PlusOneOutlined></Tooltip>
+            </IconButton>
             
           </Toolbar>
         </AppBar>
