@@ -11,14 +11,20 @@ import { FormControl, FormGroup, FormLabel, TextField } from '@mui/material';
 import { PlusOneOutlined, Delete } from '@mui/icons-material';
 import { insertProduct, updateRecord, deleteRecord } from './services/Data';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Autocomplete } from '@mui/material';
 
 
 
- const Modal = ({}) => {
+ const Modal = ({dark}) => {
 
   const navigate = useNavigate();
   const {state} = useLocation();
-  const { _id, info, cost, shipping, value, yearReleased, leds, features, size, warranty, flickernsound, wavelengths, nnemf} = state;
+  const { _id, info, cost, shipping, value, yearReleased, leds, features, size, warranty, flickernsound, wavelengths, nnemf} = state.object;
+  const allData = state.allData;
+  const companies = [...new Set(allData.map((object)=>object.info.company))]
+  const locations = [...new Set(allData.map((object)=>object.info.companyHq))]
+  const classes = [...new Set(allData.map((object)=>object.info.class))]
+
   console.log(info.productName);
   const productName = useRef(info.productName) 
   console.log(productName);
@@ -62,72 +68,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
   const handleEdit = () => {
     setEdit(!edit);
   };
-
-  const handleAdd = async () => {
-    const product = {
-      info:{productName: productName.current,
-      company: company.current,
-      class: class_.current,
-      companyHq: companyHq.current,
-      warehouse: warehouse.current,
-      discountCode: discountCode.current,
-      productLink: productLink.current,
-      youtubeReview: youtubeReview.current,
-      peakWavelengthsTested: peakWavelengthsTested.current},
-      cost:{
-      discountedPrice: discountedPrice.current,
-      shippingUsa: shippingUsa.current,
-      shippingIntl: shippingIntl.current,
-      discountedPerLed: discountedPerLed.current,
-      discountedPerOutput: discountedPerOutput.current,
-      },
-      yearReleased: yearReleased1.current,
-      size:
-      { 
-      height: height.current,
-      width: width.current,
-      weight: weight.current
-      },
-      features:{
-      pulsing: pulsing.current,
-      modularSupport: modularSupport.current,
-      inbuiltTimer: inbuiltTimer.current,
-      stands: stands.current
-      },
-      warranty: 
-      {
-        warranty: warranty1.current
-      },
-      leds:
-      {
-      leds: leds1.current,
-      ledDualChip: ledDualChip.current,
-      totalPowerOutput: totalPowerOutput.current,
-      avCombinedPower: avCombinedPower.current,
-      peakPower: peakPower.current
-      },
-      wavelengths: wavelengths1.current,
-      nnemf:{
-      emfe: emfe.current,
-      mag: mag.current
-      },
-      flickernsound:
-      {
-      flicker: flicker.current,
-      soundLevels: soundLevels.current}
-    }
-
-    console.log(product)
-
-    const insert = await insertProduct(product);
-
-    if(insert.status === 200) {
-      alert("product inserted in database!");
-      handleClose();
-    } else{
-      alert("there was an error inserting the record in the database.")
-    }
-  }
 
   const handleDeleteRecord = async () => {
     const deleteRec = await deleteRecord(_id);
@@ -228,7 +168,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
         open={true}
         onClose={handleClose}
       >
-        <AppBar sx={{ position: 'relative', background: 'white', color: '#2c6fbb' }}>
+        <AppBar sx={{ position: 'relative', background: dark ? 'black' : 'white', color: '#2c6fbb' }}>
           <Toolbar>
             <IconButton
               edge="start"
@@ -254,7 +194,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
             </IconButton>
 
             <IconButton> 
-            <PlusOneOutlined onClick={handleAdd} color="primary">  
+            <PlusOneOutlined onClick={()=>navigate('/new',{state: {dark: dark, classes: classes, companies: companies, locations: locations}})} color="primary">  
             </PlusOneOutlined>
             </IconButton>
             
@@ -265,43 +205,61 @@ import { useLocation, useNavigate } from 'react-router-dom';
         <FormGroup row>
         <FormGroup column='column'>
         <h5>Product Name</h5>
-        <TextField defaultValue={info.productName} onChange={(e)=>{productName.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={info.productName} onChange={(e)=>{productName.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
 
         <FormGroup column='column'>
              <h5>Product Company</h5>
-        <TextField defaultValue={info.company} onChange={(e)=>{company.current = e.target.value}} disabled={edit}></TextField>
+             <Autocomplete
+             freeSolo
+            disablePortal
+            id="companies"
+           options={companies}
+           renderInput={(params) => <TextField {...params} label="Company" defaultValue={info.company} onChange={(e)=>{company.current = e.target.value}} disabled={edit}></TextField>}
+          />
           </FormGroup>
 
           <FormGroup column='column'>
               <h5>Company Location</h5>
-        <TextField defaultValue={info.companyHq} onChange={(e)=>{companyHq.current = e.target.value}} disabled={edit}></TextField>
+        <Autocomplete
+             freeSolo
+            disablePortal
+            id="locations"
+           options={locations}
+           renderInput={(params) => <TextField {...params} label="Location" defaultValue={info.companyHq} onChange={(e)=>{companyHq.current = e.target.value}} disabled={edit}></TextField>}
+          />
           </FormGroup>
           <FormGroup column='column'>
-              <h5>Company Warehouse (if multiple separate by carriage return)</h5>
-        <TextField multiline={true} defaultValue={info.warehouse.join('\n')} onChange={(e)=>{warehouse.current = e.target.value}} disabled={edit}></TextField>
+              <h5>Warehouse (if multiple separate by carriage return)</h5>
+        <TextField required multiline={true} defaultValue={info.warehouse.join('\n')} onChange={(e)=>{warehouse.current = e.target.value}} disabled={edit}></TextField>
           </FormGroup>
           <FormGroup column='column'>
           <h5>Product Class</h5>
-        <TextField defaultValue={info.class} onChange={(e)=>{class_.current = e.target.value}} disabled={edit}></TextField>
+          <Autocomplete
+             freeSolo
+            disablePortal
+            id="classes"
+           options={classes}
+           renderInput={(params) => <TextField {...params} label="Class" defaultValue={info.class} onChange={(e)=>{class_.current = e.target.value}} disabled={edit}></TextField>}
+          />
           </FormGroup>
           <FormGroup column='column'>
           <h5>Year Released</h5>
-        <TextField defaultValue={yearReleased} onChange={(e)=>{yearReleased1.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={yearReleased} onChange={(e)=>{yearReleased1.current = e.target.value}} disabled={edit}></TextField>
           </FormGroup>
           <FormGroup column='column'>
           <h5>Discount Code</h5>
-        <TextField defaultValue={info.discountCode} onChange={(e)=>{discountCode.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={info.discountCode} onChange={(e)=>{discountCode.current = e.target.value}} disabled={edit}></TextField>
           </FormGroup>
 
           <FormGroup column='column'>
           <h5>Product Link</h5>
-        <TextField defaultValue={info.productLink} onChange={(e)=>{productLink.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={info.productLink} onChange={(e)=>{productLink.current = e.target.value}} disabled={edit}></TextField>
           </FormGroup>
 
           <FormGroup column='column'>
           <h5>Youtube Review</h5>
-        <TextField defaultValue={info.youtubeReview} onChange={(e)=>{youtubeReview.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={info.youtubeReview} onChange={(e)=>{youtubeReview.current = e.target.value}} disabled={edit}></TextField>
           </FormGroup>
 
 
@@ -310,35 +268,35 @@ import { useLocation, useNavigate } from 'react-router-dom';
         <FormGroup row>
         <FormGroup column='column'>
           <h5>Disounted Price</h5>
-        <TextField defaultValue={cost} onChange={(e)=>{discountedPrice.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={cost} onChange={(e)=>{discountedPrice.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
           <h5>Shipping U.S</h5>
-          <TextField defaultValue={shipping.shippingUsa} onChange={(e)=>{shippingUsa.current = e.target.value}} disabled={edit}></TextField>
+          <TextField required type="number" defaultValue={shipping.shippingUsa} onChange={(e)=>{shippingUsa.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
           <h5>Shipping Intl</h5>
-          <TextField defaultValue={shipping.shippingIntl} onChange={(e)=>{shippingIntl.current = e.target.value}} disabled={edit}></TextField>
+          <TextField required type="number" defaultValue={shipping.shippingIntl} onChange={(e)=>{shippingIntl.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
           <h5> Discounted Per Led</h5>
-        <TextField defaultValue={value.discountedPerLed} onChange={(e)=>{discountedPerLed.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={value.discountedPerLed} onChange={(e)=>{discountedPerLed.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
           <h5>Discounted Per Output</h5>
-        <TextField defaultValue={value.discountedPerOutput} onChange={(e)=>{discountedPerOutput.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={value.discountedPerOutput} onChange={(e)=>{discountedPerOutput.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
           <h5>Height</h5>
-        <TextField defaultValue={size.height} onChange={(e)=>{height.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={size.height} onChange={(e)=>{height.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         <FormGroup column='column'>
         <h5>Width</h5>
-        <TextField defaultValue={size.width} onChange={(e)=>{width.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={size.width} onChange={(e)=>{width.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         <FormGroup column='column'>
         <h5>Weight</h5>
-        <TextField defaultValue={size.weight} onChange={(e)=>{weight.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={size.weight} onChange={(e)=>{weight.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         </FormGroup>
 
@@ -346,23 +304,23 @@ import { useLocation, useNavigate } from 'react-router-dom';
         <FormGroup row>
         <FormGroup column='column'>
         <h5>Pulsing</h5>
-        <TextField defaultValue={features.pulsing} onChange={(e)=>{pulsing.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={features.pulsing} onChange={(e)=>{pulsing.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         <FormGroup column='column'>
         <h5>Modular Support</h5>
-        <TextField defaultValue={features.modularSupport} onChange={(e)=>{modularSupport.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={features.modularSupport} onChange={(e)=>{modularSupport.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         <FormGroup column='column'>
         <h5>Stands</h5>
-        <TextField defaultValue={features.stands} onChange={(e)=>{stands.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={features.stands} onChange={(e)=>{stands.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         <FormGroup column='column'>
         <h5>Inbuilt Timer</h5>
-        <TextField defaultValue={features.inbuiltTimer} onChange={(e)=>{inbuiltTimer.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={features.inbuiltTimer} onChange={(e)=>{inbuiltTimer.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         <FormGroup column='column'>
         <h5>Warranty</h5>
-        <TextField defaultValue={warranty.warranty} onChange={(e)=>{warranty1.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={warranty.warranty} onChange={(e)=>{warranty1.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         </FormGroup>
 
@@ -370,63 +328,63 @@ import { useLocation, useNavigate } from 'react-router-dom';
         <FormGroup row>
         <FormGroup column='column'>
         <h5>LEDs</h5>
-        <TextField defaultValue={leds.leds} onChange={(e)=>{leds1.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={leds.leds} onChange={(e)=>{leds1.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         <FormGroup column='column'>
         <h5>LED Dual Chip</h5>
-        <TextField defaultValue={leds.ledDualChip} onChange={(e)=>{ledDualChip.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={leds.ledDualChip} onChange={(e)=>{ledDualChip.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
         <h5>Total Power Output</h5>
-        <TextField defaultValue={leds.totalPowerOutput} onChange={(e)=>{totalPowerOutput.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={leds.totalPowerOutput} onChange={(e)=>{totalPowerOutput.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
         <h5>Average Combined Power</h5>
-        <TextField defaultValue={leds.avCombinedPower} onChange={(e)=>{avCombinedPower.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={leds.avCombinedPower} onChange={(e)=>{avCombinedPower.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
         <h5>Peak Power</h5>
-        <TextField defaultValue={leds.peakPower} onChange={(e)=>{peakPower.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={leds.peakPower} onChange={(e)=>{peakPower.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
         <h5>480</h5>
-        <TextField defaultValue={wavelengths['nm480']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm480: e.target.value}}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={wavelengths['nm480']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm480: e.target.value}}} disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
         <h5>610</h5>
-        <TextField defaultValue={wavelengths['nm610']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm610:e.target.value}}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={wavelengths['nm610']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm610:e.target.value}}} disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
         <h5>630</h5>
-        <TextField defaultValue={wavelengths['nm630']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm630:e.target.value}}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={wavelengths['nm630']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm630:e.target.value}}} disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
         <h5>660</h5>
-        <TextField defaultValue={wavelengths['nm660']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm660:e.target.value}}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={wavelengths['nm660']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm660:e.target.value}}} disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
         <h5>810</h5>
-        <TextField defaultValue={wavelengths['nm810']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm810:e.target.value}}}disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={wavelengths['nm810']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm810:e.target.value}}}disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
         <h5>830</h5>
-        <TextField defaultValue={wavelengths['nm830']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm830:e.target.value}}}disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={wavelengths['nm830']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm830:e.target.value}}}disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
         <h5>850</h5>
-        <TextField defaultValue={wavelengths['nm850']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm850:e.target.value}}}disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={wavelengths['nm850']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm850:e.target.value}}}disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
         <h5>930</h5>
-        <TextField defaultValue={wavelengths['nm930']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm930:e.target.value}}}disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={wavelengths['nm930']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm930:e.target.value}}}disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
         <h5>950</h5>
-        <TextField defaultValue={wavelengths['nm950']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm950:e.target.value}}}disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={wavelengths['nm950']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm950:e.target.value}}}disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
         <h5>Peak Wavelengths Tested</h5>
-        <TextField defaultValue={info.peakWavelengthsTested} onChange={(e)=>{peakWavelengthsTested.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={info.peakWavelengthsTested} onChange={(e)=>{peakWavelengthsTested.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>     
 
         </FormGroup>
@@ -434,11 +392,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
         <FormGroup row>
         <FormGroup column='column'>
         <h5>EMFE</h5>
-        <TextField defaultValue={nnemf.emfe} onChange={(e)=>{emfe.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={nnemf.emfe} onChange={(e)=>{emfe.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
         <h5>MAG</h5>
-        <TextField defaultValue={nnemf.mag} onChange={(e)=>{mag.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required defaultValue={nnemf.mag} onChange={(e)=>{mag.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         </FormGroup>
 
@@ -446,11 +404,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
         <FormGroup row>
         <FormGroup column='column'>
         <h5>Flicker</h5>
-        <TextField defaultValue={flickernsound.flicker} onChange={(e)=>{flicker.current = e.target.value}} disabled={edit}></TextField>
+        <TextField type="number" required defaultValue={flickernsound.flicker} onChange={(e)=>{flicker.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
         <h5>Sound Levels</h5>
-        <TextField defaultValue={flickernsound.soundLevels} onChange={(e)=>{soundLevels.current = e.target.value}} disabled={edit}></TextField>
+        <TextField required type="number" defaultValue={flickernsound.soundLevels} onChange={(e)=>{soundLevels.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         </FormGroup>
         </FormControl>

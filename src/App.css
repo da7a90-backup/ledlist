@@ -48,7 +48,16 @@
   .css-zcmli0-MuiGrid-root {
     flex-direction: column !important;
     margin-left: -82px !important;
-    flex-flow: column;
+    flex-flow: column !important;
+  }
+  .css-12msj5r-MuiGrid-root{
+    flex-direction: column !important;
+    margin-top: 50px !important;
+    margin-bottom: 150px;
+  }
+  .css-1tc76if-MuiGrid-root{
+    flex-direction: column !important;
+    margin-top: 50px !important;
   }
   .css-7uql24 {
     margin-left: -82px !important;

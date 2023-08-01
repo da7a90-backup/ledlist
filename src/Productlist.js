@@ -13,10 +13,9 @@ import Link from '@mui/material/Link';
 import FormLabel from "@mui/material/FormLabel";
 import FormGroup from "@mui/material/FormGroup";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Checkbox, FormControlLabel, Slider } from "@mui/material";
+import { Slider } from "@mui/material";
 import CustomHintButton from "./CustomHintButton";
 import { fetchData } from "./services/Data";
-import Modal from "./Modal";
 import { PriorityHigh } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
@@ -38,7 +37,7 @@ const Productlist = props => {
     const [sortByShipping, setSortByShipping] = useState('shippingUsa');
     const [sortByValue, setSortByValue] = useState('discountedPerOutput');
     const [sortBySize, setSortBySize] = useState('height');
-    const [sortByWaveLengths, setSortByWaveLengths] = useState(0);
+    //const [sortByWaveLengths, setSortByWaveLengths] = useState(0);
 
 
     const [showPrice, setShowPrice] = useState(true);
@@ -52,32 +51,27 @@ const Productlist = props => {
     const [showWarranty, setShowWarranty] = useState(false);
     const [showEmf, setShowEmf] = useState(false);
     const [showWavelengths, setShowWavelengths] = useState(false);
-    const [shownWavelength, setShownWavelength] = useState({blue:[],red:[],nir:[]});
+    //const [shownWavelength, setShownWavelength] = useState({blue:[],red:[],nir:[]});
+    const [evenRowBgColor, setEvenBg] = useState('#fff');
+    const [oddRowBgColor, setOddBg] = useState('aliceblue');
+
+
 
     useEffect(()=>{
+      const switchToDark = ()=>{
+        setEvenBg('#000') 
+        setOddBg('#2c6fbb')
+      }
+     const switchToLight = ()=>{
+      setEvenBg('#fff') 
+      setOddBg('aliceblue')
+     }
+  
+      props.dark ?  switchToDark() : switchToLight()
       fetchData().then(data=>{
         setData(data);
       });
-    },[])
-
-    const mapColumnSwitch = (col) => {
-      switch(col){
-        case 'shippingUsa':
-          return 'Shipping U.S 🇺🇸'
-        case 'shippingIntl':
-          return 'Intl Shipping 🌎'
-        case 'discountedPerLed':
-          return '💲 per Led'
-        case 'discountedPerOutput':
-          return '💲 per Watt'
-        case 'height':
-          return 'Height 📏'
-        case 'width':
-          return 'Width 📐'
-        case 'weight':
-          return 'Weight ⚖️'
-      }
-    }
+    },[props.dark])
 
     const showSizeInBody = (size) => {
       if(sortBySize === 'height')
@@ -128,8 +122,29 @@ const Productlist = props => {
       name: "info",
       options: {
         filter: false,
-        sort: false,
-        viewColumns:false
+        viewColumns:false,
+        sortCompare: (order) => {
+          return (obj1, obj2) => {
+            if(order == "asc"){
+            if (obj1.data.productName < obj2.data.productName) {
+              return -1;
+            }
+            if (obj1.data.productName > obj2.data.productName) {
+              return 1;
+            }
+          }
+          if(order == "desc"){
+            if (obj1.data.productName > obj2.data.productName) {
+              return -1;
+            }
+            if (obj1.data.productName < obj2.data.productName) {
+              return 1;
+            }
+          }
+            return 0;          
+          
+          };
+        }
         },
     },
     {
@@ -953,27 +968,27 @@ const Productlist = props => {
 
 
   const MyCustomRowComponent = (props) => {
-    const { dataIndex, rowIndex, info, cost, shipping, yearReleased, leds, ledcount, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths, dataObject} = props;
-    const bgColor = rowIndex % 2 === 0 ? '#fff' : 'aliceblue'
+    const { dataIndex, rowIndex, info, cost, shipping, yearReleased, leds, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths, dataObject} = props;
+    const bgColor = rowIndex % 2 === 0 ? evenRowBgColor : oddRowBgColor
     console.log(dataObject);
     return (
-      <TableRow style={{backgroundColor : bgColor, padding: 0}}>
-        <TableCell align="center">
-          <IconButton onClick={()=>{
+      <TableRow style={{backgroundColor : bgColor, padding: 0, color: '#fff'}}>
+        <TableCell style={{color: '#ffff'}} align="center">
+          <IconButton style={{color: !props.dark ? '#000' : '#ffff'}} onClick={()=>{
               const passphrase = prompt("Please enter the password here");
               if(passphrase===null){
                 return
               }
-              if(passphrase!=="1xelA@fEr"){
+              if(passphrase!=="Red4Win"){
                 alert("you don't have access to this!")
                 return
               }
-          navigate('/details', {state: dataObject})
+          navigate('/details', {state: {object: dataObject, allData: data}})
           }}>
           {rowIndex+1}
           </IconButton>
          </TableCell>
-        <TableCell style={{width: '15vw'}} align="center">{info.productName}             
+        <TableCell style={{width: '15vw', color: !props.dark ? '#000' : '#ffff'}} align="center">{info.productName}             
         <Tooltip 
                enterTouchDelay={0}
                leaveTouchDelay={2500}
@@ -1007,12 +1022,12 @@ const Productlist = props => {
             
             </TableCell>
           {showPrice && (
-            <TableCell align="center"> 
+            <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center"> 
             <b>{`$${cost}` }</b>
             </TableCell>
           )}
         {showShipping && (
-        <TableCell align="center"> 
+        <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center"> 
         <Tooltip 
         enterTouchDelay={0}
         leaveTouchDelay={2500}
@@ -1041,7 +1056,7 @@ const Productlist = props => {
         )}
 
         {showLeds && (
-        <TableCell align="center">
+        <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center">
         <Tooltip
         enterTouchDelay={0} 
         leaveTouchDelay={2500}
@@ -1070,42 +1085,45 @@ const Productlist = props => {
         )}
 
           {showTotalPower && (
-          <TableCell align="center">
+          <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center">
           {leds.totalPowerOutput} W
           </TableCell>  
           )}
 
           {showAvPower && (
-          <TableCell align="center">
+          <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center">
           {leds.avCombinedPower} mw/cm2
           </TableCell> 
           )}
 
           {showValue && (
-          <TableCell align="center">
+          <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center">
           <b>${sortByValue === 'discountedPerLed' ? `${value[sortByValue]} / LED` : `${value[sortByValue]} / Watt` }</b>
           </TableCell>   
           )}
 
           {showEmf && (
-            <TableCell align="center">
-              <span>⚡ {(nnemf.emfe.toLowerCase().includes('green') && (<span> <Tooltip title={nnemf.emfe.toLowerCase().replace('green','')}><span>🟢</span></Tooltip> </span>))}
-              {(nnemf.emfe.toLowerCase().includes('orange') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('orange','')}><span>🟠</span></Tooltip> </span>))}
-              {(nnemf.emfe.toLowerCase().includes('yellow') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('yellow','')}><span>🟡</span></Tooltip> </span>))}
-              {(nnemf.emfe.toLowerCase().includes('red') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('red','')}><span>🔴</span></Tooltip> </span>))}
+            <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center">
+              <span>⚡ {
+                nnemf.emfe !== undefined ? (nnemf.emfe.toLowerCase().includes('green') && (<span> <Tooltip title={nnemf.emfe.toLowerCase().replace('green','')}><span>🟢</span></Tooltip> </span>)) : "?"}
+              {
+                nnemf.emfe !== undefined ? 
+              (nnemf.emfe.toLowerCase().includes('orange') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('orange','')}><span>🟠</span></Tooltip> </span>)) : "?"}
+              {nnemf.emfe !== undefined ? (nnemf.emfe.toLowerCase().includes('yellow') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('yellow','')}><span>🟡</span></Tooltip> </span>)): "?"}
+              {nnemf.emfe !== undefined ? (nnemf.emfe.toLowerCase().includes('red') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('red','')}><span>🔴</span></Tooltip> </span>)) : "?"}
               {((nnemf.emfe.toLowerCase().includes('tbc') || nnemf.emfe === '') && (<span>?</span>))}
                </span> <br/>
-              <span>🧲 {(nnemf.mag.toLowerCase().includes('green') && (<span><Tooltip title={nnemf.mag.toLowerCase().replace('green','')}><span>🟢</span></Tooltip> </span>))}
-              {(nnemf.mag.toLowerCase().includes('orange') && (<span><Tooltip title={nnemf.mag.toLowerCase().replace('orange','')}><span>🟠</span></Tooltip> </span>))}
-              {(nnemf.mag.toLowerCase().includes('yellow') && (<span><Tooltip title={nnemf.mag.toLowerCase().replace('yellow','')}><span>🟡</span></Tooltip> </span>))}
-              {(nnemf.mag.toLowerCase().includes('red') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('red','')}><span>🔴</span></Tooltip> </span>))}
-              {((nnemf.mag.toLowerCase().includes('tbc') || nnemf.mag === '') && (<span>?</span>))} </span>
+              <span>🧲 {nnemf.mag !== undefined ? (nnemf.mag.toLowerCase().includes('green') && (<span><Tooltip title={nnemf.mag.toLowerCase().replace('green','')}><span>🟢</span></Tooltip> </span>)) : "?"}
+              {nnemf.mag !== undefined ? (nnemf.mag.toLowerCase().includes('orange') && (<span><Tooltip title={nnemf.mag.toLowerCase().replace('orange','')}><span>🟠</span></Tooltip> </span>)) : "?"}
+              {nnemf.mag !== undefined ? (nnemf.mag.toLowerCase().includes('yellow') && (<span><Tooltip title={nnemf.mag.toLowerCase().replace('yellow','')}><span>🟡</span></Tooltip> </span>)) : "?"}
+              {nnemf.mag !== undefined ? (nnemf.mag.toLowerCase().includes('red') && (<span><Tooltip title={nnemf.emfe.toLowerCase().replace('red','')}><span>🔴</span></Tooltip> </span>)) : "?"}
+              {((nnemf.mag.toLowerCase().includes('tbc') || nnemf.mag === '' || nnemf.mag === undefined) && (<span>?</span>))} </span>
             </TableCell>
           )
 
           }
           {showSize && (
-                    <TableCell align="center">
+                    <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center">
                     <Tooltip 
                     enterTouchDelay={0}
                     leaveTouchDelay={2500}
@@ -1136,18 +1154,18 @@ const Productlist = props => {
           )
           }
           {showWarranty && (
-                <TableCell align="center">
+                <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center">
                 <span>{`${warranty.warranty} years`}</span>
                 </TableCell>
           )}
           {showFlickernsound && (
-          <TableCell align="center">
+          <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center">
             {flickernsound.soundLevels}
              </TableCell>   
 
           )}
           {showWavelengths && (
-            <TableCell align="left">
+            <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="left">
               <div>
                         {wavelengths.nm480 > 0 && (<b style={{color:'blue'}}>480x{wavelengths.nm480} {wavelengths.nm480real && (
                           <Tooltip title={`480 real reading: ${wavelengths.nm480real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
@@ -1287,11 +1305,17 @@ const Productlist = props => {
       },
     responsive: "responsive",
     customRowRender: (data, dataIndex, rowIndex) => {
-        const [_id, info, cost, shipping, leds, ledcount, totalPowerOutput, avCombinedPower, value, features, size, warranty, flickernsound, wavelengths] = data;
-        const yearReleased = data[18]
-        const nnemf = data[8]
+        const [_id, info, cost, shipping, leds, ledcount, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths] = data;
+        const yearReleased = data[22]
+        const ledDualChip = data[26]
+        const pulsing = data[27]
+        const modularSupport = data[28]
+        const inbuiltTimer = data[29]
+        const stands = data [30]
+        const features = {ledDualChip,pulsing,modularSupport,inbuiltTimer, stands}
+
         const dataObject = {_id, info, cost, shipping, leds, features, flickernsound, nnemf, warranty, value, wavelengths, yearReleased, cost, size}
-        console.log(dataObject)
+        console.log(data)
         return (
           <MyCustomRowComponent
           dataIndex={dataIndex}
@@ -1301,7 +1325,6 @@ const Productlist = props => {
           shipping={shipping}
           yearReleased={yearReleased}
           leds={leds}
-          ledcount={ledcount}
           totalPowerOutput={totalPowerOutput}
           avCombinedPower={avCombinedPower}
           value={value}
@@ -1312,6 +1335,7 @@ const Productlist = props => {
           wavelengths={wavelengths}
           nnemf={nnemf}
           dataObject={dataObject}
+          dark={props.dark}
           />
         );
       },
@@ -1322,108 +1346,280 @@ const Productlist = props => {
     fixedHeader: true
   };
 
+ const lightTheme = createTheme({
+    components: {
+        MuiTable:{
+          styleOverrides:{ root:{
+            borderCollapse:'separate',
+            borderSpacing: '5px'
+            }}
+        },
+        MuiTableCell: {
+            styleOverrides:{ body: {
+                //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);',
+                padding: '0',
+                borderBottom:'1px solid #2c6fbb',
+                borderCollapse: 'separate',
+            }}
+          },
+        MuiTableSortLabel: {
+          styleOverrides:{
+            root: {
+              width: "0.5rem",
+              },
+            }
+          },
+        MuiTableCell: {
+            styleOverrides:{ root: {
+              padding: '0px'
+            }}
+        },
+        MuiTableCell: {
+            styleOverrides:{ head: {
+              outline: '#2c6fbb auto',
+              borderCollapse: 'separate',
+              borderRadius: '15px 15px 15px 15px',
+              borderBottom: '0',
+              textAlign: 'center',
+              padding: '10px',
+              fontVariantEmoji:'emoji',
+              fontWeight:'bold',
+              alignContent: 'center'
+            }}
+        },
+        MUIDataTableHeadCell:{
+            styleOverrides:{ data:{
+              fontWeight:'bold'
+            }}
+        },
+        MUIDataTableViewCol: {
+          styleOverrides:{ root:{
+              right: '5vw'
+          }}
+        },
+          MuiSvgIcon: {
+            styleOverrides:{ root:{
+                //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);'
+                    color: '#2c6fbb'
+            }
+            }
+          },
+          MUIDataTableFilter: {
+            styleOverrides: { root: {
+                    height: '380px',
+                    overflowY: 'scroll',
+            }
+          }
+          },
+          MuiGrid:{
+            styleOverrides: {root: {
+              zIndex:'10'
+            }}
+          },
+          MuiChip: {
+            styleOverrides: { root: {
+              display : 'none'
+            }}
+          },
+          MuiFormControlLabel: {
+            styleOverrides: {root: {
+                    marginLeft: '0'
+            }}
+          },
+          MUIDataTableToolbar:{
+            styleOverrides: {left: {
+                    marginTop: '180px'
+            }}
+          },
+          MuiTypography: {
+            styleOverrides: {root: {
+                    fontWeight: '900'
+            }}
+          },
+          MuiCheckbox:{
+            styleOverrides: {root: {
+                    paddingLeft: '26px',
+                    paddingRight: '12px'
+            }}
+          },
+          MUIDataTableViewCol:{
+            styleOverrides:{title: {
+                    textAlign: 'center',
+                    paddingRight: '15vw'
+            }}
+          }
+    },
+    })
+
+
+    const darkTheme = createTheme({
+      components: {
+        MuiTable:{
+          styleOverrides:{ root:{
+            borderCollapse:'separate',
+            borderSpacing: '5px'
+            }}
+        },
+          MuiTable:{
+            styleOverrides:{ root:{
+              borderCollapse:'separate',
+              borderSpacing: '5px',
+              background: "#000",
+              color: "#ffff"
+              }}
+          },
+          MuiTableCell: {
+              styleOverrides:{ body: {
+                  //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);',
+                  padding: '0',
+                  borderBottom:'1px solid #2c6fbb',
+                  borderCollapse: 'separate',
+                  background: "#000",
+                  color: "#ffff"
+              }}
+            },
+          MuiTableSortLabel: {
+            styleOverrides:{
+              root: {
+                width: "0.5rem",
+                },
+              }
+            },
+          MuiTableCell: {
+              styleOverrides:{ root: {
+                padding: '0px',
+                background: "#000",
+                color: "#ffff"
+              }}
+          },
+
+          MuiTableCell: {
+              styleOverrides:{ head: {
+                outline: '#2c6fbb auto',
+                borderCollapse: 'separate',
+                borderRadius: '15px 15px 15px 15px',
+                borderBottom: '0',
+                textAlign: 'center',
+                padding: '10px',
+                fontVariantEmoji:'emoji',
+                fontWeight:'bold',
+                alignContent: 'center',
+                background: "#000",
+                color: "#ffff"
+              }}
+          },
+          MUIDataTableHeadCell:{
+              styleOverrides:{ data:{
+                fontWeight:'bold',
+                background: "#000",
+                color: "#ffff"
+              }}
+          },
+          MUIDataTableViewCol: {
+            styleOverrides:{ root:{
+                right: '5vw',
+                background: "#000",
+                color: "#ffff"
+            }}
+          },
+            MuiSvgIcon: {
+              styleOverrides:{ root:{
+                  //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);'
+                      color: '#2c6fbb',
+                      background: "#000",
+                      color: "#ffff"
+              }
+              }
+            },
+            MUIDataTableFilter: {
+              styleOverrides: { root: {
+                      height: '345px',
+                      overflowY: 'scroll',
+                      background: "#000",
+                      color: "#ffff"
+              }
+            }
+            },
+            MuiGrid:{
+              styleOverrides: {root: {
+                zIndex:'10',
+                background: "#000",
+                color: "#ffff"
+              }}
+            },
+            MuiChip: {
+              styleOverrides: { root: {
+                display : 'none',
+                background: "#000",
+                color: "#ffff"
+              }}
+            },
+            MuiFormControlLabel: {
+              styleOverrides: {root: {
+                      marginLeft: '0',
+                      background: "#000",
+                      color: "#ffff"
+              }}
+            },
+            MUIDataTableToolbar:{
+              styleOverrides: {left: {
+                      marginTop: '120px',
+                      background: "#000",
+                      color: "#ffff"
+              }}
+            },
+            MuiTypography: {
+              styleOverrides: {root: {
+                      fontWeight: '900',
+                      background: "#000",
+                      color: "#ffff"
+              }}
+            },
+            MuiCheckbox:{
+              styleOverrides: {root: {
+                      paddingLeft: '26px',
+                      paddingRight: '12px',
+                      background: "#000",
+                      color: "#ffff"
+              }}
+            },
+            MUIDataTableViewCol:{
+              styleOverrides:{title: {
+                      textAlign: 'center',
+                      paddingRight: '15vw',
+                      background: "#000",
+                      color: "#ffff"
+              }}
+            },
+            MuiFormLabel:{
+              styleOverrides: {root:{
+                background: "#000",
+                color: "#ffff"
+              }}
+            },
+            MuiPaper:{
+              styleOverrides:{root:{
+                background: "#000",
+                color: "#ffff"
+              }}
+            },
+            MuiSvgIcon:{
+              styleOverrides: {root:{
+                color: "#2c6fbb !important"
+              }}
+            },
+            MUIDataTableSearch:{
+              styleOverrides: {searchText:{
+                background: '#2b2b2b'
+              }}
+            }
+      },
+      })
+
 
   return (
     <ThemeProvider
-theme={createTheme({
-components: {
-    MuiTable:{
-      styleOverrides:{ root:{
-        borderCollapse:'separate',
-        borderSpacing: '5px'
-        }}
-    },
-    MuiTableCell: {
-        styleOverrides:{ body: {
-            //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);',
-            padding: '0',
-            borderBottom:'1px solid #2c6fbb',
-            borderCollapse: 'separate',
-        }}
-      },
-    MuiTableSortLabel: {
-      styleOverrides:{
-        root: {
-          width: "0.5rem",
-          },
-        }
-      },
-    MuiTableCell: {
-        styleOverrides:{ root: {
-          padding: '0px'
-        }}
-    },
-    MuiTableCell: {
-        styleOverrides:{ head: {
-          outline: '#2c6fbb auto',
-          borderCollapse: 'separate',
-          borderRadius: '15px 15px 15px 15px',
-          borderBottom: '0',
-          textAlign: 'center',
-          padding: '10px',
-          fontVariantEmoji:'emoji',
-          fontWeight:'bold',
-          alignContent: 'center'
-        }}
-    },
-    MUIDataTableHeadCell:{
-        styleOverrides:{ data:{
-          fontWeight:'bold'
-        }}
-    },
-    MUIDataTableViewCol: {
-      styleOverrides:{ root:{
-          right: '5vw'
-      }}
-    },
-      MuiSvgIcon: {
-        styleOverrides:{ root:{
-            //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);'
-                color: '#2c6fbb'
-        }
-        }
-      },
-      MUIDataTableFilter: {
-        styleOverrides: { root: {
-                height: '380px',
-                overflowY: 'scroll'
-        }
-      }
-      },
-      MuiChip: {
-        styleOverrides: { root: {
-          display : 'none'
-        }}
-      },
-      MuiFormControlLabel: {
-        styleOverrides: {root: {
-                marginLeft: '0'
-        }}
-      },
-      MUIDataTableToolbar:{
-        styleOverrides: {left: {
-                marginTop: '180px'
-        }}
-      },
-      MuiTypography: {
-        styleOverrides: {root: {
-                fontWeight: '900'
-        }}
-      },
-      MuiCheckbox:{
-        styleOverrides: {root: {
-                paddingLeft: '26px',
-                paddingRight: '12px'
-        }}
-      },
-      MUIDataTableViewCol:{
-        styleOverrides:{title: {
-                textAlign: 'center',
-                paddingRight: '15vw'
-        }}
-      }
-},
-})}
+theme={props.dark ? darkTheme : lightTheme}
 >
     <MUIDataTable
       data={data}

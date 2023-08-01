@@ -19,6 +19,7 @@
         return alteredData;
 
         }
+
     const insertProduct = async (product) => {
         const result = await fetch('https://ledlist.sidbarrack.workers.dev/insertRecord', {
             method: 'POST',
