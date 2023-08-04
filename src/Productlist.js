@@ -60,7 +60,7 @@ const Productlist = props => {
     useEffect(()=>{
       const switchToDark = ()=>{
         setEvenBg('#000') 
-        setOddBg('#2c6fbb')
+        setOddBg('#238ffc')
       }
      const switchToLight = ()=>{
       setEvenBg('#fff') 
@@ -1017,7 +1017,7 @@ const Productlist = props => {
                 <b>Youtube Review</b><br/><Paper align='center' elevation={2}><Link target="_blank" href={`${info.youtubeReview}`}><YouTubeIcon sx={{color:'red'}}></YouTubeIcon></Link></Paper><br/>
                 </React.Fragment>
                     }>
-            <InfoIcon style={{ float: 'right' }} sx={{color: !props.dark ? "#2c6fbb" : rowIndex % 2 === 0 ? "#2c6fbb" : "#000"  }}></InfoIcon>
+            <InfoIcon style={{ float: 'right' }} color="primary"></InfoIcon>
             </Tooltip>
             
             </TableCell>
@@ -1168,31 +1168,31 @@ const Productlist = props => {
             <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="left">
               <div>
                         {wavelengths.nm480 > 0 && (<b style={{color:'blue'}}>480x{wavelengths.nm480} {wavelengths.nm480real && (
-                          <Tooltip title={`480 real reading: ${wavelengths.nm480real}`}><PriorityHigh  style={{ float: 'right' }} sx={{color: !props.dark ? "#2c6fbb" : rowIndex % 2 === 0 ? "#2c6fbb" : "#000"  }}></PriorityHigh></Tooltip>
+                          <Tooltip title={`480 real reading: ${wavelengths.nm480real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b>)}
                         {wavelengths.nm610 > 0 && (<b style={{color:'red'}}>610x{wavelengths.nm610} {wavelengths.nm610real && (
-                          <Tooltip title={`610 real reading: ${wavelengths.nm610real}`}><PriorityHigh style={{ float: 'right' }} sx={{color: !props.dark ? "#2c6fbb" : rowIndex % 2 === 0 ? "#2c6fbb" : "#000"  }}></PriorityHigh></Tooltip>
+                          <Tooltip title={`610 real reading: ${wavelengths.nm610real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )}  </b>)}
                         {wavelengths.nm630 > 0 && (<b style={{color:'red'}}>630x{wavelengths.nm630} {wavelengths.nm630real && (
-                          <Tooltip title={`630 real reading: ${wavelengths.nm630real}`}><PriorityHigh style={{ float: 'right' }} sx={{color: !props.dark ? "#2c6fbb" : rowIndex % 2 === 0 ? "#2c6fbb" : "#000"  }}></PriorityHigh></Tooltip>
+                          <Tooltip title={`630 real reading: ${wavelengths.nm630real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )}  </b> )}
                         {wavelengths.nm660 > 0 && (<b style={{color:'red'}}>660x{wavelengths.nm660} {wavelengths.nm660real && (
-                          <Tooltip title={`660 real reading: ${wavelengths.nm660real}`}><PriorityHigh style={{ float: 'right' }} sx={{color: !props.dark ? "#2c6fbb" : rowIndex % 2 === 0 ? "#2c6fbb" : "#000"  }}></PriorityHigh></Tooltip>
+                          <Tooltip title={`660 real reading: ${wavelengths.nm660real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b> )}
                         {wavelengths.nm810 > 0 && (<b style={{color:'gray'}}>810x{wavelengths.nm810} {wavelengths.nm810real && (
-                          <Tooltip title={`810 real reading: ${wavelengths.nm810real}`}><PriorityHigh style={{ float: 'right' }} sx={{color: !props.dark ? "#2c6fbb" : rowIndex % 2 === 0 ? "#2c6fbb" : "#000"  }}></PriorityHigh></Tooltip>
+                          <Tooltip title={`810 real reading: ${wavelengths.nm810real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b> )}
                         {wavelengths.nm830 > 0 && (<b style={{color:'gray'}}>830x{wavelengths.nm830} {wavelengths.nm830real && (
-                          <Tooltip title={`830 real reading: ${wavelengths.nm830real}`}><PriorityHigh style={{ float: 'right' }} sx={{color: !props.dark ? "#2c6fbb" : rowIndex % 2 === 0 ? "#2c6fbb" : "#000"  }}></PriorityHigh></Tooltip>
+                          <Tooltip title={`830 real reading: ${wavelengths.nm830real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b> )}
                         {wavelengths.nm850 > 0 && (<b style={{color:'gray'}}>850x{wavelengths.nm850} {wavelengths.nm850real && (
-                          <Tooltip title={`850 real reading: ${wavelengths.nm850real}`}><PriorityHigh style={{ float: 'right' }} sx={{color: !props.dark ? "#2c6fbb" : rowIndex % 2 === 0 ? "#2c6fbb" : "#000"  }}></PriorityHigh></Tooltip>
+                          <Tooltip title={`850 real reading: ${wavelengths.nm850real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b> )}
                         {wavelengths.nm930 > 0 && (<b style={{color:'gray'}}>930x{wavelengths.nm930} {wavelengths.nm930real && (
-                          <Tooltip title={`930 real reading: ${wavelengths.nm930real}`}><PriorityHigh style={{ float: 'right' }} sx={{color: !props.dark ? "#2c6fbb" : rowIndex % 2 === 0 ? "#2c6fbb" : "#000"  }}></PriorityHigh></Tooltip>
+                          <Tooltip title={`930 real reading: ${wavelengths.nm930real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b> )}
                         {wavelengths.nm950 > 0 && (<b style={{color:'gray'}}>950x{wavelengths.nm950} {wavelengths.nm950real && (
-                          <Tooltip title={`950 real reading: ${wavelengths.nm950real}`}><PriorityHigh style={{ float: 'right' }} sx={{color: !props.dark ? "#2c6fbb" : rowIndex % 2 === 0 ? "#2c6fbb" : "#000"  }}></PriorityHigh></Tooltip>
+                          <Tooltip title={`950 real reading: ${wavelengths.nm950real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b> )}                        
               </div>
             </TableCell>
