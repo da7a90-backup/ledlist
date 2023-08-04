@@ -8,7 +8,7 @@ import { styled } from '@mui/material/styles';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch, { SwitchProps } from '@mui/material/Switch';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -61,12 +61,25 @@ const getSwitch = (props)=><MaterialUISwitch sx={{ m: 1 }} checked={props.checke
 
 
 function App() {
-  const [dark, setDark] = useState(true)
+  const [dark, setDark] = useState(false)
+
+  useEffect(()=>{
+    const preferredTheme = localStorage.getItem("preferredTheme");
+
+    if(preferredTheme === "dark")
+     {setDark(true)} 
+     
+  },[])
 
   
+  const setPreferredTheme = ()=>{
+    dark ? localStorage.setItem("preferredTheme", "light") : localStorage.setItem("preferredTheme", "dark")
+    setDark(!dark)
+  
+  }
   return (
     <div className="App">
-    <Header dark={dark} switcher={()=>getSwitch({checked:dark, toggle: ()=>setDark(!dark)})}></Header> 
+    <Header dark={dark} switcher={()=>getSwitch({checked:dark, toggle: setPreferredTheme})}></Header> 
       <Routes>
         <Route path='/' element={<Productlist dark={dark}/>}></Route>
         <Route path='/details' element={<Modal dark={dark}/>}></Route>

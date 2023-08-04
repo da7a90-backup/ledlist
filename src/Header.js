@@ -11,7 +11,7 @@ export default function Header({dark, switcher}) {
 
   const femmecubatorLogo = (
 <>  <Typography sx={{color:'#2c6fbb'}} variant="h6" component="h1">
-     Red light Therapy LED Panel Comaparative List by <b> <a style={{textDecoration:'none', color:'#2c6fbb'}} href="https://www.alexfergus.com/">Alex Fergus</a></b>
+     Red light Therapy Product Database - By <b> <a style={{textDecoration:'none', color:'#2c6fbb'}} href="https://www.lighttherapyinsiders.com/">LightTherapyInsiders.com</a></b> &amp; <b> <a style={{textDecoration:'none', color:'#2c6fbb'}} href="https://www.alexfergus.com/">Alex Fergus</a></b>
     </Typography></>
   );
 

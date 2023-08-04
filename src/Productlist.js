@@ -1013,8 +1013,8 @@ const Productlist = props => {
                 <b>Company Warehouse</b><br/><Paper align='center' elevation={2}>{info.warehouse.join(", ")}</Paper>
                 <b>Class</b><br/><Paper align='center' elevation={2}>{info.class}</Paper><br/>
                 <b>Discount Code</b><br/><Paper align='center' elevation={2}>{info.discountCode}</Paper><br/>
-                <b>Product Link</b><br/><Paper align='center' elevation={2}><Link color="primary" href={`${info.productLink}`}><ShortcutIcon></ShortcutIcon></Link></Paper><br/>
-                <b>Youtube Review</b><br/><Paper align='center' elevation={2}><Link href={`${info.youtubeReview}`}><YouTubeIcon sx={{color:'red'}}></YouTubeIcon></Link></Paper><br/>
+                <b>Product Link</b><br/><Paper align='center' elevation={2}><Link target="_blank" color="primary" href={`${info.productLink}`}><ShortcutIcon></ShortcutIcon></Link></Paper><br/>
+                <b>Youtube Review</b><br/><Paper align='center' elevation={2}><Link target="_blank" href={`${info.youtubeReview}`}><YouTubeIcon sx={{color:'red'}}></YouTubeIcon></Link></Paper><br/>
                 </React.Fragment>
                     }>
             <InfoIcon style={{ float: 'right' }} color="primary"></InfoIcon>
