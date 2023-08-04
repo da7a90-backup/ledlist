@@ -1160,7 +1160,7 @@ const Productlist = props => {
           )}
           {showFlickernsound && (
           <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center">
-            {flickernsound.soundLevels}
+            {flickernsound.soundLevels} dB
              </TableCell>   
 
           )}

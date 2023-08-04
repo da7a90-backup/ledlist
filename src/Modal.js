@@ -12,6 +12,9 @@ import { PlusOneOutlined, Delete } from '@mui/icons-material';
 import { insertProduct, updateRecord, deleteRecord } from './services/Data';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Autocomplete } from '@mui/material';
+import { Chip } from '@mui/material';
+import { Select } from '@mui/material';
+import { MenuItem } from '@mui/material';
 
 
 
@@ -27,12 +30,12 @@ import { Autocomplete } from '@mui/material';
 
   console.log(info.productName);
   const productName = useRef(info.productName) 
-  console.log(productName);
+  console.log(info.warehouse);
 
   const company = useRef(info.company) 
   const class_  = useRef(info.class)
   const companyHq = useRef(info.companyHq)
-  const warehouse = useRef(info.warehouse.join('\n'))
+  const [warehouse, setWarehouse] = useState(info.warehouse)
   const yearReleased1 = useRef(yearReleased)
   const discountCode = useRef(info.discountCode)
   const productLink = useRef(info.productLink)
@@ -64,6 +67,11 @@ import { Autocomplete } from '@mui/material';
 
   const [edit, setEdit] = useState(true);
 
+  const currentYear = (new Date()).getFullYear();
+const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1}, (_, i) => start + (i * step));
+const years = range(currentYear, currentYear - 50, -1); 
+// [2019, 2018, 2017, 2016, ..., 1969]
+
 
   const handleEdit = () => {
     setEdit(!edit);
@@ -88,7 +96,7 @@ import { Autocomplete } from '@mui/material';
       company: company.current,
       class: class_.current,
       companyHq: companyHq.current,
-      warehouse: warehouse.current,
+      warehouse: warehouse.join("\n"),
       discountCode: discountCode.current,
       productLink: productLink.current,
       youtubeReview: youtubeReview.current,
@@ -208,7 +216,7 @@ import { Autocomplete } from '@mui/material';
         <TextField required defaultValue={info.productName} onChange={(e)=>{productName.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
 
-        <FormGroup column='column'>
+        <FormGroup sx={{width: '20%'}} column='column'>
              <h5>Product Company</h5>
              <Autocomplete
              freeSolo
@@ -219,7 +227,7 @@ import { Autocomplete } from '@mui/material';
           />
           </FormGroup>
 
-          <FormGroup column='column'>
+          <FormGroup sx={{width: '20%'}}  column='column'>
               <h5>Company Location</h5>
         <Autocomplete
              freeSolo
@@ -229,11 +237,33 @@ import { Autocomplete } from '@mui/material';
            renderInput={(params) => <TextField {...params} label="Location" defaultValue={info.companyHq} onChange={(e)=>{companyHq.current = e.target.value}} disabled={edit}></TextField>}
           />
           </FormGroup>
-          <FormGroup column='column'>
-              <h5>Warehouse (if multiple separate by carriage return)</h5>
-        <TextField required multiline={true} defaultValue={info.warehouse.join('\n')} onChange={(e)=>{warehouse.current = e.target.value}} disabled={edit}></TextField>
+          <FormGroup sx={{width: '20%'}} column='column'>
+              <h5>Warehouse</h5>
+              <Autocomplete
+             freeSolo
+            id="warehouses"
+            multiple
+            onChange={(event, newValue) => {
+              setWarehouse([...warehouse, newValue]);
+              console.log(newValue)
+            }}
+            defaultValue={[...warehouse]}
+           options={locations}
+           renderTags={(value, getTagProps) =>
+            value.map((option, index) => (
+              <Chip
+                variant="outlined"
+                label={option}
+                {...getTagProps({ index })}
+              />
+            ))
+          }
+           renderInput={(params) => <TextField {...params} label="Location" disabled={edit}></TextField>}
+          />
           </FormGroup>
-          <FormGroup column='column'>
+          </FormGroup>
+          <FormGroup row>
+          <FormGroup sx={{width: '20%'}}  column='column'>
           <h5>Product Class</h5>
           <Autocomplete
              freeSolo
@@ -243,9 +273,15 @@ import { Autocomplete } from '@mui/material';
            renderInput={(params) => <TextField {...params} label="Class" defaultValue={info.class} onChange={(e)=>{class_.current = e.target.value}} disabled={edit}></TextField>}
           />
           </FormGroup>
-          <FormGroup column='column'>
+          <FormGroup sx={{width: '10%'}}  column='column'>
           <h5>Year Released</h5>
-        <TextField required defaultValue={yearReleased} onChange={(e)=>{yearReleased1.current = e.target.value}} disabled={edit}></TextField>
+          <Autocomplete 
+          freeSolo
+          disablePortal
+          id="years"
+          options={years}
+          renderInput={(params) => <TextField {...params} label="Year" defaultValue={yearReleased} onChange={(e)=>{yearReleased1.current = e.target.value}} disabled={edit}></TextField>}
+          />
           </FormGroup>
           <FormGroup column='column'>
           <h5>Discount Code</h5>
@@ -279,73 +315,89 @@ import { Autocomplete } from '@mui/material';
           <TextField required type="number" defaultValue={shipping.shippingIntl} onChange={(e)=>{shippingIntl.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
-          <h5> Discounted Per Led</h5>
+          <h5> $ Per Led</h5>
         <TextField required type="number" defaultValue={value.discountedPerLed} onChange={(e)=>{discountedPerLed.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
-          <h5>Discounted Per Output</h5>
+          <h5>$ Per Output</h5>
         <TextField required type="number" defaultValue={value.discountedPerOutput} onChange={(e)=>{discountedPerOutput.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
-          <h5>Height</h5>
+          <h5>Height (inches)</h5>
         <TextField required type="number" defaultValue={size.height} onChange={(e)=>{height.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         <FormGroup column='column'>
-        <h5>Width</h5>
+        <h5>Width (inches)</h5>
         <TextField required type="number" defaultValue={size.width} onChange={(e)=>{width.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         <FormGroup column='column'>
-        <h5>Weight</h5>
+        <h5>Weight (lb)</h5>
         <TextField required type="number" defaultValue={size.weight} onChange={(e)=>{weight.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         </FormGroup>
 
         <FormLabel>Features and Warranty</FormLabel>
         <FormGroup row>
-        <FormGroup column='column'>
+        <FormGroup sx={{width: '10%'}} column='column'>
         <h5>Pulsing</h5>
-        <TextField required defaultValue={features.pulsing} onChange={(e)=>{pulsing.current = e.target.value}} disabled={edit}></TextField>
+        <Select required defaultValue={features.pulsing} onChange={(e)=>{pulsing.current = e.target.value}} disabled={edit}>
+          <MenuItem value={1}>Yes</MenuItem>
+          <MenuItem value={0}>No</MenuItem>
+        </Select>
         </FormGroup>        
-        <FormGroup column='column'>
+        <FormGroup sx={{width: '10%'}} column='column'>
         <h5>Modular Support</h5>
-        <TextField required defaultValue={features.modularSupport} onChange={(e)=>{modularSupport.current = e.target.value}} disabled={edit}></TextField>
+        <Select required defaultValue={features.modularSupport} onChange={(e)=>{modularSupport.current = e.target.value}} disabled={edit}>
+          <MenuItem value={1}>Yes</MenuItem>
+          <MenuItem value={0}>No</MenuItem>
+        </Select>
         </FormGroup>        
-        <FormGroup column='column'>
-        <h5>Stands</h5>
-        <TextField required defaultValue={features.stands} onChange={(e)=>{stands.current = e.target.value}} disabled={edit}></TextField>
+        <FormGroup sx={{width: '10%'}} column='column'>
+        <h5>Stands Included</h5>
+        <Select required defaultValue={features.stands} onChange={(e)=>{stands.current = e.target.value}} disabled={edit}>
+          <MenuItem value={1}>Yes</MenuItem>
+          <MenuItem value={0}>No</MenuItem>
+        </Select>
         </FormGroup>        
-        <FormGroup column='column'>
+        <FormGroup sx={{width: '10%'}} column='column'>
         <h5>Inbuilt Timer</h5>
-        <TextField required defaultValue={features.inbuiltTimer} onChange={(e)=>{inbuiltTimer.current = e.target.value}} disabled={edit}></TextField>
+        <Select required defaultValue={features.inbuiltTimer} onChange={(e)=>{inbuiltTimer.current = e.target.value}} disabled={edit}>
+          <MenuItem value={1}>Yes</MenuItem>
+          <MenuItem value={0}>No</MenuItem>
+        </Select>
         </FormGroup>        
         <FormGroup column='column'>
-        <h5>Warranty</h5>
+        <h5>Warranty (years)</h5>
         <TextField required type="number" defaultValue={warranty.warranty} onChange={(e)=>{warranty1.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         </FormGroup>
 
-        <FormLabel>LEDS, Power and Wavelengths</FormLabel>
+        <FormLabel>Power </FormLabel>
         <FormGroup row>
         <FormGroup column='column'>
-        <h5>LEDs</h5>
+        <h5>Number of LEDs</h5>
         <TextField required type="number" defaultValue={leds.leds} onChange={(e)=>{leds1.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>        
         <FormGroup column='column'>
-        <h5>LED Dual Chip</h5>
+        <h5>LED Multi Chip</h5>
         <TextField required defaultValue={leds.ledDualChip} onChange={(e)=>{ledDualChip.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
-        <h5>Total Power Output</h5>
+        <h5>Total Power Output (W)</h5>
         <TextField required type="number" defaultValue={leds.totalPowerOutput} onChange={(e)=>{totalPowerOutput.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
-        <h5>Average Combined Power</h5>
+        <h5>Average Combined Power (W)</h5>
         <TextField required type="number" defaultValue={leds.avCombinedPower} onChange={(e)=>{avCombinedPower.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>     
         <FormGroup column='column'>
-        <h5>Peak Power</h5>
+        <h5>Peak Power (W)</h5>
         <TextField required type="number" defaultValue={leds.peakPower} onChange={(e)=>{peakPower.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>     
+        </FormGroup>
+
+        <FormLabel>Number of LEDs emitting wavelengths </FormLabel>
+        <FormGroup row>
         <FormGroup column='column'>
         <h5>480</h5>
         <TextField required type="number" defaultValue={wavelengths['nm480']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm480: e.target.value}}} disabled={edit}></TextField>
@@ -381,22 +433,30 @@ import { Autocomplete } from '@mui/material';
         <FormGroup column='column'>
         <h5>950</h5>
         <TextField required type="number" defaultValue={wavelengths['nm950']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm950:e.target.value}}}disabled={edit}></TextField>
-        </FormGroup>     
-        <FormGroup column='column'>
-        <h5>Peak Wavelengths Tested</h5>
-        <TextField required defaultValue={info.peakWavelengthsTested} onChange={(e)=>{peakWavelengthsTested.current = e.target.value}} disabled={edit}></TextField>
-        </FormGroup>     
-
+        </FormGroup>       
         </FormGroup>
+
         <FormLabel>nnEMF</FormLabel>
         <FormGroup row>
         <FormGroup column='column'>
-        <h5>EMFE</h5>
-        <TextField required defaultValue={nnemf.emfe} onChange={(e)=>{emfe.current = e.target.value}} disabled={edit}></TextField>
+        <h5>EMF - Electric Field (color and reading) </h5>
+        <Autocomplete
+             freeSolo
+            disablePortal
+            id="electric"
+           options={["Blue", "Green", "Yellow", "Orange", "Red"]}
+           renderInput={(params) => <TextField {...params} label="Electric Field" required defaultValue={nnemf.emfe} onChange={(e)=>{emfe.current = e.target.value}} disabled={edit}></TextField>}
+          />
         </FormGroup>
         <FormGroup column='column'>
-        <h5>MAG</h5>
-        <TextField required defaultValue={nnemf.mag} onChange={(e)=>{mag.current = e.target.value}} disabled={edit}></TextField>
+        <h5>EMF - Magnetic Field (color and reading)</h5>
+        <Autocomplete
+             freeSolo
+            disablePortal
+            id="magnetic"
+           options={["Blue", "Green", "Yellow", "Orange", "Red"]}
+           renderInput={(params) => <TextField {...params} label="Magnetic Field" required defaultValue={nnemf.mag} onChange={(e)=>{mag.current = e.target.value}} disabled={edit}></TextField>}
+          />
         </FormGroup>
         </FormGroup>
 
@@ -407,7 +467,7 @@ import { Autocomplete } from '@mui/material';
         <TextField type="number" required defaultValue={flickernsound.flicker} onChange={(e)=>{flicker.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
-        <h5>Sound Levels</h5>
+        <h5>Sound Levels (dB)</h5>
         <TextField required type="number" defaultValue={flickernsound.soundLevels} onChange={(e)=>{soundLevels.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         </FormGroup>
