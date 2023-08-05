@@ -56,7 +56,10 @@ import { MenuItem } from '@mui/material';
   const flicker = useRef()
   const soundLevels = useRef()
 
-
+  const currentYear = (new Date()).getFullYear();
+const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1}, (_, i) => start + (i * step));
+const years = range(currentYear, currentYear - 50, -1); 
+// [2019, 2018, 2017, 2016, ..., 1969]
   const handleAdd = async () => {
     const product = {
       info:{productName: productName.current || "",
