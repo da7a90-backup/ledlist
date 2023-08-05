@@ -10,7 +10,9 @@ import { FormControl, FormGroup, FormLabel, TextField, Tooltip } from '@mui/mate
 import { insertProduct} from './services/Data';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Autocomplete } from '@mui/material';
-
+import { Chip } from '@mui/material';
+import { Select } from '@mui/material';
+import { MenuItem } from '@mui/material';
 
 
  const EPModal = ({}) => {
@@ -24,7 +26,7 @@ import { Autocomplete } from '@mui/material';
   const company = useRef() 
   const class_  = useRef()
   const companyHq = useRef()
-  const warehouse = useRef()
+  const [warehouse, setWarehouse] = useState()
   const yearReleased1 = useRef()
   const discountCode = useRef()
   const productLink = useRef()
@@ -61,7 +63,7 @@ import { Autocomplete } from '@mui/material';
       company: company.current || "",
       class: class_.current || "",
       companyHq: companyHq.current || "",
-      warehouse: warehouse.current || "",
+      warehouse: warehouse.join("\n") || "",
       discountCode: discountCode.current || "",
       productLink: productLink.current || "",
       youtubeReview: youtubeReview.current || "",
@@ -186,7 +188,7 @@ import { Autocomplete } from '@mui/material';
           />
           </FormGroup>
 
-          <FormGroup sx={{width: '20%'}}  column='column'>
+          <FormGroup sx={{width: '10%'}}  column='column'>
               <h5>Company Location</h5>
         <Autocomplete
              freeSolo

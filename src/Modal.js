@@ -227,7 +227,7 @@ const years = range(currentYear, currentYear - 50, -1);
           />
           </FormGroup>
 
-          <FormGroup sx={{width: '20%'}}  column='column'>
+          <FormGroup sx={{width: '10%'}}  column='column'>
               <h5>Company Location</h5>
         <Autocomplete
              freeSolo
