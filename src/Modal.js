@@ -211,12 +211,12 @@ const years = range(currentYear, currentYear - 50, -1);
         <FormControl>
         <FormLabel>General Info</FormLabel>
         <FormGroup row>
-        <FormGroup column='column'>
+        <FormGroup sx={{width: '15%'}}  column='column'>
         <h5>Product Name</h5>
         <TextField required defaultValue={info.productName} onChange={(e)=>{productName.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
 
-        <FormGroup sx={{width: '20%'}} column='column'>
+        <FormGroup sx={{width: '10%'}} column='column'>
              <h5>Product Company</h5>
              <Autocomplete
              freeSolo
@@ -380,7 +380,10 @@ const years = range(currentYear, currentYear - 50, -1);
         </FormGroup>        
         <FormGroup column='column'>
         <h5>LED Multi Chip</h5>
-        <TextField required defaultValue={leds.ledDualChip} onChange={(e)=>{ledDualChip.current = e.target.value}} disabled={edit}></TextField>
+        <Select required defaultValue={leds.ledDualChip} onChange={(e)=>{ledDualChip.current = e.target.value}} disabled={edit}>
+          <MenuItem value={1}>Yes</MenuItem>
+          <MenuItem value={0}>No</MenuItem>
+        </Select>
         </FormGroup>
         <FormGroup column='column'>
         <h5>Total Power Output (W)</h5>
@@ -444,7 +447,7 @@ const years = range(currentYear, currentYear - 50, -1);
              freeSolo
             disablePortal
             id="electric"
-           options={["Blue", "Green", "Yellow", "Orange", "Red"]}
+           options={["Green", "Orange", "Red"]}
            renderInput={(params) => <TextField {...params} label="Electric Field" required defaultValue={nnemf.emfe} onChange={(e)=>{emfe.current = e.target.value}} disabled={edit}></TextField>}
           />
         </FormGroup>
@@ -464,7 +467,10 @@ const years = range(currentYear, currentYear - 50, -1);
         <FormGroup row>
         <FormGroup column='column'>
         <h5>Flicker</h5>
-        <TextField type="number" required defaultValue={flickernsound.flicker} onChange={(e)=>{flicker.current = e.target.value}} disabled={edit}></TextField>
+        <Select required defaultValue={flickernsound.flicker} onChange={(e)=>{flicker.current = e.target.value}} disabled={edit}>
+          <MenuItem value={1}>Yes</MenuItem>
+          <MenuItem value={0}>No</MenuItem>
+        </Select>
         </FormGroup>
         <FormGroup column='column'>
         <h5>Sound Levels (dB)</h5>
