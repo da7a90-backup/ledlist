@@ -447,8 +447,9 @@ const years = range(currentYear, currentYear - 50, -1);
              freeSolo
             disablePortal
             id="electric"
+            onChange={(e)=>{emfe.current = e.target.value}}
            options={["Green", "Orange", "Red"]}
-           renderInput={(params) => <TextField {...params} label="Electric Field" required defaultValue={nnemf.emfe} onChange={(e)=>{emfe.current = e.target.value}} disabled={edit}></TextField>}
+           renderInput={(params) => <TextField {...params} label="Electric Field" required defaultValue={nnemf.emfe} disabled={edit}></TextField>}
           />
         </FormGroup>
         <FormGroup column='column'>
@@ -457,8 +458,9 @@ const years = range(currentYear, currentYear - 50, -1);
              freeSolo
             disablePortal
             id="magnetic"
+            onChange={(e)=>{mag.current = e.target.value}}
            options={["Green", "Orange", "Red"]}
-           renderInput={(params) => <TextField {...params} label="Magnetic Field" required defaultValue={nnemf.mag} onChange={(e)=>{mag.current = e.target.value}} disabled={edit}></TextField>}
+           renderInput={(params) => <TextField {...params} label="Magnetic Field" required defaultValue={nnemf.mag} disabled={edit}></TextField>}
           />
         </FormGroup>
         </FormGroup>
