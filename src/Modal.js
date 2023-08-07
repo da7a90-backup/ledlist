@@ -457,7 +457,7 @@ const years = range(currentYear, currentYear - 50, -1);
              freeSolo
             disablePortal
             id="magnetic"
-           options={["Blue", "Green", "Yellow", "Orange", "Red"]}
+           options={["Green", "Orange", "Red"]}
            renderInput={(params) => <TextField {...params} label="Magnetic Field" required defaultValue={nnemf.mag} onChange={(e)=>{mag.current = e.target.value}} disabled={edit}></TextField>}
           />
         </FormGroup>
