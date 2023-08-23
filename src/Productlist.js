@@ -1472,18 +1472,13 @@ const Productlist = props => {
 
     const darkTheme = createTheme({
       components: {
-        MuiTable:{
-          styleOverrides:{ root:{
-            borderCollapse:'separate',
-            borderSpacing: '5px'
-            }}
-        },
           MuiTable:{
             styleOverrides:{ root:{
               borderCollapse:'separate',
               borderSpacing: '5px',
               background: "#000",
-              color: "#ffff"
+              color: "#ffff",
+              fontFamily: 'Saira'
               }}
           },
           MuiTableCell: {
@@ -1508,7 +1503,8 @@ const Productlist = props => {
               styleOverrides:{ root: {
                 padding: '0px',
                 background: "#000",
-                color: "#ffff"
+                color: "#ffff",
+                fontFamily: 'Saira'
               }}
           },
 
@@ -1532,7 +1528,8 @@ const Productlist = props => {
               styleOverrides:{ data:{
                 fontWeight:'bold',
                 background: "#000",
-                color: "#ffff"
+                color: "#ffff",
+                fontFamily: 'Saira'
               }}
           },
           MUIDataTableViewCol: {
@@ -1556,7 +1553,8 @@ const Productlist = props => {
                       height: '345px',
                       overflowY: 'scroll',
                       background: "#000",
-                      color: "#ffff"
+                      color: "#ffff",
+                      fontFamily: 'Saira'
               }
             }
             },
@@ -1578,7 +1576,8 @@ const Productlist = props => {
               styleOverrides: {root: {
                       marginLeft: '0',
                       background: "#000",
-                      color: "#ffff"
+                      color: "#ffff",
+                      fontFamily: 'Saira'
               }}
             },
             MUIDataTableToolbar:{
