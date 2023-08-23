@@ -473,7 +473,7 @@ const years = range(currentYear, currentYear - 50, -1);
           <MenuItem value={"Orange"}>Orange</MenuItem>
           <MenuItem value={"Yellow"}>Yellow</MenuItem>
         </Select>
-        <TextField type="number" label="Electric Field Reading" onChange={(e)=>{emfeReading.current = e.target.value}} required defaultValue={nnemf.emfe} disabled={edit}></TextField>
+        <TextField type="number" label="Electric Field Reading" onChange={(e)=>{emfeReading.current = e.target.value}} required defaultValue={emfeReading.current} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
         <h5>EMF - Magnetic Field (color and reading)</h5>
@@ -482,7 +482,7 @@ const years = range(currentYear, currentYear - 50, -1);
           <MenuItem value={"Orange"}>Orange</MenuItem>
           <MenuItem value={"Yellow"}>Yellow</MenuItem>
         </Select>
-        <TextField type="number" label="Magnetic Field Reading" onChange={(e)=>{magReading.current = e.target.value}} required defaultValue={nnemf.mag} disabled={edit}></TextField>
+        <TextField type="number" label="Magnetic Field Reading" onChange={(e)=>{magReading.current = e.target.value}} required defaultValue={magReading.current} disabled={edit}></TextField>
         </FormGroup>
         </FormGroup>
 
