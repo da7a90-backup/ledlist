@@ -1640,12 +1640,13 @@ const Productlist = props => {
               root:{
                 color: "#ffff"
               }
-            }}
-            //MUIDataTableSearch:{
-             // styleOverrides: {searchText:{
-               // background: '#ED3838'
-              //}}
-            //}
+            }},
+            MUIDataTableSearch:{
+              styleOverrides: {searchText:{
+                background: '#ED583E',
+                color: "#ffff"
+              }}
+            }
       },
       })
 
