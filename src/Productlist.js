@@ -1591,7 +1591,8 @@ const Productlist = props => {
               styleOverrides: {root: {
                       fontWeight: '900',
                       background: "#000",
-                      color: "#ffff"
+                      color: "#ffff",
+                      fontFamily: "Saira"
               }}
             },
             MuiCheckbox:{

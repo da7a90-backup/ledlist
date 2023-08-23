@@ -67,13 +67,15 @@ import { MenuItem } from '@mui/material';
   const peakPower = useRef(leds.peakPower)
   const wavelengths1 = useRef(wavelengths)
   const peakWavelengthsTested = useRef(info.peakWavelengthsTested)
-  const emfe= useRef(nnemf.emfe.replace(/\d+|^\s+|\s+$/g,''))
-  const emfeReading = useRef(nnemf.emfe.replace(/[^0-9]/g, ''))
-  const mag = useRef(nnemf.mag.replace(/\d+|^\s+|\s+$/g,''))
-  const magReading = useRef(nnemf.mag.replace(/[^0-9]/g, ''))
+  const emfe= useRef(nnemf.emfe.replace(/\d+|^\s+|\s+$|\./g,''))
+  const emfeReading = useRef(nnemf.emfe.match(/[+-]?\d+(\.\d+)?/g) ? nnemf.emfe.match(/[+-]?\d+(\.\d+)?/g)[0] : "")
+  const mag = useRef(nnemf.mag.replace(/\d+|^\s+|\s+$|\./g,''))
+  const magReading = useRef(nnemf.mag.match(/[+-]?\d+(\.\d+)?/g) ? nnemf.mag.match(/[+-]?\d+(\.\d+)?/g)[0] : "")
   const flicker = useRef(flickernsound.flicker)
   const soundLevels = useRef(flickernsound.soundLevels)
 
+  console.log(mag.current)
+  console.log(magReading)
   const [edit, setEdit] = useState(true);
 
   const currentYear = (new Date()).getFullYear();
@@ -156,6 +158,7 @@ const years = range(currentYear, currentYear - 50, -1);
       flicker: flicker.current,
       soundLevels: soundLevels.current}
     }
+    console.log(mag.current)
     console.log(product)
     const insert = await updateRecord(product, _id);
 
