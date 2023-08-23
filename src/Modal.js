@@ -238,7 +238,7 @@ const years = range(currentYear, currentYear - 50, -1);
             id="companies"
            options={companies}
            onChange={(e, newValue)=>{company.current = newValue}}
-           renderInput={(params) => <TextField {...params} label="Company" defaultValue={info.company} disabled={edit}></TextField>}
+           renderInput={(params) => <TextField {...params} label={info.company} defaultValue={info.company} disabled={edit}></TextField>}
           />
           </FormGroup>
 
@@ -250,7 +250,7 @@ const years = range(currentYear, currentYear - 50, -1);
             id="locations"
            options={locations}
            onChange={(e, newValue)=>{companyHq.current = newValue}}
-           renderInput={(params) => <TextField {...params} label="Location" defaultValue={info.companyHq} disabled={edit}></TextField>}
+           renderInput={(params) => <TextField {...params} label={info.companyHq} defaultValue={info.companyHq} disabled={edit}></TextField>}
           />
           </FormGroup>
           <FormGroup sx={{width: '20%'}} column='column'>
@@ -287,7 +287,7 @@ const years = range(currentYear, currentYear - 50, -1);
             id="classes"
            options={classes}
            onChange={(e, newValue)=>{class_.current = newValue}}
-           renderInput={(params) => <TextField {...params} label="Class" defaultValue={info.class} disabled={edit}></TextField>}
+           renderInput={(params) => <TextField {...params} label={info.class} defaultValue={info.class} disabled={edit}></TextField>}
           />
           </FormGroup>
           <FormGroup sx={{width: '10%'}}  column='column'>
@@ -298,7 +298,7 @@ const years = range(currentYear, currentYear - 50, -1);
           id="years"
           options={years}
           onChange={(e, newValue)=>{yearReleased1.current = newValue}} 
-          renderInput={(params) => <TextField {...params} label="Year" defaultValue={yearReleased} disabled={edit}></TextField>}
+          renderInput={(params) => <TextField {...params} label={yearReleased} defaultValue={yearReleased} disabled={edit}></TextField>}
           />
           </FormGroup>
           <FormGroup column='column'>
