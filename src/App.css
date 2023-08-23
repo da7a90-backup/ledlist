@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Saira' !important;
 }
 
 .App-logo {
@@ -18,8 +18,18 @@
   box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
 }
 
+.css-jtecce-MuiFormLabel-root.Mui-focused {
+  /* color: #1976d2; */
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+.css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+   border-color: rgba(0, 0, 0, 0.87);
+   border-width: 0.5px;
+}
+
 .css-1i2bwbr-MuiTableCell-root {
   padding: 0px !important;
+  font-family: 'Saira' !important;
 }
 .css-1tqi3ez {
   padding: 0px !important;
@@ -36,12 +46,14 @@
 .css-1e6y48t-MuiButtonBase-root-MuiButton-root {
   margin-left: 40vw !important;
   font-weight: bolder !important;
-  border: 2px solid #61aefb !important;
+  border: 2px solid #ED3838 !important;
+  color: #ED3838 !important;
 }
 .css-1ujsas3 {
   margin-left: 40vw !important;
   font-weight: bolder !important;
-  border: 2px solid #61aefb !important;
+  border: 2px solid #ED3838 !important;
+  color: #ED3838 !important;
 }
 
 @media only screen and (max-width: 768px) {
@@ -103,7 +115,7 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: #ED583E;
 }
 
 @keyframes App-logo-spin {

@@ -60,11 +60,11 @@ const Productlist = props => {
     useEffect(()=>{
       const switchToDark = ()=>{
         setEvenBg('#000') 
-        setOddBg('#238ffc')
+        setOddBg('#ED583E')
       }
      const switchToLight = ()=>{
       setEvenBg('#fff') 
-      setOddBg('aliceblue')
+      setOddBg(' ED3838')
      }
   
       props.dark ?  switchToDark() : switchToLight()
@@ -91,7 +91,6 @@ const Productlist = props => {
           <Slider
             label='range'
             value={(!filterList[index][0] && !filterList[index][1]) ? [0,3000] : [filterList[index][0], filterList[index][1]]}
-            color='primary'
             max={Math.max(...filterData[index])}
             valueLabelDisplay="auto"
             disableSwap
@@ -100,7 +99,7 @@ const Productlist = props => {
               filterList[index][1] = event.target.value[1];
               onChange(filterList[index], index, column);
             }}
-            style={{ width: '120px' }}
+            style={{ width: '120px', color: '#ED3838' }}
           />
         </FormGroup>
         </FormGroup>
@@ -1000,7 +999,7 @@ const Productlist = props => {
                        color: '#000',
                        fontSize: "1em",
                        width: "200px",
-                       border: '1px solid #2c6fbb',
+                       border: '1px solid #ED3838',
                        borderRadius: "10px 10px",
                        boxShadow: "5px 5px 5px 5px rgb(0 0 0 / 20%), 0px 5px 6px 0px rgb(0 0 0 / 14%), 0px 4px 10px 0px rgb(0 0 0 / 12%)"
                      }
@@ -1039,7 +1038,7 @@ const Productlist = props => {
                     color: '#000',
                     fontSize: "1em",
                     width: "200px",
-                    border: '1px solid #2c6fbb',
+                    border: '1px solid #ED3838',
                     borderRadius: "10px 10px",
                     boxShadow: "5px 5px 5px 5px rgb(0 0 0 / 20%), 0px 5px 6px 0px rgb(0 0 0 / 14%), 0px 4px 10px 0px rgb(0 0 0 / 12%)"
                   }
@@ -1068,7 +1067,7 @@ const Productlist = props => {
                     color: '#000',
                     fontSize: "1em",
                     width: "200px",
-                    border: '1px solid #2c6fbb',
+                    border: '1px solid #ED3838',
                     borderRadius: "10px 10px",
                     boxShadow: "5px 5px 5px 5px rgb(0 0 0 / 20%), 0px 5px 6px 0px rgb(0 0 0 / 14%), 0px 4px 10px 0px rgb(0 0 0 / 12%)"
                   }
@@ -1135,7 +1134,7 @@ const Productlist = props => {
                                 color: '#000',
                                 fontSize: "1em",
                                 width: "200px",
-                                border: '1px solid purple',
+                                border: '1px solid #ED3838',
                                 borderRadius: "10px 10px",
                                 boxShadow: "5px 5px 5px 5px rgb(0 0 0 / 20%), 0px 5px 6px 0px rgb(0 0 0 / 14%), 0px 4px 10px 0px rgb(0 0 0 / 12%)"
                               }
@@ -1351,15 +1350,17 @@ const Productlist = props => {
         MuiTable:{
           styleOverrides:{ root:{
             borderCollapse:'separate',
-            borderSpacing: '5px'
+            borderSpacing: '5px',
+            fontFamily: 'Saira'
             }}
         },
         MuiTableCell: {
             styleOverrides:{ body: {
                 //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);',
                 padding: '0',
-                borderBottom:'1px solid #2c6fbb',
+                borderBottom:'1px solid #ED3838',
                 borderCollapse: 'separate',
+                fontFamily: 'Saira'
             }}
           },
         MuiTableSortLabel: {
@@ -1369,16 +1370,25 @@ const Productlist = props => {
               },
             }
           },
+        MuiInput:{styleOverrides:{
+          root:{
+            ":after":{
+              borderBottom:'2px solid #ED3838'
+            }
+          }
+        }},
         MuiTableCell: {
             styleOverrides:{ root: {
-              padding: '0px'
+              padding: '0px',
+              fontFamily: 'Saira'
             }}
         },
         MuiTableCell: {
             styleOverrides:{ head: {
-              outline: '#2c6fbb auto',
+              outline: '#ED3838 auto',
               borderCollapse: 'separate',
               borderRadius: '15px 15px 15px 15px',
+              fontFamily: 'Saira',
               borderBottom: '0',
               textAlign: 'center',
               padding: '10px',
@@ -1389,7 +1399,8 @@ const Productlist = props => {
         },
         MUIDataTableHeadCell:{
             styleOverrides:{ data:{
-              fontWeight:'bold'
+              fontWeight:'bold',
+              fontFamily: 'Saira'
             }}
         },
         MUIDataTableViewCol: {
@@ -1400,7 +1411,7 @@ const Productlist = props => {
           MuiSvgIcon: {
             styleOverrides:{ root:{
                 //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);'
-                    color: '#2c6fbb'
+                    color: '#ED3838'
             }
             }
           },
@@ -1408,6 +1419,7 @@ const Productlist = props => {
             styleOverrides: { root: {
                     height: '380px',
                     overflowY: 'scroll',
+                    fontFamily: 'Saira'
             }
           }
           },
@@ -1426,6 +1438,11 @@ const Productlist = props => {
                     marginLeft: '0'
             }}
           },
+          MuiFormLabel:{
+            styleOverrides:{root:{
+              fontFamily: 'Saira'
+            }}
+          },
           MUIDataTableToolbar:{
             styleOverrides: {left: {
                     marginTop: '180px'
@@ -1433,7 +1450,8 @@ const Productlist = props => {
           },
           MuiTypography: {
             styleOverrides: {root: {
-                    fontWeight: '900'
+                    fontWeight: '900',
+                    fontFamily: 'Saira'
             }}
           },
           MuiCheckbox:{
@@ -1472,10 +1490,11 @@ const Productlist = props => {
               styleOverrides:{ body: {
                   //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);',
                   padding: '0',
-                  borderBottom:'1px solid #2c6fbb',
+                  borderBottom:'1px solid #ED3838',
                   borderCollapse: 'separate',
                   background: "#000",
-                  color: "#ffff"
+                  color: "#ffff",
+                  fontFamily: 'Saira'
               }}
             },
           MuiTableSortLabel: {
@@ -1495,11 +1514,12 @@ const Productlist = props => {
 
           MuiTableCell: {
               styleOverrides:{ head: {
-                outline: '#2c6fbb auto',
+                outline: '#ED3838 auto',
                 borderCollapse: 'separate',
                 borderRadius: '15px 15px 15px 15px',
                 borderBottom: '0',
                 textAlign: 'center',
+                fontFamily: 'Saira',
                 padding: '10px',
                 fontVariantEmoji:'emoji',
                 fontWeight:'bold',
@@ -1525,7 +1545,7 @@ const Productlist = props => {
             MuiSvgIcon: {
               styleOverrides:{ root:{
                   //background: 'linear-gradient(to top, #ffff 0%, aliceblue 1%, #ffff 100%);'
-                      color: '#2c6fbb',
+                      color: '#ED3838',
                       background: "#000",
                       color: "#ffff"
               }
@@ -1594,7 +1614,8 @@ const Productlist = props => {
             MuiFormLabel:{
               styleOverrides: {root:{
                 background: "#000",
-                color: "#ffff"
+                color: "#ffff",
+                fontFamily: 'Saira'
               }}
             },
             MuiPaper:{
@@ -1605,14 +1626,26 @@ const Productlist = props => {
             },
             MuiSvgIcon:{
               styleOverrides: {root:{
-                color: "#2c6fbb !important"
+                color: "#ED3838 !important"
               }}
             },
-            MUIDataTableSearch:{
-              styleOverrides: {searchText:{
-                background: '#2b2b2b'
-              }}
-            }
+            MuiInput:{styleOverrides:{
+              root:{
+                ":after":{
+                  borderBottom:'2px solid #ED3838'
+                }
+              }
+            }},
+            MuiTablePagination:{styleOverrides:{
+              root:{
+                color: "#ffff"
+              }
+            }}
+            //MUIDataTableSearch:{
+             // styleOverrides: {searchText:{
+               // background: '#ED3838'
+              //}}
+            //}
       },
       })
 

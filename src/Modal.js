@@ -9,7 +9,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import { FormControl, FormGroup, FormLabel, TextField, Tooltip } from '@mui/material';
 import { PlusOneOutlined, Delete } from '@mui/icons-material';
-import { insertProduct, updateRecord, deleteRecord } from './services/Data';
+import { updateRecord, deleteRecord } from './services/Data';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Autocomplete } from '@mui/material';
 import { Chip } from '@mui/material';
@@ -25,6 +25,12 @@ import { MenuItem } from '@mui/material';
   const { _id, info, cost, shipping, value, yearReleased, leds, features, size, warranty, flickernsound, wavelengths, nnemf} = state.object;
   const allData = state.allData;
   const companies = [...new Set(allData.map((object)=>object.info.company))]
+  const allWarehouses = allData.map((object)=>object.info.warehouse)
+  const warehousesData = []
+  for(let warehouseEntry of allWarehouses){
+    warehousesData.push(...warehouseEntry)
+  }
+  const warehouses = [...new Set(warehousesData)]
   const locations = [...new Set(allData.map((object)=>object.info.companyHq))]
   const classes = [...new Set(allData.map((object)=>object.info.class))]
 
@@ -38,6 +44,7 @@ import { MenuItem } from '@mui/material';
   const [warehouse, setWarehouse] = useState(info.warehouse)
   const yearReleased1 = useRef(yearReleased)
   const discountCode = useRef(info.discountCode)
+  const alexTested = useRef(info.alexTested)
   const productLink = useRef(info.productLink)
   const youtubeReview = useRef(info.youtubeReview)
   const discountedPrice = useRef(cost)
@@ -60,8 +67,10 @@ import { MenuItem } from '@mui/material';
   const peakPower = useRef(leds.peakPower)
   const wavelengths1 = useRef(wavelengths)
   const peakWavelengthsTested = useRef(info.peakWavelengthsTested)
-  const emfe= useRef(nnemf.emfe)
-  const mag = useRef(nnemf.mag)
+  const emfe= useRef(nnemf.emfe.replace(/\d+|^\s+|\s+$/g,''))
+  const emfeReading = useRef(nnemf.emfe.replace(/[^0-9]/g, ''))
+  const mag = useRef(nnemf.mag.replace(/\d+|^\s+|\s+$/g,''))
+  const magReading = useRef(nnemf.mag.replace(/[^0-9]/g, ''))
   const flicker = useRef(flickernsound.flicker)
   const soundLevels = useRef(flickernsound.soundLevels)
 
@@ -78,15 +87,18 @@ const years = range(currentYear, currentYear - 50, -1);
   };
 
   const handleDeleteRecord = async () => {
+    const sure = window.confirm("Are you sure you want to delete this product?");
+    if(sure){
     const deleteRec = await deleteRecord(_id);
-
+    
     if(deleteRec.status === 200) {
-      alert("product edited successfully!");
+      alert("Product edited successfully!");
       handleClose();
+    
     } else{
       alert("there was an error editing the record in the database.")
     }
-
+    }
   }
 
   const handleEditRecord = async () => {
@@ -99,6 +111,7 @@ const years = range(currentYear, currentYear - 50, -1);
       warehouse: warehouse.join("\n"),
       discountCode: discountCode.current,
       productLink: productLink.current,
+      alexTested: alexTested.current,
       youtubeReview: youtubeReview.current,
       peakWavelengthsTested: peakWavelengthsTested.current},
       cost:{
@@ -135,14 +148,15 @@ const years = range(currentYear, currentYear - 50, -1);
       },
       wavelengths: wavelengths1.current,
       nnemf:{
-      emfe: emfe.current,
-      mag: mag.current
+      emfe: `${emfe.current}${emfeReading.current}`,
+      mag: `${mag.current}${magReading.current}`
       },
       flickernsound:
       {
       flicker: flicker.current,
       soundLevels: soundLevels.current}
     }
+    console.log(product)
     const insert = await updateRecord(product, _id);
 
     if(insert.status === 200) {
@@ -176,7 +190,7 @@ const years = range(currentYear, currentYear - 50, -1);
         open={true}
         onClose={handleClose}
       >
-        <AppBar sx={{ position: 'relative', background: dark ? 'black' : 'white', color: '#2c6fbb' }}>
+        <AppBar sx={{ position: 'relative', background: dark ? 'black' : 'white', color: '#ED3838' }}>
           <Toolbar>
             <IconButton
               edge="start"
@@ -184,32 +198,32 @@ const years = range(currentYear, currentYear - 50, -1);
               onClick={handleClose}
               aria-label="close"
             >
-              <CloseIcon />
+              <CloseIcon style={{color: '#ED3838'}} />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Product Details
             </Typography>
             <IconButton>
-            <Tooltip title="Delete record"><div> <Delete onClick={handleDeleteRecord} color='primary'></Delete></div></Tooltip>
+            <Tooltip title="Delete record"><div> <Delete onClick={handleDeleteRecord} style={{color: '#ED3838'}}></Delete></div></Tooltip>
             </IconButton>
              <IconButton sx={{marginRight: '35px'}}> 
-              <Tooltip title="Edit fields"><div><EditIcon onClick={handleEdit} color="primary">  
+              <Tooltip title="Edit fields"><div><EditIcon onClick={handleEdit} style={{color: '#ED3838'}}>  
             </EditIcon></div></Tooltip>
             </IconButton>
             <IconButton> 
-            <Tooltip title="Save edits"><div> <SaveIcon color="primary" onClick={handleEditRecord}>
+            <Tooltip title="Save edits"><div> <SaveIcon style={{color: '#ED3838'}} onClick={handleEditRecord}>
             </SaveIcon></div></Tooltip>
             </IconButton>
 
             <IconButton> 
-            <Tooltip title="New record"><div> <PlusOneOutlined onClick={()=>navigate('/new',{state: {dark: dark, classes: classes, companies: companies, locations: locations}})} color="primary">  
+            <Tooltip title="New record"><div> <PlusOneOutlined onClick={()=>navigate('/new',{state: {dark: dark, classes: classes, companies: companies, locations: locations}})} style={{color: '#ED3838'}}>  
             </PlusOneOutlined></div></Tooltip>
             </IconButton>
             
           </Toolbar>
         </AppBar>
         <FormControl>
-        <FormLabel>General Info</FormLabel>
+        <FormLabel sx={{marginTop:'35px'}}>General Info</FormLabel>
         <FormGroup row>
         <FormGroup sx={{width: '15%'}}  column='column'>
         <h5>Product Name</h5>
@@ -223,7 +237,8 @@ const years = range(currentYear, currentYear - 50, -1);
             disablePortal
             id="companies"
            options={companies}
-           renderInput={(params) => <TextField {...params} label="Company" defaultValue={info.company} onChange={(e)=>{company.current = e.target.value}} disabled={edit}></TextField>}
+           onChange={(e, newValue)=>{company.current = newValue}}
+           renderInput={(params) => <TextField {...params} label="Company" defaultValue={info.company} disabled={edit}></TextField>}
           />
           </FormGroup>
 
@@ -234,7 +249,8 @@ const years = range(currentYear, currentYear - 50, -1);
             disablePortal
             id="locations"
            options={locations}
-           renderInput={(params) => <TextField {...params} label="Location" defaultValue={info.companyHq} onChange={(e)=>{companyHq.current = e.target.value}} disabled={edit}></TextField>}
+           onChange={(e, newValue)=>{companyHq.current = newValue}}
+           renderInput={(params) => <TextField {...params} label="Location" defaultValue={info.companyHq} disabled={edit}></TextField>}
           />
           </FormGroup>
           <FormGroup sx={{width: '20%'}} column='column'>
@@ -244,11 +260,11 @@ const years = range(currentYear, currentYear - 50, -1);
             id="warehouses"
             multiple
             onChange={(event, newValue) => {
-              setWarehouse([...warehouse, newValue]);
+              setWarehouse([...newValue]);
               console.log(newValue)
             }}
             defaultValue={[...warehouse]}
-           options={locations}
+           options={warehouses}
            renderTags={(value, getTagProps) =>
             value.map((option, index) => (
               <Chip
@@ -270,7 +286,8 @@ const years = range(currentYear, currentYear - 50, -1);
             disablePortal
             id="classes"
            options={classes}
-           renderInput={(params) => <TextField {...params} label="Class" defaultValue={info.class} onChange={(e)=>{class_.current = e.target.value}} disabled={edit}></TextField>}
+           onChange={(e, newValue)=>{class_.current = newValue}}
+           renderInput={(params) => <TextField {...params} label="Class" defaultValue={info.class} disabled={edit}></TextField>}
           />
           </FormGroup>
           <FormGroup sx={{width: '10%'}}  column='column'>
@@ -280,7 +297,8 @@ const years = range(currentYear, currentYear - 50, -1);
           disablePortal
           id="years"
           options={years}
-          renderInput={(params) => <TextField {...params} label="Year" defaultValue={yearReleased} onChange={(e)=>{yearReleased1.current = e.target.value}} disabled={edit}></TextField>}
+          onChange={(e, newValue)=>{yearReleased1.current = newValue}} 
+          renderInput={(params) => <TextField {...params} label="Year" defaultValue={yearReleased} disabled={edit}></TextField>}
           />
           </FormGroup>
           <FormGroup column='column'>
@@ -300,10 +318,10 @@ const years = range(currentYear, currentYear - 50, -1);
 
 
         </FormGroup>
-        <FormLabel>Cost and Dimensions</FormLabel>
+        <FormLabel sx={{marginTop:'35px'}}>Cost and Dimensions</FormLabel>
         <FormGroup row>
         <FormGroup column='column'>
-          <h5>Disounted Price</h5>
+          <h5>Disounted Price (USD)</h5>
         <TextField required type="number" defaultValue={cost} onChange={(e)=>{discountedPrice.current = e.target.value}} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
@@ -336,7 +354,7 @@ const years = range(currentYear, currentYear - 50, -1);
         </FormGroup>        
         </FormGroup>
 
-        <FormLabel>Features and Warranty</FormLabel>
+        <FormLabel sx={{marginTop:'35px'}}>Features and Warranty</FormLabel>
         <FormGroup row>
         <FormGroup sx={{width: '10%'}} column='column'>
         <h5>Pulsing</h5>
@@ -372,7 +390,7 @@ const years = range(currentYear, currentYear - 50, -1);
         </FormGroup>        
         </FormGroup>
 
-        <FormLabel>Power </FormLabel>
+        <FormLabel sx={{marginTop:'35px'}}>Power </FormLabel>
         <FormGroup row>
         <FormGroup column='column'>
         <h5>Number of LEDs</h5>
@@ -396,10 +414,17 @@ const years = range(currentYear, currentYear - 50, -1);
         <FormGroup column='column'>
         <h5>Peak Power (W)</h5>
         <TextField required type="number" defaultValue={leds.peakPower} onChange={(e)=>{peakPower.current = e.target.value}} disabled={edit}></TextField>
-        </FormGroup>     
+        </FormGroup>  
+        <FormGroup sx={{width: '15%'}} column='column'>
+        <h5>Alex Tested</h5>
+        <Select required defaultValue={info.alexTested} onChange={(e)=>{alexTested.current = e.target.value}} disabled={edit}>
+          <MenuItem value={1}>Yes</MenuItem>
+          <MenuItem value={0}>No</MenuItem>
+        </Select>
+        </FormGroup>   
         </FormGroup>
 
-        <FormLabel>Number of LEDs emitting wavelengths </FormLabel>
+        <FormLabel sx={{marginTop:'35px'}}>Number of LEDs emitting wavelengths </FormLabel>
         <FormGroup row>
         <FormGroup column='column'>
         <h5>480</h5>
@@ -439,35 +464,31 @@ const years = range(currentYear, currentYear - 50, -1);
         </FormGroup>       
         </FormGroup>
 
-        <FormLabel>nnEMF</FormLabel>
+        <FormLabel sx={{marginTop:'35px'}}>nnEMF</FormLabel>
         <FormGroup row>
         <FormGroup column='column'>
         <h5>EMF - Electric Field (color and reading) </h5>
-        <Autocomplete
-             freeSolo
-            disablePortal
-            id="electric"
-            onChange={(e)=>{emfe.current = e.target.value}}
-           options={["Green", "Orange", "Red"]}
-           renderInput={(params) => <TextField {...params} label="Electric Field" required defaultValue={nnemf.emfe} disabled={edit}></TextField>}
-          />
+        <Select required defaultValue={emfe.current} onChange={(e)=>{emfe.current = e.target.value}} disabled={edit}>
+          <MenuItem value={"Green"}>Green</MenuItem>
+          <MenuItem value={"Orange"}>Orange</MenuItem>
+          <MenuItem value={"Yellow"}>Yellow</MenuItem>
+        </Select>
+        <TextField type="number" label="Electric Field Reading" onChange={(e)=>{emfeReading.current = e.target.value}} required defaultValue={nnemf.emfe} disabled={edit}></TextField>
         </FormGroup>
         <FormGroup column='column'>
         <h5>EMF - Magnetic Field (color and reading)</h5>
-        <Autocomplete
-             freeSolo
-            disablePortal
-            id="magnetic"
-            onChange={(e)=>{mag.current = e.target.value}}
-           options={["Green", "Orange", "Red"]}
-           renderInput={(params) => <TextField {...params} label="Magnetic Field" required defaultValue={nnemf.mag} disabled={edit}></TextField>}
-          />
+        <Select required defaultValue={mag.current} onChange={(e)=>{mag.current = e.target.value}} disabled={edit}>
+          <MenuItem value={"Green"}>Green</MenuItem>
+          <MenuItem value={"Orange"}>Orange</MenuItem>
+          <MenuItem value={"Yellow"}>Yellow</MenuItem>
+        </Select>
+        <TextField type="number" label="Magnetic Field Reading" onChange={(e)=>{magReading.current = e.target.value}} required defaultValue={nnemf.mag} disabled={edit}></TextField>
         </FormGroup>
         </FormGroup>
 
-        <FormLabel>Flicker and Sound</FormLabel>
+        <FormLabel sx={{marginTop:'35px'}}>Flicker and Sound</FormLabel>
         <FormGroup row>
-        <FormGroup column='column'>
+        <FormGroup sx={{width: '10%'}} column='column'>
         <h5>Flicker</h5>
         <Select required defaultValue={flickernsound.flicker} onChange={(e)=>{flicker.current = e.target.value}} disabled={edit}>
           <MenuItem value={1}>Yes</MenuItem>

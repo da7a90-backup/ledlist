@@ -1,8 +1,6 @@
 import { AppBar, Toolbar, Typography } from "@mui/material";
 import React from "react";
 
-
-
 export default function Header({dark, switcher}) {
 
   const displayDesktop = () => {
@@ -10,8 +8,9 @@ export default function Header({dark, switcher}) {
   };
 
   const femmecubatorLogo = (
-<>  <Typography sx={{color:'#2c6fbb'}} variant="h6" component="h1">
-     Red light Therapy Product Database - By <b> <a style={{textDecoration:'none', color:'#2c6fbb'}} href="https://www.lighttherapyinsiders.com/">LightTherapyInsiders.com</a></b> &amp; <b> <a style={{textDecoration:'none', color:'#2c6fbb'}} href="https://www.alexfergus.com/">Alex Fergus</a></b>
+<>      {<a style={{textDecoration:'none', color:'#ED3838'}} href="https://www.lighttherapyinsiders.com/"><img width={222} height={52} src="/logo.png" alt="logo"/> </a>}
+<Typography sx={{color:'#ED3838', marginLeft:'20px', fontFamily:'Saira'}} variant="h6" component="h6">
+         Red Light Therapy Shopping Tool
     </Typography></>
   );
 
