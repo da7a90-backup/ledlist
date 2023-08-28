@@ -65,21 +65,21 @@
   }
   .css-15o8c4j {
     flex-direction: column !important;
-    margin-top: 50px !important;
+    margin-top: 80px !important;
   }
   .css-17lflhs {
     flex-direction: column !important;
-    margin-top: 50px !important;
-    margin-bottom: 150px;
+    margin-top: 80px !important;
+    margin-bottom: 180px !important;
   }
   .css-12msj5r-MuiGrid-root{
     flex-direction: column !important;
-    margin-top: 50px !important;
-    margin-bottom: 150px;
+    margin-top: 80px !important;
+    margin-bottom: 180px !important;
   }
   .css-1tc76if-MuiGrid-root{
     flex-direction: column !important;
-    margin-top: 50px !important;
+    margin-top: 80px !important;
   }
   .css-7uql24 {
     margin-left: -82px !important;
@@ -89,11 +89,15 @@
   .css-pry94a-MuiGrid-root{
     flex-flow: column !important;
     flex-direction: column !important;
+    margin-top: 80px !important;
+    margin-bottom: 180px !important;
   }
 
   .css-a26nzk {
     flex-flow: column !important;
     flex-direction: column !important;
+    margin-top: 80px !important;
+    margin-bottom: 180px !important;
   }
 
 }

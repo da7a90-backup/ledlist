@@ -474,7 +474,7 @@ const years = range(currentYear, currentYear - 50, -1);
         <Select required defaultValue={emfe.current} onChange={(e)=>{emfe.current = e.target.value}} disabled={edit}>
           <MenuItem value={"Green"}>Green</MenuItem>
           <MenuItem value={"Orange"}>Orange</MenuItem>
-          <MenuItem value={"Yellow"}>Yellow</MenuItem>
+          <MenuItem value={"Red"}>Red</MenuItem>
         </Select>
         <TextField type="number" label="Electric Field Reading" onChange={(e)=>{emfeReading.current = e.target.value}} required defaultValue={emfeReading.current} disabled={edit}></TextField>
         </FormGroup>
@@ -483,7 +483,7 @@ const years = range(currentYear, currentYear - 50, -1);
         <Select required defaultValue={mag.current} onChange={(e)=>{mag.current = e.target.value}} disabled={edit}>
           <MenuItem value={"Green"}>Green</MenuItem>
           <MenuItem value={"Orange"}>Orange</MenuItem>
-          <MenuItem value={"Yellow"}>Yellow</MenuItem>
+          <MenuItem value={"Red"}>Red</MenuItem>
         </Select>
         <TextField type="number" label="Magnetic Field Reading" onChange={(e)=>{magReading.current = e.target.value}} required defaultValue={magReading.current} disabled={edit}></TextField>
         </FormGroup>
