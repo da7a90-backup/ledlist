@@ -37,7 +37,7 @@
 }
 
 .css-1ps6pg7-MuiPaper-root {
- height: 310px !important;
+ height: 310px !important; 
 }
 
 .css-aoeo82 {
@@ -99,6 +99,24 @@
     margin-top: 80px !important;
     margin-bottom: 180px !important;
   }
+
+  .css-wb57ya-MuiFormControl-root-MuiTextField-root {
+    position: absolute !important;
+    width: 70% !important;
+    margin-left: 30px !important;
+}
+.tss-9mgjcs-MUIDataTableToolbar-left.tss-9mgjcs-MUIDataTableToolbar-left {
+  margin-top: 445px !important;
+}
+.tss-p4ugla-MUIDataTableToolbar-left.tss-p4ugla-MUIDataTableToolbar-left {
+  margin-top: 420px !important;
+}
+.css-1nrlq1o-MuiFormControl-root {
+  margin-top: 150px !important;
+}
+.css-3o29s4-MuiTypography-root{
+  display: none;
+}
 
 }
 

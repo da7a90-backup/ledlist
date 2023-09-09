@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import {useState, useEffect} from "react"
+import {useState, useMemo, useEffect} from "react"
 import MUIDataTable from "mui-datatables";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -13,9 +13,8 @@ import Link from '@mui/material/Link';
 import FormLabel from "@mui/material/FormLabel";
 import FormGroup from "@mui/material/FormGroup";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Slider } from "@mui/material";
+import { CircularProgress, Slider } from "@mui/material";
 import CustomHintButton from "./CustomHintButton";
-import { fetchData } from "./services/Data";
 import { PriorityHigh } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
@@ -32,8 +31,6 @@ const Productlist = props => {
 
     const navigate = useNavigate();
 
-
-    const [data, setData] = useState([]);
     const [sortByShipping, setSortByShipping] = useState('shippingUsa');
     const [sortByValue, setSortByValue] = useState('discountedPerOutput');
     const [sortBySize, setSortBySize] = useState('height');
@@ -53,24 +50,24 @@ const Productlist = props => {
     const [showWavelengths, setShowWavelengths] = useState(false);
     //const [shownWavelength, setShownWavelength] = useState({blue:[],red:[],nir:[]});
     const [evenRowBgColor, setEvenBg] = useState('#fff');
-    const [oddRowBgColor, setOddBg] = useState('aliceblue');
-
+    const [oddRowBgColor, setOddBg] = useState('#fdefef');
+    const [selectedRowColor, setSelectedRowColor] = useState('#fa9898')
+    const [selectedRow, setSelectedRow] = useState(-1);
 
 
     useEffect(()=>{
       const switchToDark = ()=>{
         setEvenBg('#000') 
         setOddBg('#ED583E')
+        setSelectedRowColor('#ea0000')
       }
      const switchToLight = ()=>{
       setEvenBg('#fff') 
-      setOddBg(' ED3838')
+      setOddBg('#fdefef')
+      setSelectedRowColor('#fa9898')
      }
   
       props.dark ?  switchToDark() : switchToLight()
-      fetchData().then(data=>{
-        setData(data);
-      });
     },[props.dark])
 
     const showSizeInBody = (size) => {
@@ -343,8 +340,8 @@ const Productlist = props => {
         filter: false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            let val1 = parseInt(obj1.data[sortByValue], 10);
-            let val2 = parseInt(obj2.data[sortByValue], 10);
+            let val1 = parseFloat(obj1.data[sortByValue], 10);
+            let val2 = parseFloat(obj2.data[sortByValue], 10);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
         },
@@ -700,6 +697,19 @@ const Productlist = props => {
   options:{
     filter:true,
     filterType: 'multiselect',
+    filterOptions: {
+      logic(warehouse, filters) {
+        console.log(warehouse)
+        console.log(filters)
+        for(let filter of filters){
+          if(warehouse.includes(filter)){
+            return false
+          }
+        }
+        return true;
+      },
+
+    },
     sort:false,
     display:false,
     viewColumns:false
@@ -970,8 +980,14 @@ const Productlist = props => {
     const { dataIndex, rowIndex, info, cost, shipping, yearReleased, leds, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths, dataObject} = props;
     const bgColor = rowIndex % 2 === 0 ? evenRowBgColor : oddRowBgColor
     console.log(dataObject);
+    const rowColor = rowIndex === selectedRow ? selectedRowColor : bgColor
+
+    console.log(props.data)
+    const clickRow = ()=>{
+      setSelectedRow(rowIndex)
+    }
     return (
-      <TableRow style={{backgroundColor : bgColor, padding: 0, color: '#fff'}}>
+      <TableRow onClick={clickRow} style={{backgroundColor : rowColor, padding: 0, color: '#fff'}}>
         <TableCell style={{color: '#ffff'}} align="center">
           <IconButton style={{color: !props.dark ? '#000' : '#ffff'}} onClick={()=>{
               const passphrase = prompt("Please enter the password here");
@@ -982,7 +998,7 @@ const Productlist = props => {
                 alert("you don't have access to this!")
                 return
               }
-          navigate('/details', {state: {object: dataObject, allData: data}})
+          navigate('/details', {state: {object: dataObject, allData: props.data}})
           }}>
           {rowIndex+1}
           </IconButton>
@@ -1203,6 +1219,13 @@ const Productlist = props => {
 
   const options = {
     filter: true,
+    textLabels: {
+      body: {
+          noMatch: !props.ready ?
+              <CircularProgress sx={{color:'#ED3838'}}/> :
+              'Sorry, there is no matching data to display',
+      },
+  },
     onFilterChange: (changedColumn, filterList) => {
       if(changedColumn === 'wavelengths'){
         const blue = filterList[30]
@@ -1335,6 +1358,7 @@ const Productlist = props => {
           nnemf={nnemf}
           dataObject={dataObject}
           dark={props.dark}
+          data={props.data}
           />
         );
       },
@@ -1650,15 +1674,21 @@ const Productlist = props => {
       },
       })
 
-
+/*       const BodyComponent = useMemo(
+        () => (props) => (
+          <LoadingTableBody loading={ready} {...props} />
+        ),
+        [ready]
+      ); */
   return (
     <ThemeProvider
 theme={props.dark ? darkTheme : lightTheme}
 >
     <MUIDataTable
-      data={data}
+      data={props.data}
       columns={columns}
       options={options}
+      //components={{ TableBody: BodyComponent }}
     />
     </ThemeProvider>
   );

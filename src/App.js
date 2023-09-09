@@ -5,10 +5,11 @@ import { Routes, Route } from "react-router-dom";
 import Modal from './Modal';
 import EPModal from './EmptyProductModal';
 import { styled } from '@mui/material/styles';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch, { SwitchProps } from '@mui/material/Switch';
+import Switch from '@mui/material/Switch';
 import { useEffect, useState } from 'react';
+import { fetchData } from "./services/Data";
+import { Typography } from '@mui/material';
+
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -62,12 +63,20 @@ const getSwitch = (props)=><MaterialUISwitch sx={{ m: 1 }} checked={props.checke
 
 function App() {
   const [dark, setDark] = useState(false)
+  const [ready, setReady] = useState(false);
+  const [data, setData] = useState([]);
+
 
   useEffect(()=>{
     const preferredTheme = localStorage.getItem("preferredTheme");
 
     if(preferredTheme === "dark")
      {setDark(true)} 
+
+     fetchData().then(data=>{
+      setData(data);
+      setReady(true)
+    });
      
   },[])
 
@@ -81,7 +90,7 @@ function App() {
     <div className="App">
     <Header dark={dark} switcher={()=>getSwitch({checked:dark, toggle: setPreferredTheme})}></Header> 
       <Routes>
-        <Route path='/' element={<Productlist dark={dark}/>}></Route>
+        <Route path='/' element={<Productlist ready={ready} data={data} dark={dark}/>}></Route>
         <Route path='/details' element={<Modal dark={dark}/>}></Route>
         <Route path='/new' element={<EPModal dark={dark}/>}></Route>
       </Routes>
