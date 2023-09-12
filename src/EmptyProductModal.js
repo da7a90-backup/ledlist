@@ -24,6 +24,7 @@ import { MenuItem } from '@mui/material';
 
   const productName = useRef()
   const company = useRef() 
+  const discontinued = useRef()
   const class_  = useRef()
   const companyHq = useRef()
   const [warehouse, setWarehouse] = useState()
@@ -67,6 +68,7 @@ const years = range(currentYear, currentYear - 50, -1);
     const product = {
       info:{productName: productName.current || "",
       company: company.current || "",
+      discontinued: discontinued.current || 0,
       class: class_.current || "",
       companyHq: companyHq.current || "",
       warehouse: warehouse.join("\n") || "",
@@ -109,8 +111,8 @@ const years = range(currentYear, currentYear - 50, -1);
       },
       wavelengths: wavelengths1.current || {nm480: 0, nm610:0, nm630: 0, nm660: 0, nm810: 0, nm850: 0, nm930: 0, nm950: 0},
       nnemf:{
-        emfe: `${emfe.current}${emfeReading.current}` || "Green",
-        mag: `${mag.current}${magReading.current}` || "Green"
+        emfe: `${emfe.current || "Green"}${emfeReading.current || ''}`,
+        mag: `${mag.current || "Green"}${magReading.current || ''}` 
       },
       flickernsound:
       {
@@ -268,6 +270,13 @@ const years = range(currentYear, currentYear - 50, -1);
           <h5>Youtube Review</h5>
         <TextField required onChange={(e)=>{youtubeReview.current = e.target.value}}  ></TextField>
           </FormGroup>
+          <FormGroup sx={{width: '10%'}} column='column'>
+        <h5>Discontinued</h5>
+        <Select required onChange={(e)=>{discontinued.current = e.target.value}}  >
+          <MenuItem value={1}>Yes</MenuItem>
+          <MenuItem value={0}>No</MenuItem>
+        </Select>
+        </FormGroup>  
 
 
         </FormGroup>
@@ -379,6 +388,10 @@ const years = range(currentYear, currentYear - 50, -1);
 
         <FormLabel sx={{marginTop:'35px'}}>Number of LEDs emitting wavelengths </FormLabel>
         <FormGroup row>
+        <FormGroup column='column'>
+        <h5>415</h5>
+        <TextField required type="number" onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm415: e.target.value}}} ></TextField>
+        </FormGroup>
         <FormGroup column='column'>
         <h5>480</h5>
         <TextField required type="number" onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm480: e.target.value}}}  ></TextField>

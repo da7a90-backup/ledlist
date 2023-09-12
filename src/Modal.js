@@ -40,6 +40,7 @@ import { MenuItem } from '@mui/material';
 
   const company = useRef(info.company) 
   const class_  = useRef(info.class)
+  const discontinued = useRef(info.discontinued)
   const companyHq = useRef(info.companyHq)
   const [warehouse, setWarehouse] = useState(info.warehouse)
   const yearReleased1 = useRef(yearReleased)
@@ -107,6 +108,7 @@ const years = range(currentYear, currentYear - 50, -1);
 
     const product = {
       info:{productName: productName.current,
+      discontinued: discontinued.current,
       company: company.current,
       class: class_.current,
       companyHq: companyHq.current,
@@ -150,8 +152,8 @@ const years = range(currentYear, currentYear - 50, -1);
       },
       wavelengths: wavelengths1.current,
       nnemf:{
-      emfe: `${emfe.current}${emfeReading.current}`,
-      mag: `${mag.current}${magReading.current}`
+      emfe: `${emfe.current}${emfeReading.current || ''}`,
+      mag: `${mag.current}${magReading.current || ''}`
       },
       flickernsound:
       {
@@ -318,7 +320,13 @@ const years = range(currentYear, currentYear - 50, -1);
           <h5>Youtube Review</h5>
         <TextField required defaultValue={info.youtubeReview} onChange={(e)=>{youtubeReview.current = e.target.value}} disabled={edit}></TextField>
           </FormGroup>
-
+          <FormGroup sx={{width: '10%'}} column='column'>
+        <h5>Discontinued</h5>
+        <Select required defaultValue={info.discontinued} onChange={(e)=>{discontinued.current = e.target.value}} disabled={edit}>
+          <MenuItem value={1}>Yes</MenuItem>
+          <MenuItem value={0}>No</MenuItem>
+        </Select>
+        </FormGroup>  
 
         </FormGroup>
         <FormLabel sx={{marginTop:'35px'}}>Cost and Dimensions</FormLabel>
@@ -429,6 +437,10 @@ const years = range(currentYear, currentYear - 50, -1);
 
         <FormLabel sx={{marginTop:'35px'}}>Number of LEDs emitting wavelengths </FormLabel>
         <FormGroup row>
+        <FormGroup column='column'>
+        <h5>415</h5>
+        <TextField required type="number" defaultValue={wavelengths['nm415']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm415: e.target.value}}} disabled={edit}></TextField>
+        </FormGroup>
         <FormGroup column='column'>
         <h5>480</h5>
         <TextField required type="number" defaultValue={wavelengths['nm480']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm480: e.target.value}}} disabled={edit}></TextField>

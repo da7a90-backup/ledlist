@@ -36,7 +36,7 @@ const Productlist = props => {
     const [sortBySize, setSortBySize] = useState('height');
     //const [sortByWaveLengths, setSortByWaveLengths] = useState(0);
 
-
+    const [showCompany, setShowCompany] = useState(true);
     const [showPrice, setShowPrice] = useState(true);
     const [showLeds, setShowLeds] = useState(true);
     const [showShipping, setShowShipping] = useState(true);
@@ -134,6 +134,36 @@ const Productlist = props => {
               return -1;
             }
             if (obj1.data.productName < obj2.data.productName) {
+              return 1;
+            }
+          }
+            return 0;          
+          
+          };
+        }
+        },
+    },
+    {
+      label: "Company",
+      name: "info.company",
+      options: {
+        filter: false,
+        viewColumns:true,
+        sortCompare: (order) => {
+          return (obj1, obj2) => {
+            if(order == "asc"){
+            if (obj1.data < obj2.data) {
+              return -1;
+            }
+            if (obj1.data > obj2.data) {
+              return 1;
+            }
+          }
+          if(order == "desc"){
+            if (obj1.data > obj2.data) {
+              return -1;
+            }
+            if (obj1.data < obj2.data) {
               return 1;
             }
           }
@@ -699,8 +729,6 @@ const Productlist = props => {
     filterType: 'multiselect',
     filterOptions: {
       logic(warehouse, filters) {
-        console.log(warehouse)
-        console.log(filters)
         for(let filter of filters){
           if(warehouse.includes(filter)){
             return false
@@ -895,6 +923,25 @@ const Productlist = props => {
   }
 },
 {
+  name: "info.discontinued",
+  label: "Not Discontinued",
+  options:{
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    customFilterListOptions: { render: v => `Flicker Free` },
+    filterType: "checkbox",
+    filterOptions: {
+      names: [true], // only 1 checkbox with value === true
+      logic(discontinued, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        return !(discontinued === 0);
+      }
+    },
+  }
+},
+{
   name: "wavelengths",
   label: "Blue",
   options: {
@@ -905,7 +952,7 @@ const Productlist = props => {
     customFilterListOptions: { render: v => `${v}` },
     filterType: "checkbox+",
     filterOptions: {
-      names:['480'],
+      names:['480','415'],
       logic(wavelengths, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
           return !(wavelengths[`nm${filterVal}`] > 0)
@@ -977,12 +1024,10 @@ const Productlist = props => {
 
 
   const MyCustomRowComponent = (props) => {
-    const { dataIndex, rowIndex, info, cost, shipping, yearReleased, leds, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths, dataObject} = props;
+    const { dataIndex, rowIndex, info, company, cost, shipping, yearReleased, leds, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths, dataObject} = props;
     const bgColor = rowIndex % 2 === 0 ? evenRowBgColor : oddRowBgColor
-    console.log(dataObject);
     const rowColor = rowIndex === selectedRow ? selectedRowColor : bgColor
 
-    console.log(props.data)
     const clickRow = ()=>{
       setSelectedRow(rowIndex)
     }
@@ -1036,6 +1081,11 @@ const Productlist = props => {
             </Tooltip>
             
             </TableCell>
+            {showCompany && (
+            <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center"> 
+            <b>{company}</b>
+            </TableCell>
+          )}
           {showPrice && (
             <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center"> 
             <b>{`$${cost}` }</b>
@@ -1185,6 +1235,9 @@ const Productlist = props => {
                         {wavelengths.nm480 > 0 && (<b style={{color:'blue'}}>480x{wavelengths.nm480} {wavelengths.nm480real && (
                           <Tooltip title={`480 real reading: ${wavelengths.nm480real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b>)}
+                        {wavelengths.nm415 > 0 && (<b style={{color:'blue'}}>480x{wavelengths.nm415} {wavelengths.nm415real && (
+                          <Tooltip title={`480 real reading: ${wavelengths.nm415real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )} </b>)}
                         {wavelengths.nm610 > 0 && (<b style={{color:'red'}}>610x{wavelengths.nm610} {wavelengths.nm610real && (
                           <Tooltip title={`610 real reading: ${wavelengths.nm610real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )}  </b>)}
@@ -1228,11 +1281,10 @@ const Productlist = props => {
   },
     onFilterChange: (changedColumn, filterList) => {
       if(changedColumn === 'wavelengths'){
-        const blue = filterList[30]
-        const red = filterList[31]
-        const nir = filterList[32]
+        const blue = filterList[33]
+        const red = filterList[34]
+        const nir = filterList[35]
 
-        console.log(filterList)
         if(blue.length === 0 && red.length === 0 && nir.length === 0){
           setShowWavelengths(false)
         }
@@ -1246,6 +1298,8 @@ const Productlist = props => {
     onViewColumnsChange:(columnChanged, action) => {
       if(action === 'add'){
         switch(columnChanged){
+          case 'info.company': setShowCompany(true);
+          break;
           case 'size': setShowSize(true);
           break;
           case 'warranty': setShowWarranty(true);
@@ -1273,6 +1327,8 @@ const Productlist = props => {
 
       if(action === 'remove'){
         switch(columnChanged){
+          case 'info.company': setShowCompany(false);
+          break;
           case 'size': setShowSize(false);
           break;
           case 'warranty': setShowWarranty(false);
@@ -1327,7 +1383,7 @@ const Productlist = props => {
       },
     responsive: "responsive",
     customRowRender: (data, dataIndex, rowIndex) => {
-        const [_id, info, cost, shipping, leds, ledcount, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths] = data;
+        const [_id, info, company, cost, shipping, leds, ledcount, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths] = data;
         const yearReleased = data[22]
         const ledDualChip = data[26]
         const pulsing = data[27]
@@ -1335,14 +1391,14 @@ const Productlist = props => {
         const inbuiltTimer = data[29]
         const stands = data [30]
         const features = {ledDualChip,pulsing,modularSupport,inbuiltTimer, stands}
-
+      console.log(company)
         const dataObject = {_id, info, cost, shipping, leds, features, flickernsound, nnemf, warranty, value, wavelengths, yearReleased, cost, size}
-        console.log(data)
         return (
           <MyCustomRowComponent
           dataIndex={dataIndex}
           rowIndex={rowIndex}
           info={info}
+          company={company}
           cost={cost}
           shipping={shipping}
           yearReleased={yearReleased}
