@@ -1235,7 +1235,7 @@ const Productlist = props => {
                         {wavelengths.nm480 > 0 && (<b style={{color:'blue'}}>480x{wavelengths.nm480} {wavelengths.nm480real && (
                           <Tooltip title={`480 real reading: ${wavelengths.nm480real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b>)}
-                        {wavelengths.nm415 > 0 && (<b style={{color:'blue'}}>480x{wavelengths.nm415} {wavelengths.nm415real && (
+                        {wavelengths.nm415 > 0 && (<b style={{color:'blue'}}>415x{wavelengths.nm415} {wavelengths.nm415real && (
                           <Tooltip title={`480 real reading: ${wavelengths.nm415real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b>)}
                         {wavelengths.nm610 > 0 && (<b style={{color:'red'}}>610x{wavelengths.nm610} {wavelengths.nm610real && (
