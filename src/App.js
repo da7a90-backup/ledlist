@@ -8,7 +8,6 @@ import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import { useEffect, useState } from 'react';
 import { fetchData } from "./services/Data";
-import { Typography } from '@mui/material';
 
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({

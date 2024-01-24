@@ -1,3 +1,4 @@
+/* a lot of bad practices with important that need to be done with css-in-js or migrate to tailwind for better dev experience*/
 .App {
   text-align: center;
   font-family: 'Saira' !important;
@@ -58,6 +59,31 @@
 }
 
 @media only screen and (max-width: 768px) {
+  .css-9bd75r {
+    position: absolute !important;
+    margin-top: 0px !important;    
+  }
+  .css-a8h0np-MuiPaper-root-MuiAppBar-root{
+    position: absolute !important;
+    margin-top: 0px !important;
+  }
+
+  .css-ao8rxk {
+    padding-top: 30px !important;  
+  }
+
+  .css-11mde6h-MuiPaper-root{
+    padding-top: 30px !important;
+  }
+
+  .css-xz27vl-MuiPaper-root{
+    padding-top: 30px !important;
+  }
+
+  .css-z5rkio{
+    padding-top: 30px !important;
+  }
+
   .css-zcmli0-MuiGrid-root {
     flex-direction: column !important;
     margin-left: -82px !important;

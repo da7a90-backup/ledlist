@@ -84,7 +84,7 @@ const years = range(currentYear, currentYear - 50, -1);
       discountedPerLed: discountedPerLed.current || 0,
       discountedPerOutput: discountedPerOutput.current || 0,
       },
-      yearReleased: yearReleased1.current || "2023" ,
+      yearReleased: yearReleased1.current || "2024" ,
       size:
       { 
       height: height.current || 0,
@@ -109,7 +109,7 @@ const years = range(currentYear, currentYear - 50, -1);
       avCombinedPower: avCombinedPower.current || 0,
       peakPower: peakPower.current || 0
       },
-      wavelengths: wavelengths1.current || {nm480: 0, nm610:0, nm630: 0, nm660: 0, nm810: 0, nm850: 0, nm930: 0, nm950: 0},
+      wavelengths: wavelengths1.current || {nm480: 0, nm590: 0, nm610:0, nm630: 0, nm660: 0, nm810: 0, nm850: 0, nm930: 0, nm950: 0, nm1060: 0},
       nnemf:{
         emfe: `${emfe.current || "Green"}${emfeReading.current || ''}`,
         mag: `${mag.current || "Green"}${magReading.current || ''}` 
@@ -355,7 +355,7 @@ const years = range(currentYear, currentYear - 50, -1);
         <FormLabel sx={{marginTop:'35px'}}>Power </FormLabel>
         <FormGroup row>
         <FormGroup column='column'>
-        <h5>Number of LEDs</h5>
+        <h5>Number of LED Chips</h5>
         <TextField required type="number" onChange={(e)=>{leds1.current = e.target.value}}  ></TextField>
         </FormGroup>        
         <FormGroup column='column'>
@@ -395,7 +395,11 @@ const years = range(currentYear, currentYear - 50, -1);
         <FormGroup column='column'>
         <h5>480</h5>
         <TextField required type="number" onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm480: e.target.value}}}  ></TextField>
-        </FormGroup>     
+        </FormGroup>    
+        <FormGroup column='column'>
+        <h5>590</h5>
+        <TextField required type="number" onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm590: e.target.value}}} ></TextField>
+        </FormGroup> 
         <FormGroup column='column'>
         <h5>610</h5>
         <TextField required type="number" onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm610:e.target.value}}}  ></TextField>
@@ -427,6 +431,10 @@ const years = range(currentYear, currentYear - 50, -1);
         <FormGroup column='column'>
         <h5>950</h5>
         <TextField required type="number" onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm950:e.target.value}}} ></TextField>
+        </FormGroup>  
+        <FormGroup column='column'>
+        <h5>1060</h5>
+        <TextField required type="number" onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm1060:e.target.value}}} ></TextField>
         </FormGroup>       
         </FormGroup>
 
@@ -437,7 +445,7 @@ const years = range(currentYear, currentYear - 50, -1);
         <Select required onChange={(e)=>{emfe.current = e.target.value}}  >
           <MenuItem value={"Green"}>Green</MenuItem>
           <MenuItem value={"Orange"}>Orange</MenuItem>
-          <MenuItem value={"Yellow"}>Yellow</MenuItem>
+          <MenuItem value={"Red"}>Red</MenuItem>
         </Select>
         <TextField type="number" label="Electric Field Reading" onChange={(e)=>{emfeReading.current = e.target.value}} required ></TextField>
         </FormGroup>
@@ -446,7 +454,7 @@ const years = range(currentYear, currentYear - 50, -1);
         <Select required onChange={(e)=>{mag.current = e.target.value}}  >
           <MenuItem value={"Green"}>Green</MenuItem>
           <MenuItem value={"Orange"}>Orange</MenuItem>
-          <MenuItem value={"Yellow"}>Yellow</MenuItem>
+          <MenuItem value={"Red"}>Red</MenuItem>
         </Select>
         <TextField type="number" label="Magnetic Field Reading" onChange={(e)=>{magReading.current = e.target.value}} required ></TextField>
         </FormGroup>

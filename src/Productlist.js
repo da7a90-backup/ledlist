@@ -16,11 +16,16 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CircularProgress, Slider } from "@mui/material";
 import CustomHintButton from "./CustomHintButton";
 import { PriorityHigh } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { IconButton } from "@mui/material";
 
 //import makeStyles from "@mui/styles";
 
+function useQuery() {
+  const { search } = useLocation();
+
+  return React.useMemo(() => new URLSearchParams(search), [search]);
+}
 
 const Productlist = props => {
 /* 
@@ -28,8 +33,40 @@ const Productlist = props => {
 
        });
     const classes = useStyles(); */
+    let [searchParams, setSearchParams] = useSearchParams();
 
+    console.log('searchparams', searchParams.get('year'))
     const navigate = useNavigate();
+    
+
+    const query = useQuery();
+
+    const available = query.get('available');
+
+    const ledsFilter = query.get('leds')
+    const powerFilter = query.get('power')
+    const priceFilter = query.get('price')
+    const heightFilter = query.get('height')
+    const widthFilter = query.get('width')
+    const warrantyFilter = query.get('warranty')
+    const companyFilter = query.get('company')
+    const locationFilter = query.get('location')
+    const warehouseFilter = query.get('warehouse')
+    const classFilter = query.get('panelclass')
+    const yearFilter = query.get('year');
+    const flickerFilter = query.get('flickerfree')
+    const alexdataFilter = query.get('alexdata')
+    const ulowemfFilter = query.get('ulowemf')
+    const multichipledFilter = query.get('multichipled')
+    const pulsingFilter =  query.get('pulsing')
+    const modularsupportFilter = query.get('modularsupport')
+    const builtintimerFilter = query.get('builtintimer')
+    const standsFilter = query.get('stands')
+    const notdiscontinuedFilter = query.get('notdiscontinued')
+    const blueFilter = query.get('blue')
+    const redFilter = query.get('red')
+    const nirFilter = query.get('nir')
+
 
     const [sortByShipping, setSortByShipping] = useState('shippingUsa');
     const [sortByValue, setSortByValue] = useState('discountedPerOutput');
@@ -219,7 +256,73 @@ const Productlist = props => {
         viewColumns:false
       }
     },
-    {
+    ledsFilter ? {
+      label: `LEDs 💡`,
+      name: "leds.leds",
+      options: {
+        filter:true,
+        filterList: [...ledsFilter.split(':').map((leds)=>parseInt(leds))],
+        filterType: 'custom',
+
+        // if the below value is set, these values will be used every time the table is rendered.
+        // it's best to let the table internally manage the filterList
+        //filterList: [25, 50],
+        
+        customFilterListOptions: {
+          render: v => {
+            if (v[0] && v[1]) {
+              return [`Min leds: ${v[0]}`, `Max leds: ${v[1]}`];
+            } else if (v[0] && v[1] ) {
+              return `Min leds: ${v[0]}, Max leds: ${v[1]}`;
+            } else if (v[0]) {
+              return `Min leds: ${v[0]}`;
+            } else if (v[1]) {
+              return `Max leds: ${v[1]}`;
+            }
+            return [];
+          },
+          update: (filterList, filterPos, index) => {
+            if (filterPos === 0) {
+              filterList[index].splice(filterPos, 1, '');
+            } else if (filterPos === 1) {
+              filterList[index].splice(filterPos, 1);
+            } else if (filterPos === -1) {
+              filterList[index] = [];
+            }
+
+            return filterList;
+          },
+        },
+        filterOptions: {
+          logic(leds, filters) {
+            if (filters[0] && filters[1]) {
+              return leds < filters[0] || leds > filters[1];
+            } else if (filters[0]) {
+              return leds < filters[0];
+            } else if (filters[1]) {
+              return leds > filters[1];
+            }
+            return false;
+          },
+          display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
+          filterList={filterList} 
+          onChange={onChange} 
+          index={index} 
+          column={column} 
+          name={'LEDS'}
+          filterData={filterData} >
+          </CustomSliderFilter>,
+        },
+        sortCompare: (order) => {
+          return (obj1, obj2) => {
+            let val1 = parseInt(obj1.data, 10);
+            let val2 = parseInt(obj2.data, 10);
+            return (val1 - val2) * (order === 'asc' ? 1 : -1);
+          };
+        }
+      }
+    } 
+    : {
       label: `LEDs 💡`,
       name: "leds.leds",
       options: {
@@ -284,6 +387,73 @@ const Productlist = props => {
         }
       }
     },
+    powerFilter ?
+    {
+      label: "Total Power ⚡",
+      name: "leds.totalPowerOutput",
+      options: {
+        filter:true,
+        filterType: 'custom',
+        filterList: [...powerFilter.split(":").map((power)=>parseFloat(power))],
+
+        // if the below value is set, these values will be used every time the table is rendered.
+        // it's best to let the table internally manage the filterList
+        //filterList: [25, 50],
+        
+        customFilterListOptions: {
+          render: v => {
+            if (v[0] && v[1]) {
+              return [`Min totalPowerOutput: ${v[0]}`, `Max totalPowerOutput: ${v[1]}`];
+            } else if (v[0] && v[1] ) {
+              return `Min totalPowerOutput: ${v[0]}, Max totalPowerOutput: ${v[1]}`;
+            } else if (v[0]) {
+              return `Min totalPowerOutput: ${v[0]}`;
+            } else if (v[1]) {
+              return `Max totalPowerOutput: ${v[1]}`;
+            }
+            return [];
+          },
+          update: (filterList, filterPos, index) => {
+            if (filterPos === 0) {
+              filterList[index].splice(filterPos, 1, '');
+            } else if (filterPos === 1) {
+              filterList[index].splice(filterPos, 1);
+            } else if (filterPos === -1) {
+              filterList[index] = [];
+            }
+
+            return filterList;
+          },
+        },
+        filterOptions: {
+          logic(totalPowerOutput, filters) {
+            if (filters[0] && filters[1]) {
+              return totalPowerOutput < filters[0] || totalPowerOutput > filters[1];
+            } else if (filters[0]) {
+              return totalPowerOutput < filters[0];
+            } else if (filters[1]) {
+              return totalPowerOutput > filters[1];
+            }
+            return false;
+          },
+          display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
+          filterList={filterList} 
+          onChange={onChange} 
+          index={index} 
+          column={column} 
+          name={'Total Power'}
+          filterData={filterData}  >
+          </CustomSliderFilter>,
+        },
+        sortCompare: (order) => {
+          return (obj1, obj2) => {
+            let val1 = parseFloat(obj1.data);
+            let val2 = parseFloat(obj2.data);
+            return (val1 - val2) * (order === 'asc' ? 1 : -1);
+          };
+        }
+      }
+    } :
     {
       label: "Total Power ⚡",
       name: "leds.totalPowerOutput",
@@ -342,8 +512,8 @@ const Productlist = props => {
         },
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            let val1 = parseInt(obj1.data, 10);
-            let val2 = parseInt(obj2.data, 10);
+            let val1 = parseFloat(obj1.data);
+            let val2 = parseFloat(obj2.data);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
         }
@@ -458,7 +628,67 @@ const Productlist = props => {
         sort: false
       }
     },
-     {
+    priceFilter ? {
+      name:"cost",
+      options:{
+         filter:true,
+         filterList: [...priceFilter.split(':').map((price)=>parseInt(price))],
+         filterType: 'custom',
+
+         // if the below value is set, these values will be used every time the table is rendered.
+         // it's best to let the table internally manage the filterList
+         //filterList: [25, 50],
+         
+         customFilterListOptions: {
+           render: v => {
+             if (v[0] && v[1]) {
+               return [`Min cost: $${v[0]}`, `Max cost: $${v[1]}`];
+             } else if (v[0] && v[1] ) {
+               return `Min cost: $${v[0]}, Max cost: $${v[1]}`;
+             } else if (v[0]) {
+               return `Min cost: $${v[0]}`;
+             } else if (v[1]) {
+               return `Max cost: $${v[1]}`;
+             }
+             return [];
+           },
+           update: (filterList, filterPos, index) => { 
+             if (filterPos === 0) {
+               filterList[index].splice(filterPos, 1, '');
+             } else if (filterPos === 1) {
+               filterList[index].splice(filterPos, 1);
+             } else if (filterPos === -1) {
+               filterList[index] = [];
+             }
+
+             return filterList;
+           },
+         },
+         filterOptions: {
+           logic(cost, filters) {
+             if (filters[0] && filters[1]) {
+               return cost < filters[0] || cost > filters[1];
+             } else if (filters[0]) {
+               return cost < filters[0];
+             } else if (filters[1]) {
+               return cost > filters[1];
+             }
+             return false;
+           },
+           display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
+           filterList={filterList} 
+           onChange={onChange} 
+           index={index} 
+           column={column} 
+           name={'Price'}
+           filterData={filterData}  >
+           </CustomSliderFilter>,
+         },
+         sort:false,
+         display:false,
+         viewColumns:false
+      }
+   } : {
         name:"cost",
         options:{
            filter:true,
@@ -518,7 +748,69 @@ const Productlist = props => {
            viewColumns:false
         }
      },
+    heightFilter ? 
     {
+      name:"size.height",
+      options:{
+         filter:true,
+         filterList: [...heightFilter.split(':').map((height)=>parseFloat(height))],
+         filterType: 'custom',
+  
+         // if the below value is set, these values will be used every time the table is rendered.
+         // it's best to let the table internally manage the filterList
+         //filterList: [25, 50],
+         
+         customFilterListOptions: {
+           render: v => {
+             if (v[0] && v[1]) {
+               return [`Min height: ${v[0]}"`, `Max height: ${v[1]}"`];
+             } else if (v[0] && v[1] ) {
+               return `Min height: ${v[0]}", Max height: ${v[1]}"`;
+             } else if (v[0]) {
+               return `Min height: ${v[0]}"`;
+             } else if (v[1]) {
+               return `Max height: ${v[1]}"`;
+             }
+             return [];
+           },
+           update: (filterList, filterPos, index) => {
+             if (filterPos === 0) {
+               filterList[index].splice(filterPos, 1, '');
+             } else if (filterPos === 1) {
+               filterList[index].splice(filterPos, 1);
+             } else if (filterPos === -1) {
+               filterList[index] = [];
+             }
+  
+             return filterList;
+           },
+         },
+         filterOptions: {
+           logic(height, filters) {
+             if (filters[0] && filters[1]) {
+               return height < filters[0] || height > filters[1];
+             } else if (filters[0]) {
+               return height < filters[0];
+             } else if (filters[1]) {
+               return height > filters[1];
+             }
+             return false;
+           },
+           display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
+           filterList={filterList} 
+           onChange={onChange} 
+           index={index} 
+           column={column} 
+           name={'Height'} 
+           filterData={filterData} >
+           </CustomSliderFilter>,
+         },
+         sort:false,
+         display:false,
+         viewColumns:false
+      }
+   }
+    : {
     name:"size.height",
     options:{
        filter:true,
@@ -578,7 +870,67 @@ const Productlist = props => {
        viewColumns:false
     }
  },
- {
+ widthFilter ? {
+  name:"size.width",
+  options:{
+     filter:true,
+     filterList: [...widthFilter.split(':').map((width)=>parseFloat(width))],
+     filterType: 'custom',
+
+     // if the below value is set, these values will be used every time the table is rendered.
+     // it's best to let the table internally manage the filterList
+     //filterList: [25, 50],
+     
+     customFilterListOptions: {
+       render: v => {
+         if (v[0] && v[1]) {
+           return [`Min width: ${v[0]}"`, `Max width: ${v[1]}"`];
+         } else if (v[0] && v[1] ) {
+           return `Min width: ${v[0]}", Max width: ${v[1]}"`;
+         } else if (v[0]) {
+           return `Min width: ${v[0]}"`;
+         } else if (v[1]) {
+           return `Max width: ${v[1]}"`;
+         }
+         return [];
+       },
+       update: (filterList, filterPos, index) => {
+         if (filterPos === 0) {
+           filterList[index].splice(filterPos, 1, '');
+         } else if (filterPos === 1) {
+           filterList[index].splice(filterPos, 1);
+         } else if (filterPos === -1) {
+           filterList[index] = [];
+         }
+
+         return filterList;
+       },
+     },
+     filterOptions: {
+       logic(width, filters) {
+         if (filters[0] && filters[1]) {
+           return width < filters[0] || width > filters[1];
+         } else if (filters[0]) {
+           return width < filters[0];
+         } else if (filters[1]) {
+           return width > filters[1];
+         }
+         return false;
+       },
+       display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'Width'} 
+       filterData={filterData} >
+       </CustomSliderFilter>,
+     },
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+} : {
   name:"size.width",
   options:{
      filter:true,
@@ -638,7 +990,67 @@ const Productlist = props => {
      viewColumns:false
   }
 },
- {
+ warrantyFilter ? {
+  name:"warranty.warranty",
+  options:{
+     filter:true,
+     filterList: [warrantyFilter.split(':').map((warranty)=>parseInt(warranty))],
+     filterType: 'custom',
+
+     // if the below value is set, these values will be used every time the table is rendered.
+     // it's best to let the table internally manage the filterList
+     //filterList: [25, 50],
+     
+     customFilterListOptions: {
+       render: v => {
+         if (v[0] && v[1]) {
+           return [`Min warranty: ${v[0]} years`, `Max warranty: ${v[1]} years`];
+         } else if (v[0] && v[1] ) {
+           return `Min warranty: ${v[0]} years, Max warranty: ${v[1]} years`;
+         } else if (v[0]) {
+           return `Min warranty: ${v[0]} years`;
+         } else if (v[1]) {
+           return `Max warranty: ${v[1]} years`;
+         }
+         return [];
+       },
+       update: (filterList, filterPos, index) => {
+         if (filterPos === 0) {
+           filterList[index].splice(filterPos, 1, '');
+         } else if (filterPos === 1) {
+           filterList[index].splice(filterPos, 1);
+         } else if (filterPos === -1) {
+           filterList[index] = [];
+         }
+
+         return filterList;
+       },
+     },
+     filterOptions: {
+       logic(warranty, filters) {
+         if (filters[0] && filters[1]) {
+           return warranty < filters[0] || warranty > filters[1];
+         } else if (filters[0]) {
+           return warranty < filters[0];
+         } else if (filters[1]) {
+           return warranty > filters[1];
+         }
+         return false;
+       },
+       display: (filterList, onChange, index, column, filterData) => <CustomSliderFilter 
+       filterList={filterList} 
+       onChange={onChange} 
+       index={index} 
+       column={column} 
+       name={'Warranty'} 
+       filterData={filterData} >
+       </CustomSliderFilter>,
+     },
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+} : {
     name:"warranty.warranty",
     options:{
        filter:true,
@@ -698,7 +1110,18 @@ const Productlist = props => {
        viewColumns:false
     }
  },
-{
+ companyFilter ? {
+  name:"info.company",
+  label:'Company',
+  options:{
+     filter:true,
+     filterList: [...companyFilter.split(',')],
+     filterType: 'multiselect',
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+} : {
   name:"info.company",
   label:'Company',
   options:{
@@ -708,8 +1131,20 @@ const Productlist = props => {
      display:false,
      viewColumns:false
   }
-},
-{
+} ,
+locationFilter ? {
+  name: "info.companyHq",
+  label: "Company Location",
+  options:{
+    filter:true,
+    filterType: 'multiselect',
+    filterList:[...locationFilter.split(',')],
+    sort:false,
+    display:false,
+    viewColumns:false
+  }
+
+} : {
   name: "info.companyHq",
   label: "Company Location",
   options:{
@@ -721,6 +1156,31 @@ const Productlist = props => {
   }
 
 },
+warehouseFilter ? 
+{
+  name: "info.warehouse",
+  label: "Company Warehouse",
+  options:{
+    filter:true,
+    filterType: 'multiselect',
+    filterList: [...warehouseFilter.split(',')],
+    filterOptions: {
+      logic(warehouse, filters) {
+        for(let filter of filters){
+          if(warehouse.includes(filter)){
+            return false
+          }
+        }
+        return true;
+      },
+
+    },
+    sort:false,
+    display:false,
+    viewColumns:false
+  }
+
+} : 
 {
   name: "info.warehouse",
   label: "Company Warehouse",
@@ -744,6 +1204,18 @@ const Productlist = props => {
   }
 
 },
+classFilter ? {
+  name:"info.class",
+  label:"Class",
+  options:{
+     filter:true,
+     filterList: [...classFilter.split(',')],
+     filterType: 'multiselect',
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+} : 
 {
   name:"info.class",
   label:"Class",
@@ -755,7 +1227,19 @@ const Productlist = props => {
      viewColumns:false
   }
 },
-{
+yearFilter ? {
+  name:"yearReleased",
+  label:"Year Released",
+  options:{
+     filter:true,
+     filterList: [...yearFilter.split(',').map(year => parseInt(year))],
+     filterType: 'multiselect',
+     sort:false,
+     display:false,
+     viewColumns:false
+  }
+}
+: {
   name:"yearReleased",
   label:"Year Released",
   options:{
@@ -766,7 +1250,28 @@ const Productlist = props => {
      viewColumns:false
   }
 },
+flickerFilter ? 
 {
+  name: "flickernsound.flicker",
+  label: "Flicker Free",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    filterList: [true],
+    customFilterListOptions: { render: v => `Flicker Free` },
+    filterType: "checkbox",
+    filterOptions: {
+      names: [true], // only 1 checkbox with value === true
+      logic(flicker, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        return !(flicker === 0);
+      }
+    },
+  }
+}
+: {
   name: "flickernsound.flicker",
   label: "Flicker Free",
   options: {
@@ -785,7 +1290,28 @@ const Productlist = props => {
     },
   }
 },
+alexdataFilter ? 
 {
+  name: "info.alexTested",
+  label: "Alex Data Only",
+  options: {
+    sort: false,
+    display: false,
+    viewColumns: false,
+    filter: true,
+    filterList: [true],
+    customFilterListOptions: {render: v => `Alex Tested`},
+    filterType: "checkbox",
+    filterOptions: {
+      names: [true],
+      logic(alexTested, filterVal, row) {
+        return alexTested === false
+      }
+    }
+  }
+
+}
+: {
   name: "info.alexTested",
   label: "Alex Data Only",
   options: {
@@ -804,7 +1330,32 @@ const Productlist = props => {
   }
 
 },
+ulowemfFilter ? 
 {
+  name: "nnemf",
+  label: "Ultra Low EMF",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    filterList: [true],
+    customFilterListOptions: { render: v => `EMF Safe` },
+    filterType: "checkbox",
+    filterOptions: {
+      names: [true], // only 1 checkbox with value === true
+      logic(nnemf, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        let unsafe = false;
+        if(nnemf.emfe === 'Green' && nnemf.mag === 'Green')
+        unsafe = true
+
+        return !unsafe;
+      }
+    },
+  }
+}
+: {
   name: "nnemf",
   label: "Ultra Low EMF",
   options: {
@@ -827,7 +1378,27 @@ const Productlist = props => {
     },
   }
 },
-{
+multichipledFilter ? {
+  name: "leds.ledDualChip",
+  label: "Multi Chip LED",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    filterList: [true],
+    customFilterListOptions: { render: v => `Multi Chip LED` },
+    filterType: "checkbox",
+    filterOptions: {
+      names: [true], // only 1 checkbox with value === true
+      logic(ledDualChip, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        return !(ledDualChip === 1);
+      }
+    },
+  }
+}
+: {
   name: "leds.ledDualChip",
   label: "Multi Chip LED",
   options: {
@@ -846,7 +1417,27 @@ const Productlist = props => {
     },
   }
 },
-{
+pulsingFilter ? {
+  name: "features.pulsing",
+  label: "Pulsing",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    filterList: [true],
+    customFilterListOptions: { render: v => `Pulsing` },
+    filterType: "checkbox",
+    filterOptions: {
+      names: [true], // only 1 checkbox with value === true
+      logic(pulsing, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        return !(pulsing === 1);
+      }
+    },
+  }
+}
+: {
   name: "features.pulsing",
   label: "Pulsing",
   options: {
@@ -865,7 +1456,28 @@ const Productlist = props => {
     },
   }
 },
+modularsupportFilter ?
 {
+  name: "features.modularSupport",
+  label: "Modular Support",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    filterList: [true],
+    customFilterListOptions: { render: v => `Modular Support` },
+    filterType: "checkbox",
+    filterOptions: {
+      names: [true], // only 1 checkbox with value === true
+      logic(modularSupport, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        return !(modularSupport === 1);
+      }
+    },
+  }
+}
+: {
   name: "features.modularSupport",
   label: "Modular Support",
   options: {
@@ -884,7 +1496,28 @@ const Productlist = props => {
     },
   }
 },
+builtintimerFilter ? 
 {
+  name: "features.inbuiltTimer",
+  label: "Built in timer",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    filterList: [true],
+    customFilterListOptions: { render: v => `Built in Timer` },
+    filterType: "checkbox",
+    filterOptions: {
+      names: [true], // only 1 checkbox with value === true
+      logic(inbuiltTimer, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        return !(inbuiltTimer === 1);
+      }
+    },
+  }
+}
+: {
   name: "features.inbuiltTimer",
   label: "Built in timer",
   options: {
@@ -903,7 +1536,28 @@ const Productlist = props => {
     },
   }
 },
+standsFilter ?
 {
+  name: "features.stands",
+  label: "Stands included",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    filterList: [true],
+    customFilterListOptions: { render: v => `Stands included` },
+    filterType: "checkbox",
+    filterOptions: {
+      names: [true], // only 1 checkbox with value === true
+      logic(stands, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        return !(stands === 1);
+      }
+    },
+  }
+}
+: {
   name: "features.stands",
   label: "Stands included",
   options: {
@@ -922,16 +1576,37 @@ const Productlist = props => {
     },
   }
 },
-{
+notdiscontinuedFilter ? {
   name: "info.discontinued",
-  label: "Not Discontinued",
+  label: "Still Available",
   options:{
     sort:false,
     display:false,
     viewColumns:false,
     filter: true,
-    customFilterListOptions: { render: v => `Flicker Free` },
+    filterList: [true],
+    customFilterListOptions: { render: v => `available` },
     filterType: "checkbox",
+
+    filterOptions: {
+      names: [true], // only 1 checkbox with value === true
+      logic(discontinued, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        return !(discontinued === 0);
+      }
+    },
+  }
+} : {
+  name: "info.discontinued",
+  label: "Still Available",
+  options:{
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    customFilterListOptions: { render: v => `available` },
+    filterType: "checkbox",
+
     filterOptions: {
       names: [true], // only 1 checkbox with value === true
       logic(discontinued, filterVal, row) {
@@ -941,7 +1616,28 @@ const Productlist = props => {
     },
   }
 },
-{
+blueFilter ? {
+  name: "wavelengths",
+  label: "Blue",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    filterList: [...blueFilter.split(',')],
+    customFilterListOptions: { render: v => `${v}` },
+    filterType: "checkbox+",
+    filterOptions: {
+      names:['480','415'],
+      logic(wavelengths, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+          return !(wavelengths[`nm${filterVal}`] > 0)
+        
+      }
+    },
+  }
+}
+: {
   name: "wavelengths",
   label: "Blue",
   options: {
@@ -961,7 +1657,38 @@ const Productlist = props => {
     },
   }
 },
-{
+redFilter ? {
+  name: "wavelengths",
+  label: "Red",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    filterList: [...redFilter.split(',')],
+    customFilterListOptions: { render: v => `${v}` },
+    filterType: "checkbox+",
+    filterOptions: {
+      names:['590','610','630','660'],
+      logic(wavelengths, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        let filter = false;
+        for(let key in filterVal){
+          let init = !(wavelengths[`nm${filterVal[key]}`] > 0)
+
+            for(let innerKey in filterVal){
+              if(init && !(wavelengths[`nm${filterVal[innerKey]}`] > 0)){
+                filter = true
+              }
+            }
+        }
+        return filter;
+        
+      }
+    },
+  }
+}
+: {
   name: "wavelengths",
   label: "Red",
   options: {
@@ -972,7 +1699,7 @@ const Productlist = props => {
     customFilterListOptions: { render: v => `${v}` },
     filterType: "checkbox+",
     filterOptions: {
-      names:['610','630','660'],
+      names:['590','610','630','660'],
       logic(wavelengths, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
         let filter = false;
@@ -991,7 +1718,37 @@ const Productlist = props => {
     },
   }
 },
-{
+nirFilter ? {
+  name: "wavelengths",
+  label: "NIR",
+  options: {
+    sort:false,
+    display:false,
+    viewColumns:false,
+    filter: true,
+    filterList: [...nirFilter.split(',')],
+    customFilterListOptions: { render: v => `${v}` },
+    filterType: "checkbox+",
+    filterOptions: {
+      names:['810', '830', '850', '930', '950', '1060'],
+      logic(wavelengths, filterVal, row) {
+        // Note: filterVal is an array of the values selected in the filter
+        let filter = false;
+        for(let key in filterVal){
+          let init = !(wavelengths[`nm${filterVal[key]}`] > 0)
+
+            for(let innerKey in filterVal){
+              if(init && !(wavelengths[`nm${filterVal[innerKey]}`] > 0)){
+                filter = true
+              }
+            }
+        }
+        return filter;
+      }
+    },
+  }
+}
+: {
   name: "wavelengths",
   label: "NIR",
   options: {
@@ -1002,7 +1759,7 @@ const Productlist = props => {
     customFilterListOptions: { render: v => `${v}` },
     filterType: "checkbox+",
     filterOptions: {
-      names:['810', '830', '850', '930', '950'],
+      names:['810', '830', '850', '930', '950', '1060'],
       logic(wavelengths, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
         let filter = false;
@@ -1045,7 +1802,7 @@ const Productlist = props => {
               }
           navigate('/details', {state: {object: dataObject, allData: props.data}})
           }}>
-          {rowIndex+1}
+          {dataIndex+1}
           </IconButton>
          </TableCell>
         <TableCell style={{width: '15vw', color: !props.dark ? '#000' : '#ffff'}} align="center">{info.productName}             
@@ -1238,6 +1995,9 @@ const Productlist = props => {
                         {wavelengths.nm415 > 0 && (<b style={{color:'blue'}}>415x{wavelengths.nm415} {wavelengths.nm415real && (
                           <Tooltip title={`480 real reading: ${wavelengths.nm415real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b>)}
+                        {wavelengths.nm590 > 0 && (<b style={{color:'red'}}>590x{wavelengths.nm590} {wavelengths.nm590real && (
+                          <Tooltip title={`590 real reading: ${wavelengths.nm590real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )}  </b>)}
                         {wavelengths.nm610 > 0 && (<b style={{color:'red'}}>610x{wavelengths.nm610} {wavelengths.nm610real && (
                           <Tooltip title={`610 real reading: ${wavelengths.nm610real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )}  </b>)}
@@ -1261,6 +2021,9 @@ const Productlist = props => {
                         )} </b> )}
                         {wavelengths.nm950 > 0 && (<b style={{color:'gray'}}>950x{wavelengths.nm950} {wavelengths.nm950real && (
                           <Tooltip title={`950 real reading: ${wavelengths.nm950real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
+                        )} </b> )}
+                        {wavelengths.nm1060 > 0 && (<b style={{color:'gray'}}>1060x{wavelengths.nm1060} {wavelengths.nm1060real && (
+                          <Tooltip title={`1060 real reading: ${wavelengths.nm1060real}`}><PriorityHigh style={{ float: 'right' }} color="primary"></PriorityHigh></Tooltip>
                         )} </b> )}                        
               </div>
             </TableCell>
@@ -1280,6 +2043,162 @@ const Productlist = props => {
       },
   },
     onFilterChange: (changedColumn, filterList) => {
+      console.log(filterList)
+      let queryparams = {}
+
+      let entries = {}
+
+      searchParams.forEach((v,k,p)=>{
+        entries[k] = v
+      })
+
+      if(filterList[6].length > 0){
+        queryparams = {...entries, ...queryparams, leds: filterList[6].join(':')}
+      } else {
+        let {leds, ...rest} = queryparams
+        queryparams = rest
+      }
+
+      if(filterList[7].length > 0){
+        queryparams = {...entries, ...queryparams, power: filterList[7].join(':')}
+      } else {
+        let {power, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[15].length > 0){
+        queryparams = {...entries, ...queryparams, price: filterList[15].join(':')}
+      } else {
+        let {price, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[16].length > 0){
+        queryparams = {...entries, ...queryparams, height: filterList[16].join(':')}
+      } else {
+        let {height, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[17].length > 0){
+        queryparams = {...entries, ...queryparams, width: filterList[17].join(':')}
+      } else {
+        let {width, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[18].length > 0){
+        queryparams = {...entries, ...queryparams, warranty: filterList[18].join(':')}
+      } else {
+        let {warranty, ...rest} = queryparams
+        queryparams = rest
+      }
+
+      if(filterList[19].length > 0){
+        queryparams = {...entries, ...queryparams, company: filterList[19].join(',')}
+      } else {
+        let {company, ...rest} = queryparams
+        queryparams = rest
+      }
+
+      if(filterList[20].length > 0){
+        queryparams = {...entries, ...queryparams, location: filterList[20].join(',')}
+      } else {
+        let {location, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[21].length > 0){
+        queryparams = {...entries, ...queryparams, warehouse: filterList[21].join(',')}
+      } else {
+        let {warehouse, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[22].length > 0){
+        queryparams = {...entries, ...queryparams, panelclass: filterList[22].join(',')}
+      } else {
+        let {panelclass, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[23].length > 0){
+        queryparams = {...entries, ...queryparams, year: filterList[23].join(',')}
+      } else {
+        let {year, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[24].length > 0){
+        queryparams = {...entries, ...queryparams, flickerfree: true}
+      } else {
+        let {flickerfree, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[25].length > 0){
+        queryparams = {...entries, ...queryparams, alexdata: true}
+      } else {
+        let {alexdata, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[26].length > 0){
+        queryparams = {...entries, ...queryparams, ulowemf: true}
+      } else {
+        let {ulowemf, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[27].length > 0){
+        queryparams = {...entries, ...queryparams, multichipled: true}
+      } else {
+        let {multichipled, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[28].length > 0){
+        queryparams = {...entries, ...queryparams, pulsing: true}
+      } else {
+        let {pulsing, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[29].length > 0){
+        queryparams = {...entries, ...queryparams, modularsupport: true}
+      } else {
+        let {modularsupport, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[30].length > 0){
+        queryparams = {...entries, ...queryparams, builtintimer: true}
+      } else {
+        let {builtintimer, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[31].length > 0){
+        queryparams = {...entries, ...queryparams, stands: true}
+      } else {
+        let {stands, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[32].length > 0){
+        queryparams = {...entries, ...queryparams, notdiscontinued: true}
+      } else {
+        let {notdiscontinued, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[33].length > 0){
+        queryparams = {...entries, ...queryparams, blue: filterList[33].join(',')}
+      } else {
+        let {blue, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[34].length > 0){
+        queryparams = {...entries, ...queryparams, red: filterList[34].join(',')}
+      } else {
+        let {red, ...rest} = queryparams
+        queryparams = rest
+      }
+      if(filterList[35].length > 0){
+        queryparams = {...entries, ...queryparams, nir: filterList[35].join(',')}
+      } else {
+        let {nir, ...rest} = queryparams
+        queryparams = rest
+      }
+
+
+      console.log(queryparams)
+
+      setSearchParams(queryparams)
+
       if(changedColumn === 'wavelengths'){
         const blue = filterList[33]
         const red = filterList[34]
@@ -1391,7 +2310,6 @@ const Productlist = props => {
         const inbuiltTimer = data[29]
         const stands = data [30]
         const features = {ledDualChip,pulsing,modularSupport,inbuiltTimer, stands}
-      console.log(company)
         const dataObject = {_id, info, cost, shipping, leds, features, flickernsound, nnemf, warranty, value, wavelengths, yearReleased, cost, size}
         return (
           <MyCustomRowComponent

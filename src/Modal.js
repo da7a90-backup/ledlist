@@ -36,9 +36,7 @@ import {CircularProgress} from '@mui/material';
   const locations = [...new Set(allData.map((object)=>object.info.companyHq))]
   const classes = [...new Set(allData.map((object)=>object.info.class))]
 
-  console.log(info.productName);
   const productName = useRef(info.productName) 
-  console.log(info.warehouse);
 
   const company = useRef(info.company) 
   const class_  = useRef(info.class)
@@ -77,8 +75,7 @@ import {CircularProgress} from '@mui/material';
   const flicker = useRef(flickernsound.flicker)
   const soundLevels = useRef(flickernsound.soundLevels)
 
-  console.log(mag.current)
-  console.log(magReading)
+
   const [edit, setEdit] = useState(true);
 
   const currentYear = (new Date()).getFullYear();
@@ -163,8 +160,7 @@ const years = range(currentYear, currentYear - 50, -1);
       flicker: flicker.current,
       soundLevels: soundLevels.current}
     }
-    console.log(mag.current)
-    console.log(product)
+
     const insert = await updateRecord(product, _id);
 
     if(insert.status === 200) {
@@ -190,6 +186,7 @@ const years = range(currentYear, currentYear - 50, -1);
 
   const handleClose = () => {
     navigate('/');
+    window.location.reload();
   };
 
   return (
@@ -271,7 +268,6 @@ const years = range(currentYear, currentYear - 50, -1);
                multiple
                onChange={(event, newValue) => {
                  setWarehouse([...newValue]);
-                 console.log(newValue)
                }}
                defaultValue={[...warehouse]}
               options={warehouses}
@@ -409,7 +405,7 @@ const years = range(currentYear, currentYear - 50, -1);
            <FormLabel sx={{marginTop:'35px'}}>Power </FormLabel>
            <FormGroup row>
            <FormGroup column='column'>
-           <h5>Number of LEDs</h5>
+           <h5>Number of LED Chips</h5>
            <TextField required type="number" defaultValue={leds.leds} onChange={(e)=>{leds1.current = e.target.value}} disabled={edit}></TextField>
            </FormGroup>        
            <FormGroup column='column'>
@@ -449,6 +445,10 @@ const years = range(currentYear, currentYear - 50, -1);
            <FormGroup column='column'>
            <h5>480</h5>
            <TextField required type="number" defaultValue={wavelengths['nm480']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm480: e.target.value}}} disabled={edit}></TextField>
+           </FormGroup> 
+           <FormGroup column='column'>
+           <h5>590</h5>
+           <TextField required type="number" defaultValue={wavelengths['nm590']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm590: e.target.value}}} disabled={edit}></TextField>
            </FormGroup>     
            <FormGroup column='column'>
            <h5>610</h5>
@@ -481,6 +481,10 @@ const years = range(currentYear, currentYear - 50, -1);
            <FormGroup column='column'>
            <h5>950</h5>
            <TextField required type="number" defaultValue={wavelengths['nm950']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm950:e.target.value}}}disabled={edit}></TextField>
+           </FormGroup>  
+           <FormGroup column='column'>
+           <h5>1060</h5>
+           <TextField required type="number" defaultValue={wavelengths['nm1060']} onChange={(e)=>{wavelengths1.current = {...wavelengths1.current,nm1060:e.target.value}}}disabled={edit}></TextField>
            </FormGroup>       
            </FormGroup>
    
