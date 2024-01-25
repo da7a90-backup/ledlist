@@ -271,7 +271,7 @@ const years = range(currentYear, currentYear - 50, -1);
         <TextField required onChange={(e)=>{youtubeReview.current = e.target.value}}  ></TextField>
           </FormGroup>
           <FormGroup sx={{width: '10%'}} column='column'>
-        <h5>Discontinued</h5>
+        <h5>Still available</h5>
         <Select required onChange={(e)=>{discontinued.current = e.target.value}}  >
           <MenuItem value={1}>Yes</MenuItem>
           <MenuItem value={0}>No</MenuItem>

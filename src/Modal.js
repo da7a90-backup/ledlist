@@ -322,7 +322,7 @@ const years = range(currentYear, currentYear - 50, -1);
            <TextField required defaultValue={info.youtubeReview} onChange={(e)=>{youtubeReview.current = e.target.value}} disabled={edit}></TextField>
              </FormGroup>
              <FormGroup sx={{width: '10%'}} column='column'>
-           <h5>Discontinued</h5>
+           <h5>Still available</h5>
            <Select required defaultValue={info.discontinued} onChange={(e)=>{discontinued.current = e.target.value}} disabled={edit}>
              <MenuItem value={1}>Yes</MenuItem>
              <MenuItem value={0}>No</MenuItem>

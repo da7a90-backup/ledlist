@@ -1,10 +1,11 @@
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import { QuestionMarkRounded } from "@mui/icons-material";
+import { AppBar, Toolbar, Tooltip, Typography } from "@mui/material";
 import React from "react";
 
 export default function Header({dark, switcher}) {
 
   const displayDesktop = () => {
-    return <Toolbar>{femmecubatorLogo}{switcher()}</Toolbar>;
+    return <Toolbar>{femmecubatorLogo}{switcher()} <Tooltip title="user guide"><a target="_blank" href="https://www.lighttherapyinsiders.com/shopping-tool/"><QuestionMarkRounded/></a></Tooltip> </Toolbar>;
   };
 
   const femmecubatorLogo = (

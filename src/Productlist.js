@@ -526,8 +526,8 @@ const Productlist = props => {
         filter: false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            let val1 = parseInt(obj1.data, 10);
-            let val2 = parseInt(obj2.data, 10);
+            let val1 = parseFloat(obj1.data);
+            let val2 = parseFloat(obj2.data);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
         }
@@ -1802,7 +1802,7 @@ nirFilter ? {
               }
           navigate('/details', {state: {object: dataObject, allData: props.data}})
           }}>
-          {dataIndex+1}
+          {rowIndex+1}
           </IconButton>
          </TableCell>
         <TableCell style={{width: '15vw', color: !props.dark ? '#000' : '#ffff'}} align="center">{info.productName}             
@@ -2336,7 +2336,7 @@ nirFilter ? {
           />
         );
       },
-    rowsPerPage: 50,
+    rowsPerPage:100,
     searchAlwaysOpen: true,
     expandableRows: false,
     resizableColumns: false,

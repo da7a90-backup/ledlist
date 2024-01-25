@@ -9,7 +9,7 @@
                     shipping: {
                         shippingUsa: object.cost.shippingUsa, shippingIntl: object.cost.shippingIntl
                     },
-                    value: {discountedPerLed: Number(object.cost.discountedPrice/object.leds.leds).toFixed(3), discountedPerOutput: Number(object.cost.discountedPrice/object.leds.totalPowerOutput).toFixed(3)},
+                    value: {discountedPerLed: Number(object.cost.discountedPrice/object.leds.leds).toFixed(1), discountedPerOutput: Number(object.cost.discountedPrice/object.leds.totalPowerOutput).toFixed(1)},
                     info: {...object.info, warehouse: object.info.warehouse !== "" && object.info.warehouse !== undefined ? object.info.warehouse.split("\n") : []}
                 }
         })
