@@ -5,7 +5,7 @@ import React from "react";
 export default function Header({dark, switcher}) {
 
   const displayDesktop = () => {
-    return <Toolbar>{femmecubatorLogo}{switcher()} <Tooltip title="user guide"><a target="_blank" href="https://www.lighttherapyinsiders.com/shopping-tool/"><QuestionMarkRounded/></a></Tooltip> </Toolbar>;
+    return <Toolbar>{femmecubatorLogo}{switcher()} <Tooltip title="user guide"><a style={{textDecoration: 'none', fontWeight: 900, color: '#ED3838'}} target="_blank" href="https://www.lighttherapyinsiders.com/shopping-tool/">click here for how to use this tool</a></Tooltip> </Toolbar>;
   };
 
   const femmecubatorLogo = (
