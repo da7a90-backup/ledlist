@@ -25,6 +25,7 @@ import {CircularProgress} from '@mui/material';
   const navigate = useNavigate();
   const {state} = useLocation();
   const { _id, info, cost, shipping, value, yearReleased, leds, features, size, warranty, flickernsound, wavelengths, nnemf} = state.object;
+  console.log(state.object)
   const allData = state.allData;
   const companies = [...new Set(allData.map((object)=>object.info.company))]
   const allWarehouses = allData.map((object)=>object.info.warehouse)
@@ -304,7 +305,7 @@ const years = range(currentYear, currentYear - 50, -1);
              id="years"
              options={years}
              onChange={(e, newValue)=>{yearReleased1.current = newValue}} 
-             renderInput={(params) => <TextField {...params} label={yearReleased} defaultValue={yearReleased} disabled={edit}></TextField>}
+             renderInput={(params) => <TextField {...params} label={yearReleased1.current} defaultValue={yearReleased} disabled={edit}></TextField>}
              />
              </FormGroup>
              <FormGroup column='column'>

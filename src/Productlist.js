@@ -1800,6 +1800,7 @@ nirFilter ? {
                 alert("you don't have access to this!")
                 return
               }
+              console.log('before naviagte: ',dataObject)
           navigate('/details', {state: {object: dataObject, allData: props.data}})
           }}>
           {rowIndex+1}
@@ -2303,7 +2304,8 @@ nirFilter ? {
     responsive: "responsive",
     customRowRender: (data, dataIndex, rowIndex) => {
         const [_id, info, company, cost, shipping, leds, ledcount, totalPowerOutput, avCombinedPower, value, nnemf, size, warranty, flickernsound, wavelengths] = data;
-        const yearReleased = data[22]
+        console.log('dddd : ', data)
+        const yearReleased = data[23]
         const ledDualChip = data[26]
         const pulsing = data[27]
         const modularSupport = data[28]
@@ -2311,6 +2313,7 @@ nirFilter ? {
         const stands = data [30]
         const features = {ledDualChip,pulsing,modularSupport,inbuiltTimer, stands}
         const dataObject = {_id, info, cost, shipping, leds, features, flickernsound, nnemf, warranty, value, wavelengths, yearReleased, cost, size}
+        console.log('befff ', dataObject)
         return (
           <MyCustomRowComponent
           dataIndex={dataIndex}
