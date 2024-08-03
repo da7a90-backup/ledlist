@@ -217,8 +217,8 @@ const Productlist = props => {
         filter: false,
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            let val1 = parseInt(obj1.data, 10);
-            let val2 = parseInt(obj2.data, 10);
+            let val1 = parseFloat(obj1.data);
+            let val2 = parseFloat(obj2.data);
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           };
         }
