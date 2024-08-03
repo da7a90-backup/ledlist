@@ -1592,7 +1592,7 @@ notdiscontinuedFilter ? {
       names: [true], // only 1 checkbox with value === true
       logic(discontinued, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
-        return !(discontinued === 0);
+        return (discontinued === 0);
       }
     },
   }
@@ -1611,7 +1611,7 @@ notdiscontinuedFilter ? {
       names: [true], // only 1 checkbox with value === true
       logic(discontinued, filterVal, row) {
         // Note: filterVal is an array of the values selected in the filter
-        return !(discontinued === 0);
+        return (discontinued === 0);
       }
     },
   }
