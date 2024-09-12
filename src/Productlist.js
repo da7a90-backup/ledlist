@@ -2752,12 +2752,13 @@ theme={props.dark ? darkTheme : lightTheme}
       alignItems: 'center', // Center horizontally
       textAlign: 'center', // Center text
       zIndex: 9, // Ensure bubble is behind the close button
-      fontFamily: 'Saira'
+      fontFamily: 'Saira',
+      fontSize: '11px'
     }}
     onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
     onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1.0)")}
   >
-    Would you like to be updated on the latest red light therapy panels?
+    Would you like to be updated on the latest Red Light Therapy Panels?
   </Fab>
 )}
 
@@ -2786,41 +2787,55 @@ theme={props.dark ? darkTheme : lightTheme}
   onClose={handleCloseModal}
   style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
 >
-  <Box
-    sx={{
-      width: 400,
-      bgcolor: props.dark ? "#333" : "#fff", // Dark grey or white based on theme
-      color: props.dark ? "#fff" : "#000", // White text for dark theme, black for light theme
-      borderRadius: 2,
-      p: 2,
-      boxShadow: 24,
-      fontFamily: 'Saira'
-    }}
-  >
-    <h3>Subscribe for Updates</h3>
-
-    {emailLoading ? <CircularProgress sx={{color:'#ED3838'}}/> : <><TextField
-  fullWidth
-  label="Email"
-  variant="outlined"
-  value={email}
-  onChange={handleEmailChange}
-  error={email.length > 0 && !isEmailValid} // Show error state if email is invalid
-  helperText={
-    email.length > 0 && !isEmailValid ? "Invalid email format" : ""
-  }
-  style={{ marginBottom: 16 }}
-/>
-<Button
-  variant="contained"
-  color="error"
-  onClick={handleEmailSubmit}
-  disabled={!isEmailValid} // Disable button if email is not valid
+<Box
+  sx={{
+    width: { xs: '90%', sm: 400 }, // Responsive width: 90% on extra-small screens, 400px on small and larger screens
+    height: {xs: 200, sm: 250},
+    maxWidth: 400, // Maximum width
+    bgcolor: props.dark ? "#333" : "#fff", // Dark grey or white based on theme
+    color: props.dark ? "#fff" : "#000", // White text for dark theme, black for light theme
+    borderRadius: 2,
+    p: 2,
+    boxShadow: 24,
+    fontFamily: 'Saira'
+  }}
 >
-  Submit
-</Button></>}
+  <h3>Subscribe for Updates</h3>
 
-  </Box>
+  {emailLoading ? (
+    <CircularProgress sx={{ color: '#ED3838' }} />
+  ) : (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column', // Stack elements vertically
+        gap: 2, // Add some spacing between elements
+      }}
+    >
+      <TextField
+        fullWidth
+        label="Email"
+        variant="outlined"
+        value={email}
+        onChange={handleEmailChange}
+        error={email.length > 0 && !isEmailValid} // Show error state if email is invalid
+        helperText={
+          email.length > 0 && !isEmailValid ? "Invalid email format" : ""
+        }
+      />
+      <Button
+        style={{marginTop: '65px'}}
+        variant="contained"
+        color="error"
+        onClick={handleEmailSubmit}
+        disabled={!isEmailValid} // Disable button if email is not valid
+      >
+        Submit
+      </Button>
+    </Box>
+  )}
+</Box>
+
 </Modal>
       <Snackbar
         open={snackbarOpen}
