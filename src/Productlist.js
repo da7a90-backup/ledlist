@@ -13,11 +13,13 @@ import Link from '@mui/material/Link';
 import FormLabel from "@mui/material/FormLabel";
 import FormGroup from "@mui/material/FormGroup";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { CircularProgress, Slider } from "@mui/material";
 import CustomHintButton from "./CustomHintButton";
 import { PriorityHigh } from "@mui/icons-material";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
-import { IconButton } from "@mui/material";
+import { CircularProgress, Slider, Fab, Modal, Box, TextField, Button, Snackbar, IconButton } from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
+import { save_email } from "./services/Data";
+
 
 //import makeStyles from "@mui/styles";
 
@@ -91,6 +93,55 @@ const Productlist = props => {
     const [selectedRowColor, setSelectedRowColor] = useState('#fa9898')
     const [selectedRow, setSelectedRow] = useState(-1);
 
+    const [openModal, setOpenModal] = useState(false);
+    const [email, setEmail] = useState("");
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [showFab, setShowFab] = useState(false);
+    const [fabDismissed, setFabDismissed] = useState(false); // Track if the user dismissed the Fab
+
+    const [emailLoading, setEmailLoading] = useState(false);
+
+    useEffect(() => {
+      const handleScroll = () => {
+        if (window.scrollY > 100 && !fabDismissed) { // Show only if not dismissed
+          setShowFab(true);
+        } else {
+          setShowFab(false);
+        }
+      };
+  
+      window.addEventListener("scroll", handleScroll);
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }, [fabDismissed]); // Re-run effect when fabDismissed changes
+
+    const handleEmailChange = (e) => setEmail(e.target.value);
+
+    const handleFabClick = () => setOpenModal(true);
+    
+    const handleCloseModal = () => setOpenModal(false);
+  
+    const handleCloseSnackbar = () => setSnackbarOpen(false);
+  
+    const handleFabClose = (e) => {
+      e.stopPropagation(); // Prevent the Fab click event from firing
+      setFabDismissed(true); // User dismissed the Fab, so we stop showing it
+      setShowFab(false); // Hide the Fab
+    };
+  
+    const handleEmailSubmit = async () => {
+
+      setEmailLoading(true)
+      const {body, status} = await save_email(email)
+      console.log("email capture")
+      console.log(body,status)
+      setEmailLoading(false)
+      setOpenModal(false)
+      setFabDismissed(true); // User dismissed the Fab, so we stop showing it
+      setShowFab(false); // Hide the Fab
+      setSnackbarOpen(true)
+    };
 
     useEffect(()=>{
       const switchToDark = ()=>{
@@ -2667,6 +2718,109 @@ theme={props.dark ? darkTheme : lightTheme}
       options={options}
       //components={{ TableBody: BodyComponent }}
     />
+    
+{showFab && !fabDismissed && (
+  <Fab
+    onClick={handleFabClick}
+    style={{
+      position: "fixed",
+      bottom: 66,
+      right: 46,
+      backgroundColor: props.dark ? "#333" : "#fff", // Dark grey or white based on theme
+      color: props.dark ? "#fff" : "#000", // White text for dark theme, black for light theme
+      fontWeight: "bold",
+      transition: "all 0.3s ease-in-out",
+      width: 260,
+      height: 180,
+      border: 'none', // Remove border
+      outline: 'none', // Remove outline
+      animation: "slide-in 0.5s ease-in-out", // Slide-in animation
+      backdropFilter: props.dark ? "none" : "blur(10px)", // Blur effect only on light theme
+      display: 'flex', // Flexbox for centering
+      flexDirection: 'column', // Vertical layout
+      justifyContent: 'center', // Center vertically
+      alignItems: 'center', // Center horizontally
+      textAlign: 'center', // Center text
+      zIndex: 9, // Ensure bubble is behind the close button
+      fontFamily: 'Saira'
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1.0)")}
+  >
+    Would you like to be updated on the latest red light therapy panels?
+  </Fab>
+)}
+
+{showFab && !fabDismissed && (
+  <IconButton
+    onClick={handleFabClose}
+    style={{
+      position: "fixed",
+      top: 'auto', // Aligned relative to the bubble
+      right: 30, // Aligned relative to the bubble
+      bottom: 200, // Adjusted based on Fab's bottom position
+      backgroundColor: props.dark ? "#333" : "#fff", // Same background to blend in
+      color: props.dark ? "#fff" : "#000", // Match text color to theme
+      borderRadius: '50%', // Circle button
+      boxShadow: '0px 0px 5px rgba(0,0,0,0.3)', // Slight shadow for visibility
+      zIndex: 10, // Higher z-index to ensure it stays on top
+    }}
+  >
+    <CloseIcon />
+  </IconButton>
+)}
+
+
+<Modal
+  open={openModal}
+  onClose={handleCloseModal}
+  style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+>
+  <Box
+    sx={{
+      width: 400,
+      bgcolor: props.dark ? "#333" : "#fff", // Dark grey or white based on theme
+      color: props.dark ? "#fff" : "#000", // White text for dark theme, black for light theme
+      borderRadius: 2,
+      p: 2,
+      boxShadow: 24,
+      fontFamily: 'Saira'
+    }}
+  >
+    <h3>Subscribe for Updates</h3>
+
+    {emailLoading ? <CircularProgress sx={{color:'#ED3838'}}/> : <><TextField
+      fullWidth
+      label="Email"
+      variant="outlined"
+      value={email}
+      onChange={handleEmailChange}
+      style={{ marginBottom: 16 }}
+    />
+    <Button variant="contained" color="error" onClick={handleEmailSubmit}>
+      Submit
+    </Button></>}
+
+  </Box>
+</Modal>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={10000}
+        onClose={handleCloseSnackbar}
+        message="Thank you for subscribing!"
+      />
+        <style>
+        {`
+          @keyframes slide-in {
+            from {
+              transform: translateX(100%);
+            }
+            to {
+              transform: translateX(0);
+            }
+          }
+        `}
+      </style>
     </ThemeProvider>
   );
 };

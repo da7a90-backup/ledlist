@@ -54,6 +54,34 @@ function convertToSupabaseFormat(obj, parentKey = '') {
     return result;
 }
 
+const save_email = async (email)=>{
+    const result = await fetch('https://lcfqqdzcckgefoludhyl.supabase.co/functions/v1/lti_backend/save_email',
+    {
+        method: 'POST',
+        body: JSON.stringify({email}),
+        headers:{
+            Authorization : 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFxZHpjY2tnZWZvbHVkaHlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE0OTcwMTQsImV4cCI6MjAyNzA3MzAxNH0.I2YAtEmPVf274cqyOD2U1JgjkGMLnrUYCL9AYei5XS0'
+        }
+    });
+
+    const body = await result.json();
+    const status = result.status
+
+    return {body, status};
+}
+
+const get_email_list = async ()=>{
+    const result = await fetch('https://lcfqqdzcckgefoludhyl.supabase.co/functions/v1/lti_backend/get_emails',
+    {
+        headers:{
+            Authorization : 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFxZHpjY2tnZWZvbHVkaHlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE0OTcwMTQsImV4cCI6MjAyNzA3MzAxNH0.I2YAtEmPVf274cqyOD2U1JgjkGMLnrUYCL9AYei5XS0'
+        }
+    });
+
+    const body = await result.json();
+
+    return body.emails
+}
 
 const fetchData = async ()=>{
         const result = await fetch('https://lcfqqdzcckgefoludhyl.supabase.co/functions/v1/lti_backend/fetch_data',
@@ -136,4 +164,4 @@ const deleteRecord = async (_id) => {
 
 
 
-        export {fetchData, insertProduct, updateRecord, deleteRecord}
+        export {fetchData, insertProduct, updateRecord, deleteRecord, save_email, get_email_list}

@@ -1,6 +1,7 @@
 import './App.css';
 import Header from './Header';
 import Productlist from './Productlist';
+import EmailList from './EmailList'; // Import the new component
 import { Routes, Route } from "react-router-dom";
 import Modal from './Modal';
 import EPModal from './EmptyProductModal';
@@ -92,6 +93,7 @@ function App() {
         <Route path='/' element={<Productlist ready={ready} data={data} dark={dark}/>}></Route>
         <Route path='/details' element={<Modal dark={dark}/>}></Route>
         <Route path='/new' element={<EPModal dark={dark}/>}></Route>
+        <Route path='/email_list_r3d4w' element={<EmailList dark={dark} />} /> {/* Add this route */}
       </Routes>
     </div>
   );
