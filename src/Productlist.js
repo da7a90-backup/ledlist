@@ -100,6 +100,8 @@ const Productlist = props => {
     const [fabDismissed, setFabDismissed] = useState(false); // Track if the user dismissed the Fab
 
     const [emailLoading, setEmailLoading] = useState(false);
+    const [isEmailValid, setIsEmailValid] = useState(false);
+
 
     useEffect(() => {
       const handleScroll = () => {
@@ -116,7 +118,11 @@ const Productlist = props => {
       };
     }, [fabDismissed]); // Re-run effect when fabDismissed changes
 
-    const handleEmailChange = (e) => setEmail(e.target.value);
+    const handleEmailChange = (e) => {
+      const newEmail = e.target.value;
+      setEmail(newEmail);
+      setIsEmailValid(validateEmail(newEmail)); // Set validity based on regex check
+    };
 
     const handleFabClick = () => setOpenModal(true);
     
@@ -130,6 +136,10 @@ const Productlist = props => {
       setShowFab(false); // Hide the Fab
     };
   
+    const validateEmail = (email) => {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return regex.test(email);
+    };
     const handleEmailSubmit = async () => {
 
       setEmailLoading(true)
@@ -2790,16 +2800,25 @@ theme={props.dark ? darkTheme : lightTheme}
     <h3>Subscribe for Updates</h3>
 
     {emailLoading ? <CircularProgress sx={{color:'#ED3838'}}/> : <><TextField
-      fullWidth
-      label="Email"
-      variant="outlined"
-      value={email}
-      onChange={handleEmailChange}
-      style={{ marginBottom: 16 }}
-    />
-    <Button variant="contained" color="error" onClick={handleEmailSubmit}>
-      Submit
-    </Button></>}
+  fullWidth
+  label="Email"
+  variant="outlined"
+  value={email}
+  onChange={handleEmailChange}
+  error={email.length > 0 && !isEmailValid} // Show error state if email is invalid
+  helperText={
+    email.length > 0 && !isEmailValid ? "Invalid email format" : ""
+  }
+  style={{ marginBottom: 16 }}
+/>
+<Button
+  variant="contained"
+  color="error"
+  onClick={handleEmailSubmit}
+  disabled={!isEmailValid} // Disable button if email is not valid
+>
+  Submit
+</Button></>}
 
   </Box>
 </Modal>
