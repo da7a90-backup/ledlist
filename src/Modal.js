@@ -239,16 +239,16 @@ const years = range(currentYear, currentYear - 50, -1);
            </FormGroup>
    
            <FormGroup sx={{width: '10%'}} column='column'>
-                <h5>Product Company</h5>
-                <Autocomplete
-                freeSolo
-               disablePortal
-               id="companies"
-              options={companies}
-              onChange={(e, newValue)=>{company.current = newValue}}
-              renderInput={(params) => <TextField {...params} label={info.company} defaultValue={info.company} disabled={edit}></TextField>}
-             />
-             </FormGroup>
+     <h5>Product Company</h5>
+     <Autocomplete
+     freeSolo
+    disablePortal
+    id="companies"
+   options={companies}
+   onChange={(e, newValue)=>{company.current = newValue}}
+   renderInput={(params) => <TextField {...params} label={info.company} defaultValue={info.company} disabled={edit}></TextField>}
+  />
+  </FormGroup>
    
              <FormGroup sx={{width: '10%'}}  column='column'>
                  <h5>Company Location</h5>
