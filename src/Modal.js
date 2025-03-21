@@ -238,17 +238,30 @@ const years = range(currentYear, currentYear - 50, -1);
            <TextField required defaultValue={info.productName} onChange={(e)=>{productName.current = e.target.value}} disabled={edit}></TextField>
            </FormGroup>
    
-           <FormGroup sx={{width: '10%'}} column='column'>
-     <h5>Product Company</h5>
-     <Autocomplete
-     freeSolo
+<FormGroup sx={{width: '10%'}} column='column'>
+  <h5>Product Company</h5>
+  <Autocomplete
+    freeSolo
     disablePortal
     id="companies"
-   options={companies}
-   onChange={(e, newValue)=>{company.current = newValue}}
-   renderInput={(params) => <TextField {...params} label={info.company} defaultValue={info.company} disabled={edit}></TextField>}
+    options={companies}
+    defaultValue={info.company}
+    onInputChange={(event, newInputValue) => {
+      company.current = newInputValue || info.company;
+    }}
+    onChange={(event, newValue) => {
+      company.current = newValue || info.company;
+    }}
+    renderInput={(params) => (
+      <TextField 
+        {...params}
+        label="Company"
+        defaultValue={info.company}
+        disabled={edit}
+      />
+    )}
   />
-  </FormGroup>
+</FormGroup>
    
              <FormGroup sx={{width: '10%'}}  column='column'>
                  <h5>Company Location</h5>
