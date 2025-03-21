@@ -1918,35 +1918,43 @@ nirFilter ? {
             <b>{`$${cost}` }</b>
             </TableCell>
           )}
-        {showShipping && (
-        <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center"> 
-        <Tooltip 
-        enterTouchDelay={0}
-        leaveTouchDelay={2500}
-        TransitionComponent={Zoom}
-        componentsProps={{
-            tooltip: {
-                sx: {
-                    background: '#ffff',
-                    color: '#000',
-                    fontSize: "1em",
-                    width: "200px",
-                    border: '1px solid #ED3838',
-                    borderRadius: "10px 10px",
-                    boxShadow: "5px 5px 5px 5px rgb(0 0 0 / 20%), 0px 5px 6px 0px rgb(0 0 0 / 14%), 0px 4px 10px 0px rgb(0 0 0 / 12%)"
-                  }
-            }
-          }}
-        title={<React.Fragment>
-            <b>Shipping USA 🇺🇸</b><br/><Paper align='center' elevation={2}>${shipping.shippingUsa}</Paper><br/>
-            <b>Shipping Intl 🌎</b><br/><Paper align='center' elevation={2}>${shipping.shippingIntl === 0 ? `${shipping.shippingIntl}` : `${shipping.shippingIntl}+` }</Paper><br/>
-            </React.Fragment>
-                        }>
-        <b>{sortByShipping === 'shippingIntl' ? `$${shipping[sortByShipping]}➕ 🌎` : `$${shipping[sortByShipping]} 🇺🇸` }</b>
-        </Tooltip>
-        </TableCell>
-        )}
-
+       {showShipping && (
+  <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center"> 
+    <Tooltip 
+      enterTouchDelay={0}
+      leaveTouchDelay={2500}
+      TransitionComponent={Zoom}
+      componentsProps={{
+        tooltip: {
+          sx: {
+            background: '#ffff',
+            color: '#000',
+            fontSize: "1em",
+            width: "200px",
+            border: '1px solid #ED3838',
+            borderRadius: "10px 10px",
+            boxShadow: "5px 5px 5px 5px rgb(0 0 0 / 20%), 0px 5px 6px 0px rgb(0 0 0 / 14%), 0px 4px 10px 0px rgb(0 0 0 / 12%)"
+          }
+        }
+      }}
+      title={<React.Fragment>
+        <b>Shipping USA 🇺🇸</b><br/><Paper align='center' elevation={2}>${shipping.shippingUsa}</Paper><br/>
+        <b>Shipping Intl 🌎</b><br/><Paper align='center' elevation={2}>
+          {shipping.shippingIntl === -1 ? 'N/A' : 
+           shipping.shippingIntl === 0 ? `$${shipping.shippingIntl}` : 
+           `$${shipping.shippingIntl}+`}
+        </Paper><br/>
+      </React.Fragment>}>
+      <b>
+        {sortByShipping === 'shippingIntl' ? 
+          (shipping[sortByShipping] === -1 ? 
+            'N/A 🌎' : 
+            `$${shipping[sortByShipping]}${shipping[sortByShipping] > 0 ? '➕' : ''} 🌎`) : 
+          `$${shipping[sortByShipping]} 🇺🇸`}
+      </b>
+    </Tooltip>
+  </TableCell>
+)}
         {showLeds && (
         <TableCell style={{color: !props.dark ? '#000' : '#ffff'}} align="center">
         <Tooltip
