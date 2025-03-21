@@ -1366,7 +1366,11 @@ alexdataFilter ?
     filterOptions: {
       names: [true],
       logic(alexTested, filterVal, row) {
-        return alexTested === false
+        // Only apply filtering when the checkbox is checked (filterVal.length > 0)
+        if (filterVal.length > 0) {
+          return alexTested !== 1;  // Filter out rows where alexTested is not 1
+        }
+        return false;  // Don't filter anything when checkbox is unchecked
       }
     }
   }
@@ -1385,7 +1389,11 @@ alexdataFilter ?
     filterOptions: {
       names: [true],
       logic(alexTested, filterVal, row) {
-        return alexTested === false
+        // Only apply filtering when the checkbox is checked (filterVal.length > 0)
+        if (filterVal.length > 0) {
+          return alexTested !== 1;  // Filter out rows where alexTested is not 1
+        }
+        return false;  // Don't filter anything when checkbox is unchecked
       }
     }
   }
